@@ -32,7 +32,7 @@ public:
    const CustomerStatus& GetCustomerStatus()const;
    const MemberLevel& GetMemberLevel()const;
    const std::string& GetEmail()const;
-   const std::string& GetAdress()const;
+   const std::string& GetAddress()const;
 
    void SetId(int valId);
    void SetFirstName(const std::string& valFirstName);

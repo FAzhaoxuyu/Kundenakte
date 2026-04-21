@@ -1,11 +1,23 @@
 #include "Customer.h"
 #include "CustomerManager.h"
 #include "CustomerManagerUI.h"
+#include<algorithm>
+
 using namespace std;
 
-std::vector<Customer>::iterator CustomerManager::FindCustomerById(const int& searchId)
+const std::vector<Customer>& CustomerManager::GetCustomers() const
 {
-   auto it = find_if(customers.begin(), customers.end(), [searchId](const Customer& customer) {return customer.GetId() == searchId; });
+   return customers;
+}
+
+bool CustomerManager::IsEmpty() const
+{
+   return customers.empty();
+}
+
+std::vector<Customer>::iterator CustomerManager::FindCustomerById(int searchid)
+{
+   auto it = find_if(customers.begin(), customers.end(), [searchid](const Customer& customer) {return customer.GetId() == searchid; });
    return it;
 }
 
@@ -15,144 +27,79 @@ int CustomerManager::GenerateCustomerId()
       return 1;
    }
    else {
-      int currentMaxId = customers[0].GetId();
-      for (Customer& customer : customers) {
-         if (customer.GetId() > currentMaxId) {
-            currentMaxId = customer.GetId();
-         }
-         
-      }
-      return currentMaxId + 1;
+      auto it = std::max_element(customers.begin(), customers.end(), [](const Customer& a, const Customer& b) {return a.GetId() < b.GetId();});
+      return it->GetId() + 1;
    }
-
 }
 
-void CustomerManager::Add(Customer& newCustomer)
+const void CustomerManager::Add(Customer& newCustomer)
 {
    customers.push_back(newCustomer);
 }
 
-void CustomerManager::Update()
+bool CustomerManager::UpdateFirstName(int id, const std::string& newFirstName)
 {
-   if (customers.empty()) {
-      cout << endl;
-      cout << "No customer is available, please add new customer first" <<endl;
-   }
-
-   else {
-      int id = ui->ReadInt("Please enter customer id: ");
-      for (int i = 0; i < customers.size(); i++)
-      {
-         if (customers[i].GetId() == id) {
-            int choice = ui->ReadInt("What do you want to update?\n"
-               "1. First name\n"
-               "2. Last name\n"
-               "3. Date of Birth\n"
-               "4. Gender\n"
-               "5. Customer status\n"
-               "6. Member Level\n"
-               "7. Email\n"
-               "8. Adress\n");
-            switch (choice)
-            {
-            case 1:
-            {
-               string newFirstName = ui->ReadText("Please enter new first name: ");
-               customers[i].SetFirstName(newFirstName);
-               std::cout << "First name updated.\n";
-               break;
-            }
-            case 2:
-            {
-               string newLastName = ui->ReadText("Please enter new last name: ");
-               customers[i].SetLastName(newLastName);
-               std::cout << "Last name updated.\n";
-               break;
-            }
-            case 3:
-            {
-               Date newDateOfBirth = ui->ReadDate("Please enter new date of birth: ");
-               customers[i].SetDateOfBirth(newDateOfBirth);
-               std::cout << "Date of birth updated.\n";
-               break;
-            }
-            case 4:
-            {
-               Gender newGender = ui->ReadGender("Please enter new gender: ");
-               customers[i].SetGender(newGender);
-               std::cout << "Gender updated.\n";
-               break;
-            }
-            case 5:
-            {
-               CustomerStatus newCustomerStatus = ui->ReadCustomerStatus("Please enter new customer status: ");
-               customers[i].SetCustomerStatus(newCustomerStatus);
-               std::cout << "Customer status updated.\n";
-               break;
-            }
-            case 6:
-            {
-               MemberLevel newMemberLevel = ui->ReadMemberLevel("Please enter new member level: ");
-               customers[i].SetMemberLevel(newMemberLevel);
-               std::cout << "Member level updated.\n";
-               break;
-            }
-            case 7:
-            {
-               string newEmail = ui->ReadText("Please enter new email: ");
-               customers[i].SetEmail(newEmail);
-               std::cout << "Email updated.\n";
-               break;
-            }
-            case 8:
-            {
-               string newAddress = ui->ReadText("Please enter new address: ");
-               customers[i].SetAddress(newAddress);
-               std::cout << "Address updated.\n";
-               break;
-            }
-            default:
-            {
-               cout << "Invalid choice." << endl;
-               break;
-            }
-
-            }
-         }
-      }
-   }
-   
+   std::vector<Customer>::iterator it = FindCustomerById(id);
+   if (it == customers.end()) return false;
+   it->SetFirstName(newFirstName);
+   return true;
 }
-void CustomerManager::Remove()
+bool CustomerManager::UpdateLastName(int id, const std::string& newLastName)
 {
-   if (customers.empty()) {
-      cout << endl;
-      cout << "No customer is available, please add new customer first" <<endl;
-   }
-
-   else {
-      int id = ui->ReadInt("Please enter customer id: ");
-      auto it = FindCustomerById(id);
-      if (it == customers.end()) {
-         cout << "Customer not found.";
-      }
-      else {
-         customers.erase(it);
-         cout << "Customer removed successfully.";
-      }   
-   }
+   std::vector<Customer>::iterator it = FindCustomerById(id);
+   if (it == customers.end()) return false;
+   it->SetLastName(newLastName);
+   return true;
+}
+bool CustomerManager::UpdateDateOfBirth(int id, const Date& newDateOfBirth)
+{
+   std::vector<Customer>::iterator it = FindCustomerById(id);
+   if (it == customers.end()) return false;
+   it->SetDateOfBirth(newDateOfBirth);
+   return true;
+}
+bool CustomerManager::UpdateGender(int id, Gender newGender)
+{
+   std::vector<Customer>::iterator it = FindCustomerById(id);
+   if (it == customers.end()) return false;
+   it->SetGender(newGender);
+   return true;
+}
+bool CustomerManager::UpdateCustomerStatus(int id, CustomerStatus newStatus) {
+   std::vector<Customer>::iterator it = FindCustomerById(id);
+   if (it == customers.end()) return false;
+   it->SetCustomerStatus(newStatus);
+   return true;
+}
+bool CustomerManager::UpdateMemberLevel(int id, MemberLevel newLevel)
+{
+   std::vector<Customer>::iterator it = FindCustomerById(id);
+   if (it == customers.end()) return false;
+   it->SetMemberLevel(newLevel);
+   return true;
+}
+bool CustomerManager::UpdateEmail(int id, const std::string& newEmail)
+{
+   std::vector<Customer>::iterator it = FindCustomerById(id);
+   if (it == customers.end()) return false;
+   it->SetEmail(newEmail);
+   return true;
+}
+bool CustomerManager::UpdateAddress(int id, const std::string& newAddress)
+{
+   std::vector<Customer>::iterator it = FindCustomerById(id);
+   if (it == customers.end()) return false;
+   it->SetAddress(newAddress);
+   return true;
 }
 
-void CustomerManager::Show()
+bool CustomerManager::RemoveById(int id)
 {
-   if (customers.empty()) {
-      cout << endl;
-      cout << "No customer is available, please add new customer first" << endl;
+   auto it = FindCustomerById(id);
+   if (it == customers.end()) {
+      return false;
    }
    else {
-      for (const Customer& customer : customers) {
-         customer.Print();
-      }
+      customers.erase(it);
    }
-
 }

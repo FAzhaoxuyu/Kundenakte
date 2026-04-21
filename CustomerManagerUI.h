@@ -17,19 +17,20 @@ public:
 
    Customer CreateCustomer();
 
-    std::string ReadText(const std::string& quesiton);
-    int ReadInt(const std::string& question);
-    Date ReadDate(const std::string& question);
-    Gender ReadGender(const std::string& question);
-    CustomerStatus ReadCustomerStatus(const std::string& question);
-    MemberLevel ReadMemberLevel(const std::string& question);
-    Action ReadChoice(const std::string& question);
-    Action ReadOption(const std::string& question);
+   std::string ReadText(const std::string& question);
+   int ReadInt(const std::string& question);
+   Date ReadDate(const std::string& question);
+   Gender ReadGender(const std::string& question);
+   CustomerStatus ReadCustomerStatus(const std::string& question);
+   MemberLevel ReadMemberLevel(const std::string& question);
+   Action ReadChoice(const std::string& question);
+   Action ReadOption(const std::string& question);
 
+   void HandleAdd();
+   void HandleUpdate();
+   void HandleRemove();
+   void Show();
    void Help();
    void Exit();
-
- /*  void ShowCustomerList();*/
-
 };
 

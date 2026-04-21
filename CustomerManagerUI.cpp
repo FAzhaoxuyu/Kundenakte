@@ -98,34 +98,30 @@ Action CustomerManagerUI::Run()
 {
    while (true)
    {
-      bool running = true;
-
       ShowMenu();
       Action option = ReadOption("Please choose an option: ");
       switch (option)
       {
          case Action::Add:
          {
-            Customer customer = CreateCustomer();
-            manager.Add(customer);
+            HandleAdd();
             break;
          }
          case Action::Update:
          {
-            manager.Update();
+            HandleUpdate();
             break;
          }
          case Action::Remove:
          {
-            manager.Remove();
+            HandleRemove();
             break;
          }
          case Action::Show:
          {
-            manager.Show();
+            Show();
             break;
          }
-
          case Action::Help:
          {
             Help();
@@ -133,19 +129,36 @@ Action CustomerManagerUI::Run()
          }
          case Action::Exit:
          {
-            running = false;
-            break;
+            Exit();
+            return option;
          }
-         return option;
+         
       }
 
    }
    
 }
-//void CustomerManagerUI::ShowCustomerList()
-//{
-//   manager.Show();
-//}
+void CustomerManagerUI::Show()
+{
+   const std::vector<Customer>& customers = manager.GetCustomers();
+   if (manager.GetCustomers().empty()) {
+      cout << endl;
+      cout << "No customer is available, please add new customer first" << endl;
+      return;
+   }
+   for (const Customer& customer : customers)
+   {
+      cout << customer.GetId() << " "
+         << customer.GetFirstName() << " "
+         << customer.GetLastName() << " "
+         << customer.GetDateOfBirth().ToString() << " "
+         << ToString(customer.GetGender()) << " "
+         << ToString(customer.GetMemberLevel()) << " "
+         << customer.GetEmail() << " "
+         << customer.GetAddress() << " "
+         << endl;
+   }
+}
 
 Action CustomerManagerUI::ReadOption(const string& question)
 {
@@ -205,4 +218,105 @@ void CustomerManagerUI::Exit()
 {
    std::cout << "Program closed." << std::endl;
 }
+
+void CustomerManagerUI :: HandleAdd()
+{
+   cout << endl;
+   Customer customer = CreateCustomer();
+   manager.Add(customer);
+   std::cout << "A new customer added." << std::endl;
+}
+void CustomerManagerUI :: HandleUpdate()
+{
+   if (manager.IsEmpty()) {
+      cout << endl;
+      cout << "No customer is available, please add new customer first" << endl;
+      return;
+   }
+   int id = ReadInt("Please enter customer id: ");
+   int option = ReadInt("What do you want to update?\n"
+                           "1. First name\n"
+                           "2. Last name\n"
+                           "3. Birthday\n"
+                           "4. Gender\n"
+                           "5. Status\n"
+                           "6. Member level\n"
+                           "7. Email\n"
+                           "8. Address\n");
+   switch (option)
+   {
+      case 1: 
+      {
+         std::string newFirstName = ReadText("Please give a new first name: ");
+         manager.UpdateFirstName(id, newFirstName);
+         std::cout << "First name updated.\n";
+         break;
+      }
+      case 2:
+      {
+         std::string newLastName = ReadText("Please give a new last name: ");
+         manager.UpdateFirstName(id, newLastName);
+         std::cout << "Last name updated.\n";
+         break;
+      }
+      case 3:
+      {
+         std::string newDateOfBirth = ReadText("Please give a new birthday: ");
+         manager.UpdateFirstName(id, newDateOfBirth);
+         std::cout << "Date of birth updated.\n";
+         break;
+      }
+      case 4:
+      {
+         std::string newGender = ReadText("Please give a new gender: ");
+         manager.UpdateFirstName(id, newGender);
+         std::cout << "Gender updated.\n";
+         break;
+      }
+      case 5:
+      {
+         std::string newStatus = ReadText("Please give a status: ");
+         manager.UpdateFirstName(id, newStatus);
+         std::cout << "Customer status updated.\n";
+         break;
+      }
+      case 6:
+      {
+         std::string newMemberLevel = ReadText("Please give a new member level: ");
+         manager.UpdateFirstName(id, newMemberLevel);
+         std::cout << "Member level updated.\n";
+         break;
+      }
+      case 7:
+      {
+         std::string newEmail = ReadText("Please give a new email: ");
+         manager.UpdateFirstName(id, newEmail);
+         std::cout << "Email updated.\n";
+         break;
+      }
+      case 8:
+      {
+         std::string newAddress = ReadText("Please give a new Address: ");
+         manager.UpdateFirstName(id, newAddress);
+         std::cout << "Address updated.\n";
+         break;
+      }
+      default:
+      {
+         cout << "Invalid choice." << endl;
+         break;
+      }
+   }
+}
+void CustomerManagerUI::HandleRemove()
+{
+   if (manager.IsEmpty()) {
+      cout << endl;
+      cout << "No customer is available, please add new customer first" << endl;
+      return;
+   }
+   int id = ReadInt("Please enter customer id: ");
+   manager.RemoveById(id);
+}
+
 

@@ -44,12 +44,10 @@ const string& Customer::GetEmail()const
 {
    return email;
 }
-const string& Customer::GetAdress()const
+const string& Customer::GetAddress()const
 {
    return address;
 }
-
-
 
 
 void Customer::SetId(int valId)
@@ -107,5 +105,5 @@ void Customer::Print()const
         << ToString(GetCustomerStatus()) << " " 
         << ToString(GetMemberLevel()) << " "
         << GetEmail() << " " 
-        << GetAdress() << " " << endl;
+        << GetAddress() << " " << endl;
 }
