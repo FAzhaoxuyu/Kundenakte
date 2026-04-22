@@ -2,6 +2,7 @@
 #include "CustomerManager.h"
 #include "CustomerManagerUI.h"
 #include<algorithm>
+#include<sstream>
 
 using namespace std;
 
@@ -101,5 +102,27 @@ bool CustomerManager::RemoveById(int id)
    }
    else {
       customers.erase(it);
+      return true;
+   }
+}
+
+string CustomerManager::Serialize() const
+{
+   string result;
+   for (const Customer& customer : customers)
+   {
+      result += customer.CustomerToString();
+   }
+   return result;
+}
+std::vector<Customer> CustomerManager::DeSerialize()
+{
+   string line;
+   stringstream file ("customers.txt");
+   std::vector<Customer> result;
+
+   while (std::getline(file, line))
+   {
+      result.push_back(Customer::StringToCustomer(line));
    }
 }

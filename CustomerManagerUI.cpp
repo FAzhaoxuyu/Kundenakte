@@ -151,9 +151,9 @@ void CustomerManagerUI::Show()
       cout << customer.GetId() << " "
          << customer.GetFirstName() << " "
          << customer.GetLastName() << " "
-         << customer.GetDateOfBirth().ToString() << " "
-         << ToString(customer.GetGender()) << " "
-         << ToString(customer.GetMemberLevel()) << " "
+         << customer.GetDateOfBirth().DateToString() << " "
+         << GenderToString(customer.GetGender()) << " "
+         << LevelToString(customer.GetMemberLevel()) << " "
          << customer.GetEmail() << " "
          << customer.GetAddress() << " "
          << endl;
@@ -229,7 +229,6 @@ void CustomerManagerUI :: HandleAdd()
 void CustomerManagerUI :: HandleUpdate()
 {
    if (manager.IsEmpty()) {
-      cout << endl;
       cout << "No customer is available, please add new customer first" << endl;
       return;
    }

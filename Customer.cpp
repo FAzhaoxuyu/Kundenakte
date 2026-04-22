@@ -1,5 +1,10 @@
 #include "Action.h"
+#include "Date.h"
 #include "Customer.h"
+#include "CustomerManager.h"
+#include<format>
+#include<fstream>
+#include<sstream>
 using namespace std;
 
 
@@ -100,10 +105,57 @@ void Customer::Print()const
    cout << GetId() << " " 
         << GetFirstName() << " " 
         << GetLastName() << " " 
-        << GetDateOfBirth().ToString() << " "
-        << ToString(GetGender()) << " " 
-        << ToString(GetCustomerStatus()) << " " 
-        << ToString(GetMemberLevel()) << " "
+        << GetDateOfBirth().DateToString() << " "
+        << GenderToString(GetGender()) << " " 
+        << StatusToString(GetCustomerStatus()) << " " 
+        << LevelToString(GetMemberLevel()) << " "
         << GetEmail() << " " 
         << GetAddress() << " " << endl;
 }
+
+std::string Customer::CustomerToString() const
+{
+
+   return std::format("{}{}{}{}{}{}{}{}{}",
+      id, firstName, lastName, dateOfBirth.DateToString(), 
+      GenderToString(gender), StatusToString(customerStatus), 
+      LevelToString(memberLevel), email, address);
+}
+
+Customer Customer::StringToCustomer(const string& line) const
+{
+   std::stringstream ss(line);
+   string part;
+  
+   Customer c;
+
+   std::getline(ss, part, ',');
+   c.SetId(std::stoi(part));
+
+   std::getline(ss, part, ',');
+   c.SetFirstName(part);
+
+   std::getline(ss, part, ',');
+   c.SetLastName(part);
+
+   std::getline(ss, part, ',');
+   c.SetDateOfBirth(Date::StringToDate(part));
+
+   std::getline(ss, part, ',');
+   c.SetGender(StringToGender(part));
+
+   std::getline(ss, part, ',');
+   c.SetCustomerStatus(StringToStatus(part));
+
+   std::getline(ss, part, ',');
+   c.SetMemberLevel(StringToLevel(part));
+
+   std::getline(ss, part, ',');
+   c.SetEmail(part);
+
+   std::getline(ss, part, ',');
+   c.SetAddress(part);
+
+   return c;
+}
+

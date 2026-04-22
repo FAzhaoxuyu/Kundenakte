@@ -25,5 +25,8 @@ public:
 
    bool RemoveById(int id);
 
+   std::string Serialize() const;
+   std::vector<Customer> DeSerialize();
+
 
 };

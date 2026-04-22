@@ -23,6 +23,10 @@ enum class MemberLevel
    Corporate
 };
 
-std::string ToString(Gender gender);
-std::string ToString(CustomerStatus customerStatus);
-std::string ToString(MemberLevel memberLevel);
+std::string GenderToString(Gender gender);
+std::string StatusToString(CustomerStatus customerStatus);
+std::string LevelToString(MemberLevel memberLevel);
+
+Gender StringToGender(const std::string& text);
+CustomerStatus StringToStatus(const std::string& text);
+MemberLevel StringToLevel(const std::string& text);

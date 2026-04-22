@@ -17,7 +17,8 @@ public:
    int getYear()const;
 
  //  bool operator == (const Date& other)const;
-   std::string ToString() const;
+   std::string DateToString() const;
+   static Date StringToDate(const std::string& text);
 
    void PrintDate();
 };
