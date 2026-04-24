@@ -26,7 +26,8 @@ public:
    bool RemoveById(int id);
 
    std::string Serialize() const;
-   std::vector<Customer> DeSerialize();
+   static std::vector<Customer> DeSerialize(const std::string& line);
 
-
+   void SaveToFile(const std::string& filename) const;
+   static void LoadFromFile(const std::string& filename);
 };

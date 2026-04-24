@@ -47,7 +47,7 @@ public:
    void Print()const;
 
    std::string CustomerToString() const;
-   Customer StringToCustomer(const std::string& line) const;
+   static Customer StringToCustomer(const std::string& line);
 
    
 

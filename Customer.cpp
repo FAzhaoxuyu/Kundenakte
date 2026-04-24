@@ -122,7 +122,7 @@ std::string Customer::CustomerToString() const
       LevelToString(memberLevel), email, address);
 }
 
-Customer Customer::StringToCustomer(const string& line) const
+Customer Customer::StringToCustomer(const string& line)
 {
    std::stringstream ss(line);
    string part;

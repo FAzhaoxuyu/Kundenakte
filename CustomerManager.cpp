@@ -3,6 +3,7 @@
 #include "CustomerManagerUI.h"
 #include<algorithm>
 #include<sstream>
+#include<fstream>
 
 using namespace std;
 
@@ -115,14 +116,35 @@ string CustomerManager::Serialize() const
    }
    return result;
 }
-std::vector<Customer> CustomerManager::DeSerialize()
+std::vector<Customer> CustomerManager::DeSerialize(const string& text)
 {
-   string line;
-   stringstream file ("customers.txt");
    std::vector<Customer> result;
-
-   while (std::getline(file, line))
+   string line;
+   stringstream ss (text);
+   
+   while (std::getline(ss, line))
    {
-      result.push_back(Customer::StringToCustomer(line));
+      Customer c = Customer::StringToCustomer(line);
+      result.push_back(c);
    }
+   return result;
+}
+
+void CustomerManager::SaveToFile(const string& filename) const
+{
+   std::ofstream os(filename);
+   os << Serialize();
+}
+
+void CustomerManager::LoadFromFile(const string& filename)
+{
+   std::ifstream is(filename);
+   if (!is)
+   {
+      std::cerr << "Error: can not open the file '" << filename << "'\n";
+   }
+   std::stringstream buffer;
+   buffer << is.rdbuf();
+   std::string fileContent = buffer.str();
+   DeSerialize(fileContent);
 }
