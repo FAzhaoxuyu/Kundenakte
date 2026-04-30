@@ -116,8 +116,8 @@ void Customer::Print()const
 std::string Customer::CustomerToString() const
 {
 
-   return std::format("{}{}{}{}{}{}{}{}{}",
-      id, firstName, lastName, dateOfBirth.DateToString(), 
+   return std::format("{},{},{},{},{},{},{},{},{}\n",
+      std::to_string(id), firstName, lastName, dateOfBirth.DateToString(), 
       GenderToString(gender), StatusToString(customerStatus), 
       LevelToString(memberLevel), email, address);
 }

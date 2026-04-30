@@ -1,9 +1,12 @@
 #include "Customer.h"
 #include "CustomerManager.h"
 #include "CustomerManagerUI.h"
+#include "CustomerRepository.h"
+
 #include<algorithm>
 #include<sstream>
 #include<fstream>
+#include<filesystem>
 
 using namespace std;
 
@@ -95,6 +98,23 @@ bool CustomerManager::UpdateAddress(int id, const std::string& newAddress)
    return true;
 }
 
+bool CustomerManager::UpdateStatus(int id, CustomerStatus newStatus)
+{
+   auto it = FindCustomerById(id);
+   if (it == customers.end()) return false;
+
+   it->SetCustomerStatus(newStatus);
+   return true;
+}
+
+bool CustomerManager::Exist(int id) const
+{
+   auto it = find_if(customers.begin(), customers.end(), 
+      [id](const Customer& customer) 
+      {return customer.GetId() == id; });
+   return it != customers.end();
+}
+
 bool CustomerManager::RemoveById(int id)
 {
    auto it = FindCustomerById(id);
@@ -105,46 +125,4 @@ bool CustomerManager::RemoveById(int id)
       customers.erase(it);
       return true;
    }
-}
-
-string CustomerManager::Serialize() const
-{
-   string result;
-   for (const Customer& customer : customers)
-   {
-      result += customer.CustomerToString();
-   }
-   return result;
-}
-std::vector<Customer> CustomerManager::DeSerialize(const string& text)
-{
-   std::vector<Customer> result;
-   string line;
-   stringstream ss (text);
-   
-   while (std::getline(ss, line))
-   {
-      Customer c = Customer::StringToCustomer(line);
-      result.push_back(c);
-   }
-   return result;
-}
-
-void CustomerManager::SaveToFile(const string& filename) const
-{
-   std::ofstream os(filename);
-   os << Serialize();
-}
-
-void CustomerManager::LoadFromFile(const string& filename)
-{
-   std::ifstream is(filename);
-   if (!is)
-   {
-      std::cerr << "Error: can not open the file '" << filename << "'\n";
-   }
-   std::stringstream buffer;
-   buffer << is.rdbuf();
-   std::string fileContent = buffer.str();
-   DeSerialize(fileContent);
 }

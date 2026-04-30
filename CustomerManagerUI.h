@@ -9,9 +9,11 @@
 class CustomerManagerUI
 {
 private:
-   CustomerManager manager;
+   CustomerManager &manager;
    
 public:
+   CustomerManagerUI(CustomerManager &manager) : manager(manager) {};
+
    Action Run();
    void ShowMenu();
 

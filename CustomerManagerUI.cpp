@@ -3,6 +3,7 @@
 #include "Customer.h"
 #include "CustomerManager.h"
 #include "CustomerManagerUI.h"
+#include "CustomerRepository.h"
 #include <iostream>
 
 using namespace std;
@@ -216,12 +217,12 @@ void CustomerManagerUI::Help()
 }
 void CustomerManagerUI::Exit() 
 {
+   std::cout << "Exit called\n";
    std::cout << "Program closed." << std::endl;
 }
 
 void CustomerManagerUI :: HandleAdd()
 {
-   cout << endl;
    Customer customer = CreateCustomer();
    manager.Add(customer);
    std::cout << "A new customer added." << std::endl;
@@ -233,6 +234,10 @@ void CustomerManagerUI :: HandleUpdate()
       return;
    }
    int id = ReadInt("Please enter customer id: ");
+   if (!manager.Exist(id))
+   {
+      cout << "customer not found." << endl;
+   }
    int option = ReadInt("What do you want to update?\n"
                            "1. First name\n"
                            "2. Last name\n"
@@ -254,49 +259,49 @@ void CustomerManagerUI :: HandleUpdate()
       case 2:
       {
          std::string newLastName = ReadText("Please give a new last name: ");
-         manager.UpdateFirstName(id, newLastName);
+         manager.UpdateLastName(id, newLastName);
          std::cout << "Last name updated.\n";
          break;
       }
       case 3:
       {
-         std::string newDateOfBirth = ReadText("Please give a new birthday: ");
-         manager.UpdateFirstName(id, newDateOfBirth);
+         Date newDateOfBirth = ReadDate("Please give a new birthday: ");
+         manager.UpdateDateOfBirth(id, newDateOfBirth);
          std::cout << "Date of birth updated.\n";
          break;
       }
       case 4:
       {
-         std::string newGender = ReadText("Please give a new gender: ");
-         manager.UpdateFirstName(id, newGender);
+         Gender newGender = ReadGender("Please give a new gender: ");
+         manager.UpdateGender(id, newGender);
          std::cout << "Gender updated.\n";
          break;
       }
       case 5:
       {
-         std::string newStatus = ReadText("Please give a status: ");
-         manager.UpdateFirstName(id, newStatus);
+         CustomerStatus newStatus = ReadCustomerStatus("Please give a status: ");
+         manager.UpdateStatus(id, newStatus);
          std::cout << "Customer status updated.\n";
          break;
       }
       case 6:
       {
-         std::string newMemberLevel = ReadText("Please give a new member level: ");
-         manager.UpdateFirstName(id, newMemberLevel);
+         MemberLevel newMemberLevel = ReadMemberLevel("Please give a new member level: ");
+         manager.UpdateMemberLevel(id, newMemberLevel);
          std::cout << "Member level updated.\n";
          break;
       }
       case 7:
       {
          std::string newEmail = ReadText("Please give a new email: ");
-         manager.UpdateFirstName(id, newEmail);
+         manager.UpdateEmail(id, newEmail);
          std::cout << "Email updated.\n";
          break;
       }
       case 8:
       {
          std::string newAddress = ReadText("Please give a new Address: ");
-         manager.UpdateFirstName(id, newAddress);
+         manager.UpdateAddress(id, newAddress);
          std::cout << "Address updated.\n";
          break;
       }
