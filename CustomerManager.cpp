@@ -40,6 +40,7 @@ int CustomerManager::GenerateCustomerId()
 const void CustomerManager::Add(Customer& newCustomer)
 {
    customers.push_back(newCustomer);
+   repository.Save(customers);
 }
 
 bool CustomerManager::UpdateFirstName(int id, const std::string& newFirstName)
@@ -47,6 +48,7 @@ bool CustomerManager::UpdateFirstName(int id, const std::string& newFirstName)
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
    it->SetFirstName(newFirstName);
+   repository.Save(customers);
    return true;
 }
 bool CustomerManager::UpdateLastName(int id, const std::string& newLastName)
@@ -54,6 +56,7 @@ bool CustomerManager::UpdateLastName(int id, const std::string& newLastName)
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
    it->SetLastName(newLastName);
+   repository.Save(customers);
    return true;
 }
 bool CustomerManager::UpdateDateOfBirth(int id, const Date& newDateOfBirth)
@@ -61,6 +64,7 @@ bool CustomerManager::UpdateDateOfBirth(int id, const Date& newDateOfBirth)
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
    it->SetDateOfBirth(newDateOfBirth);
+   repository.Save(customers);
    return true;
 }
 bool CustomerManager::UpdateGender(int id, Gender newGender)
@@ -68,12 +72,14 @@ bool CustomerManager::UpdateGender(int id, Gender newGender)
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
    it->SetGender(newGender);
+   repository.Save(customers);
    return true;
 }
 bool CustomerManager::UpdateCustomerStatus(int id, CustomerStatus newStatus) {
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
    it->SetCustomerStatus(newStatus);
+   repository.Save(customers);
    return true;
 }
 bool CustomerManager::UpdateMemberLevel(int id, MemberLevel newLevel)
@@ -81,6 +87,7 @@ bool CustomerManager::UpdateMemberLevel(int id, MemberLevel newLevel)
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
    it->SetMemberLevel(newLevel);
+   repository.Save(customers);
    return true;
 }
 bool CustomerManager::UpdateEmail(int id, const std::string& newEmail)
@@ -88,6 +95,7 @@ bool CustomerManager::UpdateEmail(int id, const std::string& newEmail)
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
    it->SetEmail(newEmail);
+   repository.Save(customers);
    return true;
 }
 bool CustomerManager::UpdateAddress(int id, const std::string& newAddress)
@@ -95,6 +103,7 @@ bool CustomerManager::UpdateAddress(int id, const std::string& newAddress)
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
    it->SetAddress(newAddress);
+   repository.Save(customers);
    return true;
 }
 
@@ -104,6 +113,7 @@ bool CustomerManager::UpdateStatus(int id, CustomerStatus newStatus)
    if (it == customers.end()) return false;
 
    it->SetCustomerStatus(newStatus);
+   repository.Save(customers);
    return true;
 }
 
@@ -123,6 +133,7 @@ bool CustomerManager::RemoveById(int id)
    }
    else {
       customers.erase(it);
+      repository.Save(customers);
       return true;
    }
 }

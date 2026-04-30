@@ -14,5 +14,5 @@ int main()
    CustomerManager manager(*repository, customers);
    CustomerManagerUI ui(manager);
    ui.Run();
-   repository->Save(manager.GetCustomers());
+   //repository->Save(manager.GetCustomers());
 }
