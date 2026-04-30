@@ -9,10 +9,10 @@
 
 int main()
 {
-   CustomerRepository repository;
-   std::vector<Customer> customers = repository.LoadFromFile("customer.txt");
-   CustomerManager manager(repository, customers);
+   CustomerRepository* repository = new FileCustomerRepository("customer.txt");
+   std::vector<Customer> customers = repository->Load();
+   CustomerManager manager(*repository, customers);
    CustomerManagerUI ui(manager);
    ui.Run();
-   CustomerRepository::SaveToFile("customer.txt", manager.GetCustomers());
+   repository->Save(manager.GetCustomers());
 }

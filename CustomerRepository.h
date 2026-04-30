@@ -2,14 +2,45 @@
 #include<vector>
 #include "Customer.h"
 
-class CustomerRepository 
+//class CustomerRepository 
+//{
+//public:
+//   static std::string Serialize(const std::vector<Customer>& customers);
+//   static std::vector<Customer> DeSerialize(const std::string& line);
+//
+//   std::vector<Customer> LoadFromFile(const std::string& filename) const;
+//   static void SaveToFile(const std::string& filename, const std::vector<Customer>& customers);
+//private:
+//   
+//};
+static std::string Serialize(const std::vector<Customer>& customers);
+static std::vector<Customer> DeSerialize(const std::string& line);
+
+class CustomerRepository
 {
 public:
-   static std::string Serialize(const std::vector<Customer>& customers);
-   static std::vector<Customer> DeSerialize(const std::string& line);
-
-   std::vector<Customer> LoadFromFile(const std::string& filename) const;
-   static void SaveToFile(const std::string& filename, const std::vector<Customer>& customers);
+   virtual std::vector<Customer> Load() const = 0;
+   virtual void Save(const std::vector<Customer>& customers) = 0;
 private:
-   
+
 };
+
+class FileCustomerRepository : public CustomerRepository
+{
+public:
+   FileCustomerRepository(const std::string& filename) : filename(filename) {};
+
+   std::vector<Customer> Load() const override;
+   void Save(const std::vector<Customer>& customers) override;
+private:
+   std::string filename;
+};
+
+//class DatabaseCustomerRepository : public CustomerRepository
+//{
+//public:
+//   std::vector<Customer> Load() const override;
+//   void Save(const std::vector<Customer>& customers) override;
+//private:
+//   std::string Database;
+//};
