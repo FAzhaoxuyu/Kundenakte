@@ -36,11 +36,11 @@ private:
    std::string filename;
 };
 
-//class DatabaseCustomerRepository : public CustomerRepository
-//{
-//public:
-//   std::vector<Customer> Load() const override;
-//   void Save(const std::vector<Customer>& customers) override;
-//private:
-//   std::string Database;
-//};
+class DatabaseCustomerRepository : public CustomerRepository
+{
+public:
+   std::vector<Customer> Load() const override;
+   void Save(const std::vector<Customer>& customers) override;
+private:
+   std::string Database;
+};

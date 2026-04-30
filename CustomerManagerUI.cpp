@@ -22,28 +22,53 @@ void CustomerManagerUI::ShowMenu()
 }
 string CustomerManagerUI::ReadText(const string& question)
 {
-   cout << question;
-   string input;
-   getline(cin, input);
-   return input;
+   while (true)
+   {
+      cout << question;
+      string input;
+      getline(cin, input);
+      if (!input.empty())
+      {
+         return input;
+      }
+      cout << "Invalid input, please enter agian.\n";
+   }
 }
 
 int CustomerManagerUI::ReadInt(const string& question)
 {
-   cout << question;
-   string input;
-   getline(cin, input);
-   int Number = stoi(input);
-   return Number;
+   while (true)
+   {
+      cout << question;
+      string input;
+      getline(cin, input);
+
+      try {
+         int Number = stoi(input);
+         return Number;
+      }
+      catch (const std::exception&) {
+         cout << "Invalid input, please enter a number.\n";
+      }
+   }
 }
 
 Date CustomerManagerUI::ReadDate(const string& question)
 {
-   cout << question;
-   int day = ReadInt("Please enter the day of birth: ");
-   int month = ReadInt("Please enter the month of birth: ");
-   int year = ReadInt("Please enter the year of birth: ");
-   return Date(day, month, year);
+   while (true)
+   {
+      try
+      {
+         cout << question;
+         int day = ReadInt("Please enter the day of birth: ");
+         int month = ReadInt("Please enter the month of birth: ");
+         int year = ReadInt("Please enter the year of birth: ");
+         return Date(day, month, year);
+      }
+      catch(const std::exception&){
+         cout << "Invalid input, please enter again.\n";
+      }
+   }
 }
 
 Gender CustomerManagerUI::ReadGender(const string& question)
@@ -322,5 +347,4 @@ void CustomerManagerUI::HandleRemove()
    int id = ReadInt("Please enter customer id: ");
    manager.RemoveById(id);
 }
-
 
