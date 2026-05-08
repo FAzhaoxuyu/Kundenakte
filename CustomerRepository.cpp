@@ -1,5 +1,6 @@
 #include "CustomerRepository.h"
 #include "CustomerManager.h"
+
 #include<fstream>
 #include<sstream>
 using namespace std;
@@ -34,15 +35,28 @@ std::vector<Customer> FileCustomerRepository::Load() const
    std::ifstream is(filename);
    if (!is)
    {
-      std::cerr << "Can't open the file." << filename << std::endl;
+      std::cerr << "Can't open the file:" << filename << std::endl;
+     
       return {};
    }
 
-   std::stringstream buffer;
-   buffer << is.rdbuf();
-   std::string content = buffer.str();
-   customers = DeSerialize(content);
-   return customers;
+   try
+   {
+      std::stringstream buffer;
+      buffer << is.rdbuf();
+      std::string content = buffer.str();
+      customers = DeSerialize(content);
+
+      std::cout << "Loaded customers: " << customers.size() << "\n\n";
+      return customers;
+   }
+   catch (const std::exception& ex)
+   {
+      std::cerr << "Invalid file content: " << ex.what() << std::endl;
+      logger.Print(string("Invalid content: ") + ex.what());
+      return {};
+   }
+
 }
 void FileCustomerRepository::Save(const std::vector<Customer>& customers)
 {

@@ -4,6 +4,8 @@
 #include "CustomerManager.h"
 #include "CustomerManagerUI.h"
 #include "CustomerRepository.h"
+#include "OutputFactory.h"
+#include "Validator.h"
 #include <iostream>
 
 using namespace std;
@@ -11,27 +13,66 @@ using namespace std;
 
 void CustomerManagerUI::ShowMenu()
 {
-   std::cout << "===== Customer Management =====\n";
-   std::cout << "1: Add" << std::endl;
-   std::cout << "2: Update" << std::endl;
-   std::cout << "3: Remove" << std::endl;
-   std::cout << "4: Show" << std::endl;
-   std::cout << "5: Help" << std::endl;
-   std::cout << "6: Exit" << std::endl;
-   std::cout << "===============================\n";
+   output.Print("===== Customer Management =====\n");
+   output.Print("1: Add\n");
+   output.Print("2: Update\n");
+   output.Print("3: Remove\n");
+   output.Print("4: Show\n");
+   output.Print("5: Help\n");
+   output.Print("6: Exit\n");
+   output.Print("===============================\n");
 }
 string CustomerManagerUI::ReadText(const string& question)
 {
    while (true)
    {
-      cout << question;
+      output.Print(question);
       string input;
       getline(cin, input);
       if (!input.empty())
       {
          return input;
       }
-      cout << "Invalid input, please enter agian.\n";
+      output.Print("Invalid input, please enter agian.\n");
+   }
+}
+
+int CustomerManagerUI::ReadDay()
+{
+   while (true)
+   {
+      int day = ReadInt("Day: ");
+      if (day >= 1 && day <= 31)
+      {
+         return day;
+      }
+      output.Print("Invalid day.\n");
+   }
+}
+
+int CustomerManagerUI::ReadMonth()
+{
+   while (true)
+   {
+      int month = ReadInt("Month: ");
+      if (month >= 1 && month <= 12)
+      {
+         return month;
+      }
+      output.Print("Invalid month.\n");
+   }
+}
+
+int CustomerManagerUI::ReadYear()
+{
+   while (true)
+   {
+      int year = ReadInt("Year: ");
+      if (year >= 1900 && year <= 2100)
+      {
+         return year;
+      }
+      output.Print("Invalid year.\n");
    }
 }
 
@@ -39,16 +80,16 @@ int CustomerManagerUI::ReadInt(const string& question)
 {
    while (true)
    {
-      cout << question;
+      output.Print(question);
       string input;
       getline(cin, input);
-
+ 
       try {
          int Number = stoi(input);
          return Number;
       }
       catch (const std::exception&) {
-         cout << "Invalid input, please enter a number.\n";
+         output.Print("Invalid input, please enter a number.\n");
       }
    }
 }
@@ -59,14 +100,13 @@ Date CustomerManagerUI::ReadDate(const string& question)
    {
       try
       {
-         cout << question;
-         int day = ReadInt("Please enter the day of birth: ");
-         int month = ReadInt("Please enter the month of birth: ");
-         int year = ReadInt("Please enter the year of birth: ");
+         int day = ReadDay();
+         int month = ReadMonth();
+         int year = ReadYear();
          return Date(day, month, year);
       }
       catch(const std::exception&){
-         cout << "Invalid input, please enter again.\n";
+         output.Print("Invalid input, please enter again.\n");
       }
    }
 }
@@ -74,50 +114,33 @@ Date CustomerManagerUI::ReadDate(const string& question)
 Gender CustomerManagerUI::ReadGender(const string& question)
 {
    while (true) {
-      cout << question;
-      string input;
-      getline(cin, input);
-      int choice = stoi(input);
+      int choice = ReadInt("Please choose gender: 1.Male / 2.Female /3.Diverse: ");
       switch (choice)
       {
       case 1: return Gender::Male;
       case 2: return Gender::Female;
       case 3: return Gender::Diverse;
-      default: cout << "Invalid input, please choose again.";
+      default: output.Print("Invalid input, please choose again.\n");
          break;
       }
    }
 }
 
-CustomerStatus CustomerManagerUI::ReadCustomerStatus(const string& question)
-{
-   cout << question;
-   string input;
-   getline(cin, input);
-   int choice = stoi(input);
-   switch (choice)
-   {
-   case 1: return CustomerStatus::Active;
-   case 2: return CustomerStatus::Inactive;
-   default: return CustomerStatus::Active;
-      break;
-   }
-}
-
 MemberLevel CustomerManagerUI::ReadMemberLevel(const string& question)
 {
-   cout << question;
-   string input;
-   getline(cin, input);
-   int choice = stoi(input);
-   switch (choice)
+   while (true)
    {
-   case 1: return MemberLevel::Standard;
-   case 2: return MemberLevel::Private;
-   case 3: return MemberLevel::Premium;
-   case 4: return MemberLevel::Corporate;
-   default: return MemberLevel::Standard;
-      break;
+      int choice = ReadInt(question);
+
+      switch (choice)
+      {
+      case 1: return MemberLevel::Standard;
+      case 2: return MemberLevel::Private;
+      case 3: return MemberLevel::Premium;
+      case 4: return MemberLevel::Corporate;
+      default:
+         output.Print("Invalid member level, please enter again.\n");
+      }
    }
 }
 Action CustomerManagerUI::Run()
@@ -167,29 +190,21 @@ Action CustomerManagerUI::Run()
 void CustomerManagerUI::Show()
 {
    const std::vector<Customer>& customers = manager.GetCustomers();
-   if (manager.GetCustomers().empty()) {
-      cout << endl;
-      cout << "No customer is available, please add new customer first" << endl;
+   if (!manager.HasCustomers()) {
+      output.Print("\n");
+      output.Print("No customer is available, please add new customer first.\n") ;
       return;
    }
    for (const Customer& customer : customers)
    {
-      cout << customer.GetId() << " "
-         << customer.GetFirstName() << " "
-         << customer.GetLastName() << " "
-         << customer.GetDateOfBirth().DateToString() << " "
-         << GenderToString(customer.GetGender()) << " "
-         << LevelToString(customer.GetMemberLevel()) << " "
-         << customer.GetEmail() << " "
-         << customer.GetAddress() << " "
-         << endl;
+      output.Print(customer.CustomerToString() + "\n");
    }
 }
 
 Action CustomerManagerUI::ReadOption(const string& question)
 {
    while (true) {
-      cout << question;
+      output.Print(question);
       string input;
       getline(cin, input);
       int choice = stoi(input);
@@ -202,7 +217,7 @@ Action CustomerManagerUI::ReadOption(const string& question)
       case 4: return Action::Show;
       case 5: return Action::Help;
       case 6: return Action::Exit;
-      default: cout << "Invalid input, please choose an option again.";
+      default: output.Print("Invalid input, please choose an option again.");
       }
    }
 }
@@ -210,58 +225,113 @@ Action CustomerManagerUI::ReadOption(const string& question)
 Customer CustomerManagerUI::CreateCustomer()
 {
    int id = manager.GenerateCustomerId();
-   string firstName = ReadText("Please enter the first name: ");
-   string lastName = ReadText("Please enter the last name: ");
+
+   string firstName;
+   while (true)
+   {
+      firstName = ReadText("First name: ");
+      if (!Validator::IsValidSingleName(firstName))
+      {
+         output.Print("Invalid firstNname, please enter again.\n");
+         continue;
+      }
+      break;
+   }
+
+   string lastName;
+   while (true)
+   {
+ 
+      lastName = ReadText("Last name: ");
+      if (!Validator::IsValidSingleName(lastName))
+      {
+         output.Print("Invalid  last name, please enter again.\n");
+         continue;
+      }
+      break;
+   }
+
    Date dateOfBirth = ReadDate("Please enter the date of birth: ");
-   Gender gender = ReadGender("Please enter gender (1.Male / 2.Female / 3.Diverse): ");
+
+   Gender gender = ReadGender("Gender (1.Male / 2.Female / 3.Diverse): ");
    CustomerStatus customerStatus = CustomerStatus::Active;
-   MemberLevel memberLevel = ReadMemberLevel("Please choose member level (1.Standard / 2.Private 7 3.Premium / 4. Corporate): ");
-   string email = ReadText("Please enter email: ");
-   string address = ReadText("Please enter address: ");
-   Customer newCustomer = Customer(id, firstName, lastName, dateOfBirth, gender, customerStatus, memberLevel, email, address);
+   MemberLevel memberLevel = ReadMemberLevel("Member level (1.Standard / 2.Private / 3.Premium / 4. Corporate): ");
+   
+   string email;
+   while (true)
+   {
+      email = ReadText("Please enter email: ");
+      if (!Validator::IsValidEmail(email))
+      {
+         output.Print("Invalid email.\n");
+         continue;
+      }
+      break;
+   }
+
+   string address;
+   while (true)
+   {
+      address = ReadText("Please enter address: ");
+      if (!Validator::IsValidAddress(address))
+      {
+         output.Print("Invalid address.\n");
+         continue;
+      }
+      break;
+
+   }
+   
+   Customer newCustomer = Customer(id, firstName, lastName, dateOfBirth, gender);
+   newCustomer.SetCustomerStatus(customerStatus);
+   newCustomer.SetMemberLevel(memberLevel);
+   newCustomer.SetEmail(email);
+   newCustomer.SetAddress(address);
+
    return newCustomer;
 }
 
 
 void CustomerManagerUI::Help()
 {
-   std::cout << "\n===== Help page =====\n";
+   //std::unique_ptr<Output> output = std::make_unique<ConsoleOutput>();
 
-   std::cout << "1. Add: Create a new customer to the system.\n";
-
-   std::cout << "2. Update: Change or update customer information.\n";
-
-   std::cout << "3. Remove: Remove a customer.\n";
-
-   std::cout << "4. Show: Show current customer list.\n";
-
-   std::cout << "5. Help: Show explanation of every menu option.\n";
-
-   std::cout << "6: Exit: Close the program.\n";
-   
+   output.Print("== Help page ==== = \n");
+   output.Print("1. Add: Create a new customer to the system.\n");
+   output.Print("2. Update: Change or update customer information.\n");
+   output.Print("3. Remove: Remove a customer.\n");
+   output.Print("4. Show: Show current customer list.\n");
+   output.Print("5. Help: Show explanation of every menu option.\n");
+   output.Print("6: Exit: Close the program.\n");  
 }
-void CustomerManagerUI::Exit() 
+void CustomerManagerUI::Exit()
 {
-   std::cout << "Exit called\n";
-   std::cout << "Program closed." << std::endl;
+   //std::unique_ptr<Output> output = std::make_unique<ConsoleOutput>();
+
+   output.Print("Exit called\n");
+   output.Print("Program closed.");
 }
 
 void CustomerManagerUI :: HandleAdd()
 {
    Customer customer = CreateCustomer();
    manager.Add(customer);
-   std::cout << "A new customer added." << std::endl;
+   output.Print("A new customer added.");
+   logger.Print("A new customer added.\n");
 }
 void CustomerManagerUI :: HandleUpdate()
 {
-   if (manager.IsEmpty()) {
-      cout << "No customer is available, please add new customer first" << endl;
+   if (!manager.HasCustomers()) {
+      output.Print("No customer is available, please add new customer first.\n");
+      logger.Print("No customer is available, please add new customer first.\n");
+
       return;
    }
    int id = ReadInt("Please enter customer id: ");
-   if (!manager.Exist(id))
+   if (!manager.CustomerExists(id))
    {
-      cout << "customer not found." << endl;
+      output.Print("customer not found.");
+      logger.Print("customer not found.");
    }
    int option = ReadInt("What do you want to update?\n"
                            "1. First name\n"
@@ -277,74 +347,110 @@ void CustomerManagerUI :: HandleUpdate()
       case 1: 
       {
          std::string newFirstName = ReadText("Please give a new first name: ");
+         if (!Validator::IsValidSingleName(newFirstName)) {
+            output.Print("Invalid first name.\n");
+            return;
+         }
          manager.UpdateFirstName(id, newFirstName);
-         std::cout << "First name updated.\n";
+         output.Print("First name updated.\n");
+         logger.Print("First name updated.\n");
          break;
       }
       case 2:
       {
          std::string newLastName = ReadText("Please give a new last name: ");
+         if (!Validator::IsValidSingleName(newLastName)) {
+            output.Print("Invalid first name.\n");
+            return;
+         }
          manager.UpdateLastName(id, newLastName);
-         std::cout << "Last name updated.\n";
+         output.Print("Last name updated.\n");
+         logger.Print("Last name updated.\n");
          break;
       }
       case 3:
       {
          Date newDateOfBirth = ReadDate("Please give a new birthday: ");
          manager.UpdateDateOfBirth(id, newDateOfBirth);
-         std::cout << "Date of birth updated.\n";
+         output.Print("Date of birth updated.\n");
+         logger.Print("Date of birth updated.\n");
          break;
       }
       case 4:
       {
          Gender newGender = ReadGender("Please give a new gender: ");
          manager.UpdateGender(id, newGender);
-         std::cout << "Gender updated.\n";
+         output.Print("Gender updated.\n");
+         logger.Print("Gender updated.\n");
          break;
       }
       case 5:
       {
-         CustomerStatus newStatus = ReadCustomerStatus("Please give a status: ");
-         manager.UpdateStatus(id, newStatus);
-         std::cout << "Customer status updated.\n";
+         CustomerStatus newStatus = CustomerStatus::Inactive;
+         if (!manager.UpdateStatus(id, newStatus))
+         {
+            output.Print("Customer not found.\n");
+            logger.Print("Update status failed: customer not found.");
+            break;
+         }
+
+         output.Print("Customer deactivated.\n");
+         logger.Print("Customer deactivated.");
          break;
       }
       case 6:
       {
-         MemberLevel newMemberLevel = ReadMemberLevel("Please give a new member level: ");
+         MemberLevel newMemberLevel = ReadMemberLevel("Please give a new member level (1.Standard / 2.Private / 3.Premium / 4. Corporate): ");
          manager.UpdateMemberLevel(id, newMemberLevel);
-         std::cout << "Member level updated.\n";
+         output.Print("Member level updated.\n");
+         logger.Print("Member level updated.\n");
          break;
       }
       case 7:
       {
          std::string newEmail = ReadText("Please give a new email: ");
-         manager.UpdateEmail(id, newEmail);
-         std::cout << "Email updated.\n";
+         if (!Validator::IsValidEmail(newEmail)) {
+            output.Print("Invalid email format.\n");
+            logger.Print("Invalid email format entered while updating customer information.\n");
+            break;
+         }
+
+         if (manager.UpdateEmail(id, newEmail)) {
+            output.Print("Email updated.\n");
+            logger.Print("Email updated.\n");
+         }
          break;
       }
       case 8:
       {
          std::string newAddress = ReadText("Please give a new Address: ");
-         manager.UpdateAddress(id, newAddress);
-         std::cout << "Address updated.\n";
+         if (!Validator::IsValidAddress(newAddress)) {
+            output.Print("Invalid address format.\n");
+            logger.Print("Invalid address format entered while updating customer information.\n");
+            break;
+         }
+         if (manager.UpdateAddress(id, newAddress)) {
+            output.Print("Address updated.\n");
+            logger.Print("Address updated.\n");
+         }
          break;
       }
       default:
       {
-         cout << "Invalid choice." << endl;
+         output.Print("Invalid choice.");        
          break;
       }
    }
 }
 void CustomerManagerUI::HandleRemove()
 {
-   if (manager.IsEmpty()) {
-      cout << endl;
-      cout << "No customer is available, please add new customer first" << endl;
+   if (manager.HasCustomers()) {
+      output.Print("\n");
+      output.Print("No customer is available, please add new customer first");
       return;
    }
    int id = ReadInt("Please enter customer id: ");
    manager.RemoveById(id);
+   logger.Print("Customer removed.\n");
 }
 

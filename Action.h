@@ -1,4 +1,5 @@
 #pragma once
+#include<string>
 
 enum Action
 {
@@ -9,3 +10,5 @@ enum Action
    Help,
    Exit
 };
+
+std::string ActionToString(Action action);

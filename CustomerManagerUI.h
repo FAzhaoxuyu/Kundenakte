@@ -3,16 +3,20 @@
 #include "CustomerTypes.h"
 #include "Date.h"
 #include "CustomerManager.h"
+#include "OutputFactory.h"
 #include<string>
 
 
 class CustomerManagerUI
 {
 private:
-   CustomerManager &manager;
+   CustomerManager& manager;
+   ConsoleOutput& output;
+   Logger& logger;
+
    
 public:
-   CustomerManagerUI(CustomerManager &manager) : manager(manager) {};
+   CustomerManagerUI(CustomerManager& manager, ConsoleOutput& output, Logger& logger) : manager(manager), output(output), logger(logger) {};
 
    Action Run();
    void ShowMenu();
@@ -20,6 +24,9 @@ public:
    Customer CreateCustomer();
 
    std::string ReadText(const std::string& question);
+   int ReadDay();
+   int ReadMonth();
+   int ReadYear();
    int ReadInt(const std::string& question);
    Date ReadDate(const std::string& question);
    Gender ReadGender(const std::string& question);

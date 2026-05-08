@@ -16,7 +16,7 @@ public:
    const std::vector<Customer>& GetCustomers() const;
    const void Add(Customer& newCustomer);
    int GenerateCustomerId();
-   bool IsEmpty() const;
+   bool HasCustomers() const;
    bool UpdateFirstName(int id, const std::string& newFirstName);
    bool UpdateLastName(int id, const std::string& newLastName);
    bool UpdateDateOfBirth(int id, const Date& newDateOfBirth);
@@ -27,7 +27,7 @@ public:
    bool UpdateAddress(int id, const std::string& newAddress);
    bool UpdateStatus(int id, CustomerStatus newStatus);
 
-   bool Exist(int id) const;
+   bool CustomerExists(int id) const;
 
    bool RemoveById(int id);
 

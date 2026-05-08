@@ -1,5 +1,6 @@
 #pragma once
 #include<iostream>
+#include "OutputFactory.h"
 
 
 class Date
@@ -10,15 +11,15 @@ private:
    int year;
 public:
    Date() = default;
-   Date(const int& valDay, const int& valMonth, const int& valYear);
+   Date(int valDay, int valMonth, int valYear);
 
-   int getDay()const;
-   int getMonth()const;
-   int getYear()const;
+   int GetDay()const;
+   int GetMonth()const;
+   int GetYear()const;
 
  //  bool operator == (const Date& other)const;
    std::string DateToString() const;
    static Date StringToDate(const std::string& text);
 
-   void PrintDate();
+   //void PrintDate();
 };

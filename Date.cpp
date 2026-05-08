@@ -1,24 +1,32 @@
 #include "Date.h"
+#include "Validator.h"
 #include<iostream>
 #include<string>
 #include<sstream>
 using namespace std;
 
-Date::Date(const int& valDay, const int& valMonth, const int& valYear) : day{ valDay }, month{ valMonth }, year{ valYear } {};
 
-int Date::getDay()const
+int Date::GetDay()const
 {
    return day;
 }
-int Date::getMonth()const
+
+int Date::GetMonth()const
 {
    return month;
 }
-int Date::getYear()const
+
+int Date::GetYear()const
 {
    return year;
 }
 
+Date::Date(int valDay, int valMonth, int valYear):day(valDay), month(valMonth), year(valYear)
+{
+   if (!Validator::IsValidDate(day, month, year)) {
+      throw std::invalid_argument("Invalid date.");
+   }
+}
 //bool Date::operator == (const Date& other)const
 //{
 //   return this->day == other.day && this->month == other.month && this->year == other.year;
@@ -48,7 +56,8 @@ Date Date::StringToDate(const string& text)
 
 }
 
-void Date::PrintDate()
-{
-   std::cout << day << "." << month << "." << year << std::endl;
-}
+//void Date::PrintDate()
+//{
+//   std::cout << day << "." << month << "." << year << std::endl;
+//   output.Print()
+//}

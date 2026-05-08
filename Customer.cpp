@@ -9,98 +9,93 @@ using namespace std;
 
 
 
-Customer::Customer(const int& valId, const string& valFirstName, const string& valLastName, 
-                   const Date& valDateOfBirth, const Gender& valGender, const CustomerStatus& valCustomerStatus, 
-                   const MemberLevel& valMemberLevel, const string& valEmail, const string& valAddress) :
+Customer::Customer (const int& valId, const string& valFirstName, const string& valLastName, 
+                   const Date& valDateOfBirth, const Gender& valGender) :
                    id{ valId }, firstName {valFirstName}, lastName{ valLastName }, dateOfBirth{ valDateOfBirth }, 
-                   gender{ valGender }, customerStatus{ valCustomerStatus }, memberLevel{ valMemberLevel }, 
-                   email{ valEmail }, address{ valAddress } {};
+                   gender{ valGender } {};
 
-const int& Customer::GetId()const
+const int& Customer::GetId () const
 {
    return id;
 }
 
-const string& Customer::GetFirstName() const
+const string& Customer::GetFirstName () const
 {
    return firstName;
 }
-const string& Customer::GetLastName() const
+const string& Customer::GetLastName () const
 {
    return lastName;
 }
-const Date& Customer::GetDateOfBirth() const
+const Date& Customer::GetDateOfBirth () const
 {
    return dateOfBirth;
 }
-const Gender& Customer::GetGender() const
+const Gender& Customer::GetGender () const
 {
    return gender;
 }
-const CustomerStatus& Customer::GetCustomerStatus()const
+const CustomerStatus Customer::GetCustomerStatus () const
 {
    return customerStatus;
 }
-const MemberLevel& Customer::GetMemberLevel()const
+
+const MemberLevel Customer::GetMemberLevel () const
 {
    return memberLevel;
 }
-const string& Customer::GetEmail()const
+
+const std::string& Customer::GetEmail () const
 {
    return email;
 }
-const string& Customer::GetAddress()const
+
+const std::string& Customer::GetAddress () const
 {
    return address;
 }
 
-
-void Customer::SetId(int valId)
-{
-   id = valId;
-}
-
-void Customer::SetFirstName(const std::string& valFirstName)
+void Customer::SetFirstName (const std::string& valFirstName)
 {
    firstName = valFirstName;
 }
 
-void Customer::SetLastName(const std::string& valLastName)
+void Customer::SetLastName (const std::string& valLastName)
 {
    lastName = valLastName;
 }
 
-void Customer::SetDateOfBirth(const Date& valDateOfBirth)
+void Customer::SetDateOfBirth (const Date& valDateOfBirth)
 {
    dateOfBirth = valDateOfBirth;
 }
 
-void Customer::SetGender(Gender valGender)
+void Customer::SetGender (Gender valGender)
 {
    gender = valGender;
 }
 
-void Customer::SetCustomerStatus(CustomerStatus valCustomerStatus)
+void Customer::SetCustomerStatus (CustomerStatus valCustomerStatus)
 {
    customerStatus = valCustomerStatus;
 }
 
-void Customer::SetMemberLevel(MemberLevel valMemberLevel)
+void Customer::SetMemberLevel (MemberLevel valMemberLevel)
 {
    memberLevel = valMemberLevel;
 }
 
-void Customer::SetEmail(const std::string& valEmail)
+void Customer::SetEmail (const std::string& valEmail)
 {
    email = valEmail;
 }
 
-void Customer::SetAddress(const std::string& valAddress)
+void Customer::SetAddress (const std::string& valAddress)
 {
    address = valAddress;
 }
 
-void Customer::Print()const
+void Customer::Print () const
 {
    cout << GetId() << " " 
         << GetFirstName() << " " 
@@ -113,7 +108,7 @@ void Customer::Print()const
         << GetAddress() << " " << endl;
 }
 
-std::string Customer::CustomerToString() const
+std::string Customer::CustomerToString () const
 {
 
    return std::format("{},{},{},{},{},{},{},{},{}\n",
@@ -122,40 +117,45 @@ std::string Customer::CustomerToString() const
       LevelToString(memberLevel), email, address);
 }
 
-Customer Customer::StringToCustomer(const string& line)
+Customer Customer::StringToCustomer (const string& line)
 {
    std::stringstream ss(line);
    string part;
-  
-   Customer c;
 
    std::getline(ss, part, ',');
-   c.SetId(std::stoi(part));
+   int id = std::stoi(part);
 
    std::getline(ss, part, ',');
-   c.SetFirstName(part);
+   string parsedFirstName = part;
 
    std::getline(ss, part, ',');
-   c.SetLastName(part);
+   string parsedLastName = part;
 
    std::getline(ss, part, ',');
-   c.SetDateOfBirth(Date::StringToDate(part));
+   Date parsedDateOfBirth = Date::StringToDate(part);
 
    std::getline(ss, part, ',');
-   c.SetGender(StringToGender(part));
+   Gender parsedGender = StringToGender(part);
 
    std::getline(ss, part, ',');
-   c.SetCustomerStatus(StringToStatus(part));
+   CustomerStatus parsedCustomerStatus = StringToStatus(part);
 
    std::getline(ss, part, ',');
-   c.SetMemberLevel(StringToLevel(part));
+   MemberLevel parsedMemberLevel = StringToLevel(part);
 
    std::getline(ss, part, ',');
-   c.SetEmail(part);
+   string parsedEmail = part;
 
    std::getline(ss, part, ',');
-   c.SetAddress(part);
+   string parsedAddress = part;
 
-   return c;
+   Customer customer(id, parsedFirstName, parsedLastName, parsedDateOfBirth, parsedGender);
+
+   customer.SetCustomerStatus(parsedCustomerStatus);
+   customer.SetMemberLevel(parsedMemberLevel);
+   customer.SetEmail(parsedEmail);
+   customer.SetAddress(parsedAddress);
+
+   return customer;
 }
 

@@ -6,7 +6,7 @@
 
 #include "Date.h"
 #include "CustomerTypes.h"
-#include "Action.h"
+
 
 
 class Customer
@@ -17,24 +17,24 @@ private:
    std::string lastName;
    Date dateOfBirth;
    Gender gender;
-   CustomerStatus customerStatus = CustomerStatus :: Active;
-   MemberLevel memberLevel = MemberLevel ::Standard;
+
+   CustomerStatus customerStatus = CustomerStatus::Active;
+   MemberLevel memberLevel = MemberLevel::Standard;
    std::string email;
    std::string address;
 public:
    Customer() = default;
-   Customer(const int& valId, const std::string& valFirstName, const std::string& valLastName, const Date& valDateOfBirth, const Gender& valGender, const CustomerStatus& valCustomerStatus, const MemberLevel& valMemberLevel, const std::string& valEmail, const std::string& valAddress);
+   Customer(const int& valId, const std::string& valFirstName, const std::string& valLastName, const Date& valDateOfBirth, const Gender& valGender);
    const int& GetId()const;
    const std::string& GetFirstName()const;
    const std::string& GetLastName()const;
    const Date& GetDateOfBirth()const;
    const Gender& GetGender()const;
-   const CustomerStatus& GetCustomerStatus()const;
-   const MemberLevel& GetMemberLevel()const;
+   const CustomerStatus GetCustomerStatus()const;
+   const MemberLevel GetMemberLevel()const;
    const std::string& GetEmail()const;
    const std::string& GetAddress()const;
 
-   void SetId(int valId);
    void SetFirstName(const std::string& valFirstName);
    void SetLastName(const std::string& valLastName);
    void SetDateOfBirth(const Date& valDateOfBirth);
@@ -44,7 +44,7 @@ public:
    void SetEmail(const std::string& valEmail);
    void SetAddress(const std::string& valAddress);
 
-   void Print()const;
+   void Print() const;
 
    std::string CustomerToString() const;
    static Customer StringToCustomer(const std::string& line);
