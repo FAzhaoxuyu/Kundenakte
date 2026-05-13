@@ -8,7 +8,7 @@ void ConsoleOutput::Print(const std::string& message) const
 {
    std::cout << message;
 }
-void Logger::Print(const std::string& message) const
+void LogOutput::Print(const std::string& message) const
 {
    std::ofstream fs(fileName, std::ios::app);
    if (!fs) {
@@ -16,9 +16,19 @@ void Logger::Print(const std::string& message) const
    }
 
    auto now = std::chrono::system_clock::now();
-   auto seconds = std::chrono::floor<std::chrono::seconds>(now);
-   fs << std::format("{:%Y-%m-%d %H:%M:%S}", seconds)
+   std::time_t time = std::chrono::system_clock::to_time_t(now);
+
+   std::tm localTime;
+   localtime_s(&localTime, &time);
+
+   fs << std::put_time(&localTime, "%Y-%m-%d %H:%M:%S")
       << " - "
       << message
       << '\n';
+}
+
+void MultiOutput::Print(const std::string& message) const
+{
+   consoleOutput.Print(message);
+   logOutput.Print(message);
 }

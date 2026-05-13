@@ -29,13 +29,13 @@ private:
 class FileCustomerRepository : public CustomerRepository
 {
 public:
-   FileCustomerRepository(const std::string& filename, Logger& logger) : filename(filename), logger(logger) {};
+   FileCustomerRepository(const std::string& filename, LogOutput& logger) : filename(filename), logOutput(logger) {};
 
    std::vector<Customer> Load() const override;
    void Save(const std::vector<Customer>& customers) override;
 private:
    std::string filename;
-   Logger& logger;
+   LogOutput& logOutput;
 };
 
 class DatabaseCustomerRepository : public CustomerRepository

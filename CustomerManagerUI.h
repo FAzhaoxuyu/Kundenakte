@@ -11,12 +11,12 @@ class CustomerManagerUI
 {
 private:
    CustomerManager& manager;
-   ConsoleOutput& output;
-   Logger& logger;
+   Output& logOutput;
+   Output& consoleOutput;
+   Output& multiOutput;
 
-   
 public:
-   CustomerManagerUI(CustomerManager& manager, ConsoleOutput& output, Logger& logger) : manager(manager), output(output), logger(logger) {};
+   CustomerManagerUI(CustomerManager& manager, Output& logOutput, Output& consoleOutput, Output& multiOutput) : manager(manager), logOutput(logOutput), consoleOutput(consoleOutput), multiOutput(multiOutput) {};
 
    Action Run();
    void ShowMenu();
@@ -35,7 +35,27 @@ public:
    Action ReadChoice(const std::string& question);
    Action ReadOption(const std::string& question);
 
+   std::string ReadValidatedFirstName();
+   std::string ReadValidatedLastName();
+   Date ReadValidatedDate();
+  
+   std::string ReadValidatedEmail();
+   std::string ReadValidatedAddress();
+
    void HandleAdd();
+
+   void HandleUpdateFirstName(int id);
+   void HandleUpdateLastName(int id);
+   void HandleUpdateDateOfBirth(int id);
+   void HandleUpdateGender(int id);
+   void HandleDeactivateCustomer(int id);
+   void HandleUpdateMemberLevel(int id);
+   void HandleUpdateEmail(int id);
+   void HandleUpdateAddress(int id);
+
+
+
+   int ReadUpdateOption();
    void HandleUpdate();
    void HandleRemove();
    void Show();

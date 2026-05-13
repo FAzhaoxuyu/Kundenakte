@@ -30,6 +30,7 @@ public:
    bool CustomerExists(int id) const;
 
    bool RemoveById(int id);
+   bool DeactiveCustomer(int id);
 
   
 

@@ -13,12 +13,22 @@ public:
    void Print(const std::string& messsage) const override;
 };
 
-class Logger : public Output
+class LogOutput : public Output
 {
 public:
-   Logger(const std::string& valFileName) : fileName(valFileName) {};
+   LogOutput(const std::string& valFileName) : fileName(valFileName) {};
    void Print(const std::string& messsage) const override;
 
 private:
    std::string fileName;
+};
+
+class MultiOutput : public Output
+{
+public:
+   MultiOutput(Output& console, Output& logger) : consoleOutput(console), logOutput(logger) {};
+   void Print(const std::string& message) const override;
+private:
+   Output& consoleOutput;
+   Output& logOutput;
 };

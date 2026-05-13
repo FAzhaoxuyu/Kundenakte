@@ -137,3 +137,18 @@ bool CustomerManager::RemoveById (int id)
       return true;
    }
 }
+
+bool CustomerManager::DeactiveCustomer(int id)
+{
+   auto it = find_if(customers.begin(), 
+      customers.end(), 
+      [id](const Customer& customer) 
+      {return customer.GetId() == id;});
+
+   if (it != customers.end()) {
+      it->SetCustomerStatus(CustomerStatus::Inactive);
+      repository.Save(customers);
+      return true;
+   }
+   return false;
+}

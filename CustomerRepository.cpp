@@ -53,7 +53,7 @@ std::vector<Customer> FileCustomerRepository::Load() const
    catch (const std::exception& ex)
    {
       std::cerr << "Invalid file content: " << ex.what() << std::endl;
-      logger.Print(string("Invalid content: ") + ex.what());
+      logOutput.Print(string("Invalid content: ") + ex.what());
       return {};
    }
 
