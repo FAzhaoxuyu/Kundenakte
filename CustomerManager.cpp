@@ -10,48 +10,48 @@
 
 using namespace std;
 
-const std::vector<Customer>& CustomerManager::GetCustomers() const
+const std::vector<Customer>& CustomerManager::GetCustomers () const
 {
    return customers;
 }
 
-bool CustomerManager::HasCustomers() const
+bool CustomerManager::HasCustomers () const
 {
    return !customers.empty();
 }
 
-std::vector<Customer>::iterator CustomerManager::FindCustomerById(int searchid)
+std::vector<Customer>::iterator CustomerManager::FindCustomerById (int searchid)
 {
-   auto it = find_if(customers.begin(), customers.end(), [searchid](const Customer& customer) {return customer.GetId() == searchid; });
+   auto it = find_if (customers.begin(), customers.end(), [searchid] (const Customer& customer) {return customer.GetId() == searchid; });
    return it;
 }
 
-int CustomerManager::GenerateCustomerId()
+int CustomerManager::GenerateCustomerId ()
 {
    if (customers.size() == 0) {
       return 1;
    }
    else {
-      auto it = std::max_element(customers.begin(), customers.end(), [](const Customer& a, const Customer& b) {return a.GetId() < b.GetId();});
+      auto it = std::max_element (customers.begin(), customers.end(), [](const Customer& a, const Customer& b) {return a.GetId() < b.GetId();});
       return it->GetId() + 1;
    }
 }
 
-const void CustomerManager::Add(Customer& newCustomer)
+const void CustomerManager::Add (Customer& newCustomer)
 {
    customers.push_back(newCustomer);
    repository.Save(customers);
 }
 
-bool CustomerManager::UpdateFirstName(int id, const std::string& newFirstName)
+bool CustomerManager::UpdateFirstName (int id, const std::string& newFirstName)
 {
-   std::vector<Customer>::iterator it = FindCustomerById(id);
+   std::vector<Customer>::iterator it = FindCustomerById (id);
    if (it == customers.end()) return false;
    it->SetFirstName(newFirstName);
    repository.Save(customers);
    return true;
 }
-bool CustomerManager::UpdateLastName(int id, const std::string& newLastName)
+bool CustomerManager::UpdateLastName (int id, const std::string& newLastName)
 {
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
@@ -117,7 +117,7 @@ bool CustomerManager::UpdateStatus (int id, CustomerStatus newStatus)
    return true;
 }
 
-bool CustomerManager::CustomerExists(int id) const
+bool CustomerManager::CustomerExists (int id) const
 {
    auto it = find_if(customers.begin(), customers.end(), 
       [id](const Customer& customer) 
@@ -138,7 +138,7 @@ bool CustomerManager::RemoveById (int id)
    }
 }
 
-bool CustomerManager::DeactiveCustomer(int id)
+bool CustomerManager::DeactiveCustomer (int id)
 {
    auto it = find_if(customers.begin(), 
       customers.end(), 
@@ -151,4 +151,12 @@ bool CustomerManager::DeactiveCustomer(int id)
       return true;
    }
    return false;
+}
+
+
+// Learning example for Strategy Pattern.
+// Sorting may later be moved to database queries using ORDER BY.
+void CustomerManager :: SortCustomers(const CustomerSortStrategy& strategy)
+{
+   strategy.Sort(customers);
 }

@@ -11,4 +11,4 @@ enum Action
    Exit
 };
 
-std::string ActionToString(Action action);
+std::string ActionToString (Action action);

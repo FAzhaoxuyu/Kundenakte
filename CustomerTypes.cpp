@@ -4,7 +4,7 @@
 #include<iostream>
 using namespace std;
 
-string GenderToString(Gender gender)
+string GenderToString (Gender gender)
 {
    switch (gender)
    {
@@ -14,7 +14,7 @@ string GenderToString(Gender gender)
    default: return "Unknown";
    }
 }
-string StatusToString(CustomerStatus customerStatus)
+string StatusToString (CustomerStatus customerStatus)
 {
    switch (customerStatus)
    {
@@ -23,7 +23,7 @@ string StatusToString(CustomerStatus customerStatus)
    default: return "Unknown";
    }
 }
-string LevelToString(MemberLevel memberLevel)
+string LevelToString (MemberLevel memberLevel)
 {
    switch (memberLevel)
    {
@@ -35,23 +35,20 @@ string LevelToString(MemberLevel memberLevel)
    }
 }
 
-Gender StringToGender(const std::string& text)
+Gender StringToGender (const std::string& text)
 {
-   if (text == "Male")
-   {
+   if (text == "Male"){
       return Gender::Male;
    }
-   else if (text == "Female")
-    {
+   else if (text == "Female"){
       return Gender::Female;
     }
-   else if (text == "Diverse")
-    {
+   else if (text == "Diverse"){
       return Gender::Diverse;
     } 
    throw std::invalid_argument("Unknown gender: " + text);
 }
-CustomerStatus StringToStatus(const std::string& text)
+CustomerStatus StringToStatus (const std::string& text)
 {
    if (text == "Active")
    {
@@ -62,22 +59,18 @@ CustomerStatus StringToStatus(const std::string& text)
       return CustomerStatus::Inactive;
    }
 }
-MemberLevel StringToLevel(const std::string& text)
+MemberLevel StringToLevel (const std::string& text)
 {
-   if (text == "Standard")
-   {
+   if (text == "Standard"){
       return MemberLevel::Standard;
    }
-   else if (text == "Private")
-   {
+   else if (text == "Private"){
       return MemberLevel::Private;
    }
-   else if (text == "Premium")
-   {
+   else if (text == "Premium"){
       return MemberLevel::Premium;
    }
-   else
-   {
+   else{
       return MemberLevel::Corporate;
    }
 }

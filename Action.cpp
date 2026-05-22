@@ -1,6 +1,6 @@
 #include "Action.h"
 
-std::string ActionToString(Action action)
+std::string ActionToString (Action action)
 {
    switch (action)
    {

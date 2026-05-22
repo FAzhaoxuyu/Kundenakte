@@ -10,16 +10,16 @@ private:
    int month;
    int year;
 public:
-   Date() = default;
-   Date(int valDay, int valMonth, int valYear);
+   Date () = default;
+   Date (int valDay, int valMonth, int valYear);
 
-   int GetDay()const;
-   int GetMonth()const;
-   int GetYear()const;
+   int GetDay ()const;
+   int GetMonth ()const;
+   int GetYear ()const;
 
- //  bool operator == (const Date& other)const;
-   std::string DateToString() const;
-   static Date StringToDate(const std::string& text);
+ //  bool operator == (const Date& other) const;
+   std::string DateToString () const;
+   static Date StringToDate (const std::string& text);
 
-   //void PrintDate();
+   //void PrintDate ();
 };

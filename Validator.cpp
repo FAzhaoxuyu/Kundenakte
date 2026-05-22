@@ -3,7 +3,7 @@
 #include<string>
 using namespace std;
 
-bool Validator::IsValidSingleName(const std::string& name)
+bool Validator::IsValidSingleName (const std::string& name)
 {
    if (name.empty()) {
       return false;
@@ -16,11 +16,11 @@ bool Validator::IsValidSingleName(const std::string& name)
    return true;
 }
 
-bool Validator::IsValidName(const std::string& firstName, const std::string& lastName)
+bool Validator::IsValidName (const std::string& firstName, const std::string& lastName)
 {
-   return IsValidSingleName(firstName) && IsValidSingleName(lastName);
+   return IsValidSingleName (firstName) && IsValidSingleName(lastName);
 }
-bool Validator::IsValidEmail(const std::string& email)
+bool Validator::IsValidEmail (const std::string& email)
 {
    if (email.empty())
    {
@@ -29,47 +29,40 @@ bool Validator::IsValidEmail(const std::string& email)
 
    size_t atPosition = email.find('@');
 
-   if (atPosition == std::string::npos)
-   {
+   if (atPosition == std::string::npos){
       return false;
    }
 
-   if (atPosition == 0)
-   {
+   if (atPosition == 0){
       return false;
    }
 
-   if (atPosition == email.length() - 1)
-   {
+   if (atPosition == email.length() - 1){
       return false;
    }
 
-   size_t dotPosition = email.find('.', atPosition);
+   size_t dotPosition = email.find ('.', atPosition);
 
-   if (dotPosition == std::string::npos)
-   {
+   if (dotPosition == std::string::npos){
       return false;
    }
 
-   if (dotPosition == atPosition + 1)
-   {
+   if (dotPosition == atPosition + 1){
       return false;
    }
 
-   if (dotPosition == email.length() - 1)
-   {
+   if (dotPosition == email.length() - 1){
       return false;
    }
-
    return true;
 }
 
-bool Validator::IsLeapYear(int year)
+bool Validator::IsLeapYear (int year)
 {
    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
 
-int Validator::GetDaysInMonth(int month, int year)
+int Validator::GetDaysInMonth (int month, int year)
 {
    switch (month)
    {
@@ -89,7 +82,7 @@ int Validator::GetDaysInMonth(int month, int year)
    }
 }
 
-bool Validator::IsValidDate(int day, int month, int year)
+bool Validator::IsValidDate (int day, int month, int year)
 {
 
    if (year < 1900 || year > 2100)
@@ -102,7 +95,7 @@ bool Validator::IsValidDate(int day, int month, int year)
       return false;
    }
 
-   int maxDay = GetDaysInMonth(month, year);
+   int maxDay = GetDaysInMonth (month, year);
    if (day < 1 || day > maxDay)
    {
       return false;
@@ -111,7 +104,7 @@ bool Validator::IsValidDate(int day, int month, int year)
    return true;
 }
 
-bool Validator::IsValidAddress(const string& address)
+bool Validator::IsValidAddress (const string& address)
 {
    if (address.empty())
    {

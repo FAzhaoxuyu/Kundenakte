@@ -5,7 +5,7 @@
 #include<sstream>
 using namespace std;
 
-string Serialize(const vector<Customer>& customers)
+string Serialize (const vector<Customer>& customers)
 {
    string result;
    for (const Customer& customer : customers)
@@ -14,7 +14,7 @@ string Serialize(const vector<Customer>& customers)
    }
    return result;
 }
-std::vector<Customer> DeSerialize(const string& text)
+std::vector<Customer> DeSerialize (const string& text)
 {
    std::vector<Customer> result;
    string line;
@@ -28,7 +28,7 @@ std::vector<Customer> DeSerialize(const string& text)
    return result;
 }
 
-std::vector<Customer> FileCustomerRepository::Load() const 
+std::vector<Customer> FileCustomerRepository::Load () const 
 {
    std::vector<Customer> customers;
 
@@ -58,7 +58,7 @@ std::vector<Customer> FileCustomerRepository::Load() const
    }
 
 }
-void FileCustomerRepository::Save(const std::vector<Customer>& customers)
+void FileCustomerRepository::Save (const std::vector<Customer>& customers)
 {
    std::ofstream os(filename);
    os << Serialize(customers);

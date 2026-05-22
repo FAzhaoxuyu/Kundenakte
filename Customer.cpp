@@ -11,8 +11,8 @@ using namespace std;
 
 Customer::Customer (const int& valId, const string& valFirstName, const string& valLastName, 
                    const Date& valDateOfBirth, const Gender& valGender) :
-                   id{ valId }, firstName {valFirstName}, lastName{ valLastName }, dateOfBirth{ valDateOfBirth }, 
-                   gender{ valGender } {};
+                   id{ valId }, firstName {valFirstName}, lastName{valLastName}, dateOfBirth{valDateOfBirth}, 
+                   gender{valGender} {};
 
 const int& Customer::GetId () const
 {
@@ -98,63 +98,63 @@ void Customer::SetAddress (const std::string& valAddress)
 void Customer::Print () const
 {
    cout << GetId() << " " 
-        << GetFirstName() << " " 
-        << GetLastName() << " " 
-        << GetDateOfBirth().DateToString() << " "
-        << GenderToString(GetGender()) << " " 
-        << StatusToString(GetCustomerStatus()) << " " 
-        << LevelToString(GetMemberLevel()) << " "
-        << GetEmail() << " " 
-        << GetAddress() << " " << endl;
+        << GetFirstName () << " " 
+        << GetLastName () << " " 
+        << GetDateOfBirth ().DateToString () << " "
+        << GenderToString (GetGender()) << " " 
+        << StatusToString (GetCustomerStatus()) << " " 
+        << LevelToString (GetMemberLevel()) << " "
+        << GetEmail () << " " 
+        << GetAddress () << " " << endl;
 }
 
 std::string Customer::CustomerToString () const
 {
 
-   return std::format("{},{},{},{},{},{},{},{},{}\n",
-      std::to_string(id), firstName, lastName, dateOfBirth.DateToString(), 
-      GenderToString(gender), StatusToString(customerStatus), 
-      LevelToString(memberLevel), email, address);
+   return std::format ("{},{},{},{},{},{},{},{},{}\n",
+      std::to_string (id), firstName, lastName, dateOfBirth.DateToString (), 
+      GenderToString (gender), StatusToString (customerStatus), 
+      LevelToString (memberLevel), email, address);
 }
 
 Customer Customer::StringToCustomer (const string& line)
 {
-   std::stringstream ss(line);
+   std::stringstream ss (line);
    string part;
 
-   std::getline(ss, part, ',');
-   int id = std::stoi(part);
+   std::getline (ss, part, ',');
+   int id = std::stoi (part);
 
-   std::getline(ss, part, ',');
+   std::getline (ss, part, ',');
    string parsedFirstName = part;
 
-   std::getline(ss, part, ',');
+   std::getline (ss, part, ',');
    string parsedLastName = part;
 
    std::getline(ss, part, ',');
-   Date parsedDateOfBirth = Date::StringToDate(part);
+   Date parsedDateOfBirth = Date::StringToDate (part);
 
-   std::getline(ss, part, ',');
-   Gender parsedGender = StringToGender(part);
+   std::getline (ss, part, ',');
+   Gender parsedGender = StringToGender (part);
 
-   std::getline(ss, part, ',');
-   CustomerStatus parsedCustomerStatus = StringToStatus(part);
+   std::getline (ss, part, ',');
+   CustomerStatus parsedCustomerStatus = StringToStatus (part);
 
-   std::getline(ss, part, ',');
-   MemberLevel parsedMemberLevel = StringToLevel(part);
+   std::getline (ss, part, ',');
+   MemberLevel parsedMemberLevel = StringToLevel (part);
 
-   std::getline(ss, part, ',');
+   std::getline (ss, part, ',');
    string parsedEmail = part;
 
-   std::getline(ss, part, ',');
+   std::getline (ss, part, ',');
    string parsedAddress = part;
 
-   Customer customer(id, parsedFirstName, parsedLastName, parsedDateOfBirth, parsedGender);
+   Customer customer (id, parsedFirstName, parsedLastName, parsedDateOfBirth, parsedGender);
 
-   customer.SetCustomerStatus(parsedCustomerStatus);
-   customer.SetMemberLevel(parsedMemberLevel);
-   customer.SetEmail(parsedEmail);
-   customer.SetAddress(parsedAddress);
+   customer.SetCustomerStatus (parsedCustomerStatus);
+   customer.SetMemberLevel (parsedMemberLevel);
+   customer.SetEmail (parsedEmail);
+   customer.SetAddress (parsedAddress);
 
    return customer;
 }

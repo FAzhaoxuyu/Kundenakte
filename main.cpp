@@ -8,20 +8,22 @@
 #include<iostream>
 
 
-int main()
+int main ()
 {
    std::unique_ptr<LogOutput> logger = std::make_unique<LogOutput>("log.txt");
+   auto timeLogger = std::make_unique<TimeStampDecorator>(*logger);
+   auto errorTimeLogger = std::make_unique<ErrorDecorator>(*timeLogger);
+
    std::unique_ptr<CustomerRepository> repository = std::make_unique<FileCustomerRepository>("customer.txt", *logger);
    std::vector<Customer> customers = repository->Load();
 
    CustomerManager manager(*repository, customers);
    std::unique_ptr<Output> console = std::make_unique<ConsoleOutput>();
-   std::unique_ptr<Output> multiOutput = std::make_unique<MultiOutput>(*console, *logger);
+   std::unique_ptr<Output> multiOutput = std::make_unique<MultiOutput>(*console, *timeLogger);
    
-   CustomerManagerUI ui(manager, *logger, *console, *multiOutput);
+   CustomerManagerUI ui(manager, *logger, *console, *multiOutput, *errorTimeLogger); //?ui????????????
 
-   logger->Print("Program started");
-
+   timeLogger->Print("Program started");
    ui.Run();
-  
+   timeLogger->Print("Program ended");
 }

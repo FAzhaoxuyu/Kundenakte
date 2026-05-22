@@ -130,6 +130,7 @@
     <ClCompile Include="CustomerManager.cpp" />
     <ClCompile Include="CustomerManagerUI.cpp" />
     <ClCompile Include="CustomerRepository.cpp" />
+    <ClCompile Include="CustomerSortStrategy.cpp" />
     <ClCompile Include="CustomerTypes.cpp" />
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="main.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="CustomerManager.h" />
     <ClInclude Include="CustomerManagerUI.h" />
     <ClInclude Include="CustomerRepository.h" />
+    <ClInclude Include="CustomerSortStrategy.h" />
     <ClInclude Include="CustomerTypes.h" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="OutputFactory.h" />

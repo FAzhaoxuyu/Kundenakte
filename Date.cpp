@@ -6,22 +6,22 @@
 using namespace std;
 
 
-int Date::GetDay()const
+int Date::GetDay () const
 {
    return day;
 }
 
-int Date::GetMonth()const
+int Date::GetMonth () const
 {
    return month;
 }
 
-int Date::GetYear()const
+int Date::GetYear () const
 {
    return year;
 }
 
-Date::Date(int valDay, int valMonth, int valYear):day(valDay), month(valMonth), year(valYear)
+Date::Date (int valDay, int valMonth, int valYear):day(valDay), month(valMonth), year(valYear)
 {
    if (!Validator::IsValidDate(day, month, year)) {
       throw std::invalid_argument("Invalid date.");
@@ -31,12 +31,12 @@ Date::Date(int valDay, int valMonth, int valYear):day(valDay), month(valMonth), 
 //{
 //   return this->day == other.day && this->month == other.month && this->year == other.year;
 //}
-string Date::DateToString() const
+string Date::DateToString () const
 {
    return to_string(day) + "." + to_string(month) + "." + to_string(year);
 }
 
-Date Date::StringToDate(const string& text)
+Date Date::StringToDate (const string& text)
 {
    std::stringstream ss(text);
    std::string dayStr;
@@ -56,7 +56,7 @@ Date Date::StringToDate(const string& text)
 
 }
 
-//void Date::PrintDate()
+//void Date::PrintDate ()
 //{
 //   std::cout << day << "." << month << "." << year << std::endl;
 //   output.Print()

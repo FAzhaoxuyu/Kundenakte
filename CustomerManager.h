@@ -2,6 +2,7 @@
 #include<vector>
 #include "Customer.h"
 #include "CustomerRepository.h"
+#include "CustomerSortstrategy.h"
 #include<optional>
 
 class CustomerManager
@@ -12,25 +13,27 @@ private:
 
 public: 
    CustomerManager(CustomerRepository& repository, const std::vector<Customer>& customers) : repository(repository), customers(customers) {};
-   std::vector<Customer>::iterator FindCustomerById(int searchId);
+   std::vector<Customer>::iterator FindCustomerById (int searchId);
    const std::vector<Customer>& GetCustomers() const;
-   const void Add(Customer& newCustomer);
-   int GenerateCustomerId();
-   bool HasCustomers() const;
-   bool UpdateFirstName(int id, const std::string& newFirstName);
-   bool UpdateLastName(int id, const std::string& newLastName);
-   bool UpdateDateOfBirth(int id, const Date& newDateOfBirth);
-   bool UpdateGender(int id, Gender newGender);
-   bool UpdateCustomerStatus(int id, CustomerStatus newStatus);
-   bool UpdateMemberLevel(int id, MemberLevel newLevel);
-   bool UpdateEmail(int id, const std::string& newEmail);
-   bool UpdateAddress(int id, const std::string& newAddress);
-   bool UpdateStatus(int id, CustomerStatus newStatus);
+   const void Add (Customer& newCustomer);
+   int GenerateCustomerId ();
+   bool HasCustomers () const;
+   bool UpdateFirstName (int id, const std::string& newFirstName);
+   bool UpdateLastName (int id, const std::string& newLastName);
+   bool UpdateDateOfBirth (int id, const Date& newDateOfBirth);
+   bool UpdateGender (int id, Gender newGender);
+   bool UpdateCustomerStatus (int id, CustomerStatus newStatus);
+   bool UpdateMemberLevel (int id, MemberLevel newLevel);
+   bool UpdateEmail (int id, const std::string& newEmail);
+   bool UpdateAddress (int id, const std::string& newAddress);
+   bool UpdateStatus (int id, CustomerStatus newStatus);
 
-   bool CustomerExists(int id) const;
+   bool CustomerExists (int id) const;
 
-   bool RemoveById(int id);
-   bool DeactiveCustomer(int id);
+   bool RemoveById (int id);
+   bool DeactiveCustomer (int id);
+
+   void SortCustomers(const CustomerSortStrategy& strategy);
 
   
 
