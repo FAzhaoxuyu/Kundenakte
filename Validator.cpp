@@ -22,8 +22,7 @@ bool Validator::IsValidName (const std::string& firstName, const std::string& la
 }
 bool Validator::IsValidEmail (const std::string& email)
 {
-   if (email.empty())
-   {
+   if (email.empty()){
       return false;
    }
 
@@ -85,19 +84,16 @@ int Validator::GetDaysInMonth (int month, int year)
 bool Validator::IsValidDate (int day, int month, int year)
 {
 
-   if (year < 1900 || year > 2100)
-   {
+   if (year < 1900 || year > 2100){
       return false;
    }
 
-   if (month < 1 || month > 12)
-   {
+   if (month < 1 || month > 12){
       return false;
    }
 
    int maxDay = GetDaysInMonth (month, year);
-   if (day < 1 || day > maxDay)
-   {
+   if (day < 1 || day > maxDay){
       return false;
    }
 
@@ -106,28 +102,23 @@ bool Validator::IsValidDate (int day, int month, int year)
 
 bool Validator::IsValidAddress (const string& address)
 {
-   if (address.empty())
-   {
+   if (address.empty()){
       return false;
    }
 
-   if (address.length() < 5)
-   {
+   if (address.length() < 5){
       return false;
    }
 
-   for (char c : address)
-   {
+   for (char c : address){
       if (!std::isalnum(static_cast<unsigned char>(c)) &&
          c != ' ' &&
          c != ',' &&
          c != '.' &&
          c != '-' &&
-         c != '/')
-      {
+         c != '/'){
          return false;
       }
    }
-
    return true;
 }

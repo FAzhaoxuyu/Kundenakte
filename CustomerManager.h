@@ -21,12 +21,12 @@ public:
    bool UpdateFirstName (int id, const std::string& newFirstName);
    bool UpdateLastName (int id, const std::string& newLastName);
    bool UpdateDateOfBirth (int id, const Date& newDateOfBirth);
-   bool UpdateGender (int id, Gender newGender);
-   bool UpdateCustomerStatus (int id, CustomerStatus newStatus);
-   bool UpdateMemberLevel (int id, MemberLevel newLevel);
+   bool UpdateGender (int id, customerTypes::Gender newGender);
+   bool UpdateCustomerStatus (int id, customerTypes::CustomerStatus newStatus);
+   bool UpdateMemberLevel (int id, customerTypes::MemberLevel newLevel);
    bool UpdateEmail (int id, const std::string& newEmail);
    bool UpdateAddress (int id, const std::string& newAddress);
-   bool UpdateStatus (int id, CustomerStatus newStatus);
+   bool UpdateStatus (int id, customerTypes::CustomerStatus newStatus);
 
    bool CustomerExists (int id) const;
 

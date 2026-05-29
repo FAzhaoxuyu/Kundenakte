@@ -44,5 +44,5 @@ public:
    std::vector<Customer> Load () const override;
    void Save (const std::vector<Customer>& customers) override;
 private:
-   std::string Database;
+   std::string database;
 };

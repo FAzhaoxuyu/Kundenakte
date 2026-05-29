@@ -24,13 +24,11 @@ void CustomerManagerUI::ShowMenu ()
 }
 string CustomerManagerUI::ReadText (const string& question)
 {
-   while (true)
-   {
+   while (true){
       consoleOutput.Print(question);
       string input;
       getline(cin, input);
-      if (!input.empty())
-      {
+      if (!input.empty()){
          return input;
       }
       consoleOutput.Print("Invalid input, please enter agian.\n");
@@ -39,11 +37,9 @@ string CustomerManagerUI::ReadText (const string& question)
 
 int CustomerManagerUI::ReadDay ()
 {
-   while (true)
-   {
+   while (true){
       int day = ReadInt("Day: ");
-      if (day >= 1 && day <= 31)
-      {
+      if (day >= 1 && day <= 31){
          return day;
       }
       consoleOutput.Print("Invalid day.\n");
@@ -52,11 +48,9 @@ int CustomerManagerUI::ReadDay ()
 
 int CustomerManagerUI::ReadMonth ()
 {
-   while (true)
-   {
+   while (true){
       int month = ReadInt("Month: ");
-      if (month >= 1 && month <= 12)
-      {
+      if (month >= 1 && month <= 12){
          return month;
       }
       consoleOutput.Print("Invalid month.\n");
@@ -65,8 +59,7 @@ int CustomerManagerUI::ReadMonth ()
 
 int CustomerManagerUI::ReadYear ()
 {
-   while (true)
-   {
+   while (true){
       int year = ReadInt("Year: ");
       if (year >= 1900 && year <= 2100){
          return year;
@@ -77,8 +70,7 @@ int CustomerManagerUI::ReadYear ()
 
 int CustomerManagerUI::ReadInt (const string& question)
 {
-   while (true)
-   {
+   while (true){
       consoleOutput.Print(question);
       string input;
       getline(cin, input);
@@ -96,18 +88,17 @@ int CustomerManagerUI::ReadInt (const string& question)
 
 
 
-MemberLevel CustomerManagerUI::ReadMemberLevel (const string& question)
+customerTypes::MemberLevel CustomerManagerUI::ReadMemberLevel (const string& question)
 {
-   while (true)
-   {
+   while (true){
       int choice = ReadInt(question);
 
       switch (choice)
       {
-      case 1: return MemberLevel::Standard;
-      case 2: return MemberLevel::Private;
-      case 3: return MemberLevel::Premium;
-      case 4: return MemberLevel::Corporate;
+      case 1: return customerTypes::MemberLevel::Standard;
+      case 2: return customerTypes::MemberLevel::Private;
+      case 3: return customerTypes::MemberLevel::Premium;
+      case 4: return customerTypes::MemberLevel::Corporate;
       default:
          consoleOutput.Print("Invalid member level, please enter again.\n");
       }
@@ -115,8 +106,7 @@ MemberLevel CustomerManagerUI::ReadMemberLevel (const string& question)
 }
 void CustomerManagerUI::Run ()
 {
-   while (true)
-   {
+   while (true){
       ShowMenu();
       Action option = ReadOption("Please choose an option: ");
       switch (option)
@@ -202,11 +192,9 @@ Action CustomerManagerUI::ReadOption (const string& question)
 
 string CustomerManagerUI::ReadValidatedFirstName ()
 {
-   while (true)
-   {
+   while (true){
       string firstName = ReadText("Please enter a new first name: ");
-      if (!Validator::IsValidSingleName(firstName))
-      {
+      if (!Validator::IsValidSingleName(firstName)){
          consoleOutput.Print("Invalid firstNname, please enter again.\n");
          continue;
       }
@@ -216,11 +204,9 @@ string CustomerManagerUI::ReadValidatedFirstName ()
 
 std::string CustomerManagerUI::ReadValidatedLastName ()
 {
-   while (true)
-   {
+   while (true){
      string  lastName = ReadText("Please enter a new last name: ");
-      if (!Validator::IsValidSingleName(lastName))
-      {
+      if (!Validator::IsValidSingleName(lastName)){
          consoleOutput.Print("Invalid  last name, please enter again.\n");
          continue;
       }
@@ -229,8 +215,7 @@ std::string CustomerManagerUI::ReadValidatedLastName ()
 }
 Date CustomerManagerUI::ReadDate (const std::string& question)
 {
-   while (true)
-   {
+   while (true){
       consoleOutput.Print(question + "\n");
       int day = ReadDay();
       int month = ReadMonth();
@@ -252,15 +237,15 @@ Date CustomerManagerUI::ReadValidatedDate ()
    }
 }
 
-Gender CustomerManagerUI::ReadGender (const string& question)
+customerTypes::Gender CustomerManagerUI::ReadGender (const string& question)
 {
    while (true) {
       int choice = ReadInt("Please choose gender: 1.Male / 2.Female /3.Diverse: ");
       switch (choice)
       {
-      case 1: return Gender::Male;
-      case 2: return Gender::Female;
-      case 3: return Gender::Diverse;
+      case 1: return customerTypes::Gender::Male;
+      case 2: return customerTypes::Gender::Female;
+      case 3: return customerTypes::Gender::Diverse;
       default: consoleOutput.Print("Invalid input, please choose again.\n");
          break;
       }
@@ -272,8 +257,7 @@ string CustomerManagerUI::ReadValidatedEmail ()
 {
    while (true) {
      string email = ReadText("Please enter email: ");
-      if (!Validator::IsValidEmail(email))
-      {
+      if (!Validator::IsValidEmail(email)){
          consoleOutput.Print("Invalid email.\n");
          continue;
       }
@@ -282,11 +266,9 @@ string CustomerManagerUI::ReadValidatedEmail ()
 }
 string CustomerManagerUI::ReadValidatedAddress ()
 {
-   while (true)
-   {
+   while (true){
       string address = ReadText("Please enter address: ");
-      if (!Validator::IsValidAddress(address))
-      {
+      if (!Validator::IsValidAddress(address)){
          consoleOutput.Print("Invalid address.\n");
          continue;
       }
@@ -300,9 +282,9 @@ Customer CustomerManagerUI::CreateCustomer ()
    string firstName = ReadValidatedFirstName ();
    string lastName = ReadValidatedLastName ();
    Date dateOfBirth = ReadValidatedDate (); 
-   Gender gender = ReadGender("Gender (1.Male / 2.Female / 3.Diverse): ");
-   CustomerStatus customerStatus = CustomerStatus::Active;
-   MemberLevel memberLevel = ReadMemberLevel ("Member level (1.Standard / 2.Private / 3.Premium / 4. Corporate): ");
+   customerTypes::Gender gender = ReadGender("Gender (1.Male / 2.Female / 3.Diverse): ");
+   customerTypes::CustomerStatus customerStatus = customerTypes::CustomerStatus::Active;
+   customerTypes::MemberLevel memberLevel = ReadMemberLevel ("Member level (1.Standard / 2.Private / 3.Premium / 4. Corporate): ");
    string email = ReadValidatedEmail ();
    string address = ReadValidatedAddress ();
 
@@ -381,7 +363,7 @@ void CustomerManagerUI::HandleUpdateDateOfBirth (int id)
 }
 void CustomerManagerUI::HandleUpdateGender (int id)
 {
-   Gender newGender = ReadGender("Please give a new gender: ");
+   customerTypes::Gender newGender = ReadGender("Please give a new gender: ");
 
    if (manager.UpdateGender(id, newGender)) {
       multiOutput.Print("Gender updated.\n");
@@ -393,8 +375,7 @@ void CustomerManagerUI::HandleUpdateGender (int id)
 }
 void CustomerManagerUI::HandleDeactivateCustomer (int id)
 {
-   if (!manager.DeactiveCustomer(id))
-   {
+   if (!manager.DeactiveCustomer(id)){
       consoleOutput.Print("Customer not found.\n");
       errorLogger.Print("Update status failed: customer not found.");
    }
@@ -404,7 +385,7 @@ void CustomerManagerUI::HandleDeactivateCustomer (int id)
 }
 void CustomerManagerUI::HandleUpdateMemberLevel(int id)
 {
-   MemberLevel newMemberLevel = ReadMemberLevel("Please give a new member level (1.Standard / 2.Private / 3.Premium / 4. Corporate): ");
+   customerTypes::MemberLevel newMemberLevel = ReadMemberLevel("Please give a new member level (1.Standard / 2.Private / 3.Premium / 4. Corporate): ");
 
    if (manager.UpdateMemberLevel(id, newMemberLevel)) {
       multiOutput.Print("Member level updated.\n");
@@ -460,8 +441,7 @@ void CustomerManagerUI :: HandleUpdate ()
    }
 
    int id = ReadInt("Please enter customer id: ");
-   if (!manager.CustomerExists(id))
-   {
+   if (!manager.CustomerExists(id)){
       consoleOutput.Print("customer not found.\n");
       return;
    }

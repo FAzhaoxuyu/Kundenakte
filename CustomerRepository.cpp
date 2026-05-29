@@ -1,6 +1,6 @@
 #include "CustomerRepository.h"
 #include "CustomerManager.h"
-
+#include <filesystem>
 #include<fstream>
 #include<sstream>
 using namespace std;
@@ -20,8 +20,7 @@ std::vector<Customer> DeSerialize (const string& text)
    string line;
    stringstream ss(text);
 
-   while (std::getline(ss, line))
-   {
+   while (std::getline(ss, line)){
       Customer c = Customer::StringToCustomer(line);
       result.push_back(c);
    }
@@ -30,21 +29,26 @@ std::vector<Customer> DeSerialize (const string& text)
 
 std::vector<Customer> FileCustomerRepository::Load () const 
 {
+   std::cout << "Load called\n";
    std::vector<Customer> customers;
 
    std::ifstream is(filename);
-   if (!is)
-   {
+   if (!is){
       std::cerr << "Can't open the file:" << filename << std::endl;
      
       return {};
    }
+   std::cout << "File opened: " << filename << "\n";
+   std::cout << "Current path: "
+      << std::filesystem::current_path()
+      << "\n";
 
    try
    {
       std::stringstream buffer;
       buffer << is.rdbuf();
       std::string content = buffer.str();
+      std::cout << "File content:\n" << content << "\n";
       customers = DeSerialize(content);
 
       std::cout << "Loaded customers: " << customers.size() << "\n\n";

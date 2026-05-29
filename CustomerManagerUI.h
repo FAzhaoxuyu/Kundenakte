@@ -30,9 +30,9 @@ public:
    int ReadYear ();
    int ReadInt (const std::string& question);
    Date ReadDate (const std::string& question);
-   Gender ReadGender (const std::string& question);
-   CustomerStatus ReadCustomerStatus (const std::string& question);
-   MemberLevel ReadMemberLevel (const std::string& question);
+   customerTypes::Gender ReadGender (const std::string& question);
+   customerTypes::CustomerStatus ReadCustomerStatus (const std::string& question);
+   customerTypes::MemberLevel ReadMemberLevel (const std::string& question);
    Action ReadChoice (const std::string& question);
    Action ReadOption (const std::string& question);
 
