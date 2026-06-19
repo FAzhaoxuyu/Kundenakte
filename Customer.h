@@ -6,6 +6,8 @@
 
 #include "Date.h"
 #include "CustomerTypes.h"
+#include "Contact.h"
+#include "ContactMethod.h"
 
 
 
@@ -20,11 +22,14 @@ private:
 
    customerTypes::CustomerStatus customerStatus = customerTypes::CustomerStatus::Active;
    customerTypes::MemberLevel memberLevel = customerTypes::MemberLevel::Standard;
-   std::string email;
-   std::string address;
+   Contact contact;
+   Address address;
+
+ 
+  
 public:
    Customer () = default;
-   Customer (const int& valId, const std::string& valFirstName, const std::string& valLastName, const Date& valDateOfBirth, const customerTypes::Gender& valGender);
+   Customer (const int& valId, const std::string& valFirstName, const std::string& valLastName, const Date& valDateOfBirth, const customerTypes::Gender& valGender, const Contact valContact);
    const int& GetId ()const;
    const std::string& GetFirstName () const;
    const std::string& GetLastName () const;
@@ -32,7 +37,7 @@ public:
    const customerTypes::Gender& GetGender () const;
    const customerTypes::CustomerStatus GetCustomerStatus () const;
    const customerTypes::MemberLevel GetMemberLevel () const;
-   const std::string& GetEmail () const;
+   //const std::string& GetEmail () const;
    const std::string& GetAddress () const;
 
    void SetFirstName (const std::string& valFirstName);
@@ -42,12 +47,13 @@ public:
    void SetCustomerStatus (customerTypes::CustomerStatus valCustomerStatus);
    void SetMemberLevel (customerTypes::MemberLevel valMemberLevel);
    void SetEmail (const std::string& valEmail);
-   void SetAddress (const std::string& valAddress);
+   void SetAddress (const Address& valAddress);
 
    void Print () const;
 
    std::string CustomerToString () const;
    static Customer StringToCustomer (const std::string& line);
+   
 
    
 

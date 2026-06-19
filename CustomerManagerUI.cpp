@@ -6,22 +6,34 @@
 #include "CustomerRepository.h"
 #include "OutputFactory.h"
 #include "Validator.h"
+#include "CreateCustomerStep.h"
+#include "StepNavigator.h"
 #include <iostream>
 
 using namespace std;
 
-
-void CustomerManagerUI::ShowMenu ()
+//void CustomerManagerUI::ShowMenu ()
+//{
+//   consoleOutput.Print("===== Customer Management =====\n");
+//   consoleOutput.Print("1: Add\n");
+//   consoleOutput.Print("2: Update\n");
+//   consoleOutput.Print("3: Remove\n");
+//   consoleOutput.Print("4: Show\n");
+//   consoleOutput.Print("5: Help\n");
+//   consoleOutput.Print("6: Exit\n");
+//   consoleOutput.Print("===============================\n");
+//}
+void CustomerManagerUI::ShowMainMenu()
 {
    consoleOutput.Print("===== Customer Management =====\n");
-   consoleOutput.Print("1: Add\n");
-   consoleOutput.Print("2: Update\n");
-   consoleOutput.Print("3: Remove\n");
-   consoleOutput.Print("4: Show\n");
-   consoleOutput.Print("5: Help\n");
-   consoleOutput.Print("6: Exit\n");
+   consoleOutput.Print("1: Add Customer\n");
+   consoleOutput.Print("2: Select Customer\n");
+   consoleOutput.Print("3: Show All Customers\n");
+   consoleOutput.Print("4: Help\n");
+   consoleOutput.Print("5: Exit\n");
    consoleOutput.Print("===============================\n");
 }
+
 string CustomerManagerUI::ReadText (const string& question)
 {
    while (true){
@@ -104,28 +116,152 @@ customerTypes::MemberLevel CustomerManagerUI::ReadMemberLevel (const string& que
       }
    }
 }
+
+void CustomerManagerUI::Show()
+{
+   if (!manager.HasCustomers()) {
+      consoleOutput.Print("\n");
+      consoleOutput.Print("No customer is available, please add new customer first.\n");
+      return;
+   }
+
+   for (const Customer& customer : manager.GetCustomers()) {
+      consoleOutput.Print(customer.CustomerToString() + "\n");
+   }
+}
+
+void CustomerManagerUI::ShowCustomerMenu()
+{
+   consoleOutput.Print("\n===== Customer Menu =====\n");
+   consoleOutput.Print("Current customer ID: " + std::to_string(selectedCustomerID) + "\n");
+   consoleOutput.Print("1: Update\n");
+   consoleOutput.Print("2: Remove\n");
+   consoleOutput.Print("3: Show customer\n");
+   consoleOutput.Print("4: Back\n");
+   consoleOutput.Print("=========================\n");
+}
+
+void CustomerManagerUI::HandleUpdateSelectedCustomer()
+{
+   while (true) {
+      int option = ReadUpdateOption();
+
+      switch (option)
+      {
+      case 1:
+         HandleUpdateFirstName();
+         break;
+
+      case 2:
+         HandleUpdateLastName();
+         break;
+
+      case 3:
+         HandleUpdateDateOfBirth();
+         break;
+
+      case 4:
+         HandleUpdateGender();
+         break;
+
+      case 5:
+         HandleDeactivateCustomer();
+         break;
+
+      case 6:
+         HandleUpdateMemberLevel();
+         break;
+
+      case 7:
+         HandleUpdateEmail();
+         break;
+
+      case 8:
+         HandleUpdateAddress();
+         break;
+
+      default:
+         consoleOutput.Print("Invalid choice.\n");
+         break;
+      }
+   } 
+}
+
+
+void CustomerManagerUI::HandleShowSelectedCustomer()
+{
+   for (const Customer& customer : manager.GetCustomers())
+   {
+      if (customer.GetId() == selectedCustomerID)
+      {
+         consoleOutput.Print(customer.CustomerToString() + "\n");
+         return;
+      }
+   }
+
+   consoleOutput.Print("Customer not found.\n");
+   selectedCustomerID = -1;
+}
+
+void CustomerManagerUI::HandleCustomerMenu()
+{
+   ShowCustomerMenu();
+   int option = ReadInt("Please choose an option: ");
+   switch (option)
+   {
+   case 1:
+      HandleUpdateSelectedCustomer();
+      break;
+
+   case 2:
+      HandleRemoveSelectedCustomer();
+      break;
+
+   case 3:
+      HandleShowSelectedCustomer();
+      break;
+
+   case 4:
+      selectedCustomerID = -1;
+      break;
+
+   default:
+      consoleOutput.Print("Invalid choice.\n");
+      break;
+   }
+}
+
 void CustomerManagerUI::Run ()
 {
    while (true){
-      ShowMenu();
-      Action option = ReadOption("Please choose an option: ");
-      switch (option)
-      {
+      if (selectedCustomerID == -1) {
+         ShowMainMenu();
+
+         Action option = ReadOption("Please choose an option: ");
+
+         switch (option)
+         {
          case Action::Add:
          {
             HandleAdd();
             break;
          }
-         case Action::Update:
+         case Action::Select:
          {
-            HandleUpdate();
+            HandleSelect();
             break;
          }
-         case Action::Remove:
-         {
-            HandleRemove();
-            break;
-         }
+
+         //case Action::Update:
+         //{
+         //   HandleUpdate();
+         //   break;
+         //}
+         //case Action::Remove:
+         //{
+         //   HandleRemove();
+         //   break;
+         //}
          case Action::Show:
          {
             Show();
@@ -141,24 +277,18 @@ void CustomerManagerUI::Run ()
             Exit();
             return;
          }
-         
+
+         }
+      }
+
+      else {
+         HandleCustomerMenu();
       }
 
    }
    
 }
-void CustomerManagerUI::Show ()
-{
-   if (!manager.HasCustomers()) {
-      consoleOutput.Print("\n");
-      consoleOutput.Print("No customer is available, please add new customer first.\n") ;
-      return;
-   }
 
-   for (const Customer& customer : manager.GetCustomers()){
-      consoleOutput.Print(customer.CustomerToString() + "\n");
-   }
-}
 
 Action CustomerManagerUI::ReadOption (const string& question)
 {
@@ -174,11 +304,12 @@ Action CustomerManagerUI::ReadOption (const string& question)
          switch (choice)
          {
          case 1: return Action::Add;
-         case 2: return Action::Update;
-         case 3: return Action::Remove;
-         case 4: return Action::Show;
-         case 5: return Action::Help;
-         case 6: return Action::Exit;
+         //case 2: return Action::Update;
+         //case 3: return Action::Remove;
+         case 2: return Action::Select;
+         case 3: return Action::Show;
+         case 4: return Action::Help;
+         case 5: return Action::Exit;
          default : consoleOutput.Print("Invalid input, please choose an option again.");
          }
       }
@@ -276,8 +407,109 @@ string CustomerManagerUI::ReadValidatedAddress ()
    }
 }
 
+std::vector<std::string> CustomerManagerUI::ReadPhoneNrs()
+{
+   std::vector<string> phoneNrs;
+   while (true) {
+      string input = ReadText("Phone Number (press Enter to finish): ");
+      if (input.empty()) {
+         break;
+      }
+      else if (Validator::IsValidMobileNr(input)) {
+         phoneNrs.push_back(input);
+      }
+      else {
+         consoleOutput.Print("Invalid phone number.");
+      }
+   }
+   return phoneNrs;
+}
+
+std::vector<std::string> CustomerManagerUI::ReadMobileNrs()
+{
+   return ReadPhoneNrs();
+}
+
+std::vector<std::string> CustomerManagerUI::ReadTeleNrs()
+{
+   return ReadPhoneNrs();
+}
+
+Contact CustomerManagerUI::ReadContact()
+{
+   Contact contact;
+   while (true) {
+      ContactType type = ReadContactType();
+      std::string value = ReadText("Enter contact type: ");
+      if (Validator::IsValidContact(type, value)) {
+         contact.AddInfo(type, value);
+      }
+      else{
+         consoleOutput.Print("Invalid contact value.\n");
+      }
+      
+   }
+   return contact;
+
+}
+
+ContactType CustomerManagerUI::ReadContactType()
+{ 
+   while (true) {
+      try {
+         return StringToContactTypes(ReadText("Contact type (Mobile /Landline /Email /Post /Other): "));
+      }
+      catch (const std::invalid_argument& e) {
+         consoleOutput.Print("Invalid contact type. Please try again.\n");
+      }
+   } 
+}
+
+Contact CustomerManagerUI::ReadValidContact ()
+{
+   Contact contact;
+   while (true)
+   {
+      ContactType type = ReadContactType();
+      std::string value = ReadText("Enter contact information: ");
+
+      contact.AddInfo(type, value);
+
+      std::string answer = ReadText("Add another contact? (y/n): ");
+
+      if (answer == "n" || answer == "N")
+         break;
+   }
+
+   return contact;
+}
+
+ContactType CustomerManagerUI::ReadPreferredContactMethod ()
+{
+   while (true) {
+      try {
+         ContactType choice = StringToContactTypes(ReadText("Preferred contact method (Mobile/Landline/Email/Post/Other): "));
+         return choice;
+      }
+      catch (const std::invalid_argument& e) {
+         consoleOutput.Print(std::string("Invalid contact type: ") + e.what());
+      }
+   }
+  
+}
+
 Customer CustomerManagerUI::CreateCustomer ()
 {
+   StepNavigator<CreateCustomerStep> navi({
+   CreateCustomerStep::FirstName,
+   CreateCustomerStep::LastName,
+   CreateCustomerStep::DateOfBirth,
+   CreateCustomerStep::Gender,
+   CreateCustomerStep::MemberLevel,
+   CreateCustomerStep::Contact,
+   CreateCustomerStep::Address
+   });
+
    int id = manager.GenerateCustomerId ();
    string firstName = ReadValidatedFirstName ();
    string lastName = ReadValidatedLastName ();
@@ -286,9 +518,13 @@ Customer CustomerManagerUI::CreateCustomer ()
    customerTypes::CustomerStatus customerStatus = customerTypes::CustomerStatus::Active;
    customerTypes::MemberLevel memberLevel = ReadMemberLevel ("Member level (1.Standard / 2.Private / 3.Premium / 4. Corporate): ");
    string email = ReadValidatedEmail ();
-   string address = ReadValidatedAddress ();
+   string addressText = ReadValidatedAddress ();
+   Address address = Address::StringToAddress(addressText);
 
-   Customer newCustomer = Customer (id, firstName, lastName, dateOfBirth, gender);
+   Contact contact = ReadValidContact();
+  
+
+   Customer newCustomer = Customer (id, firstName, lastName, dateOfBirth, gender, contact);
 
    newCustomer.SetCustomerStatus(customerStatus);
    newCustomer.SetMemberLevel(memberLevel);
@@ -326,11 +562,34 @@ void CustomerManagerUI::HandleAdd ()
    multiOutput.Print("A new customer added.\n");
 }
 
-void CustomerManagerUI::HandleUpdateFirstName (int id)
+void CustomerManagerUI::HandleSelect ()
+{
+   int id = ReadInt("Please enter customer id: ");
+
+   if (!manager.CustomerExists(id)){
+      consoleOutput.Print("Customer not found.\n");
+      return;
+   }
+   selectedCustomerID = id;
+   consoleOutput.Print("Customer selected.\n");
+}
+
+bool CustomerManagerUI::HasSelectedCustomer() const
+{
+   return selectedCustomerID != -1;
+}
+
+void CustomerManagerUI::HandleUpdateFirstName ()
 {
    std::string newFirstName = ReadValidatedFirstName ();
 
-   if (manager.UpdateFirstName(id, newFirstName)) {
+   if (!HasSelectedCustomer())
+   {
+      consoleOutput.Print("No customer selected.\n");
+      return;
+   }
+
+   if (manager.UpdateFirstName(selectedCustomerID, newFirstName)) {
       multiOutput.Print("First name updated.\n");
    }
    else {
@@ -338,10 +597,17 @@ void CustomerManagerUI::HandleUpdateFirstName (int id)
       errorLogger.Print("Update first name failed: customer not found.\n");
    }
 }
-void CustomerManagerUI::HandleUpdateLastName (int id)
+void CustomerManagerUI::HandleUpdateLastName ()
 {
-   std::string newLastName = ReadValidatedLastName ();
-   if (manager.UpdateLastName(id, newLastName)) {
+   std::string newLastName = ReadValidatedLastName();
+
+   if (!HasSelectedCustomer())
+   {
+      consoleOutput.Print("No customer selected.\n");
+      return;
+   }
+  
+   if (manager.UpdateLastName(selectedCustomerID, newLastName)) {
       multiOutput.Print("Last name updated.\n");
    }
    else {
@@ -349,11 +615,17 @@ void CustomerManagerUI::HandleUpdateLastName (int id)
       errorLogger.Print("Update last name failed: customer not found.\n");
    }
 }
-void CustomerManagerUI::HandleUpdateDateOfBirth (int id)
+void CustomerManagerUI::HandleUpdateDateOfBirth ()
 {
    Date newDateOfBirth = ReadValidatedDate ();
 
-   if (manager.UpdateDateOfBirth(id, newDateOfBirth)) {
+   if (!HasSelectedCustomer())
+   {
+      consoleOutput.Print("No customer selected.\n");
+      return;
+   }
+
+   if (manager.UpdateDateOfBirth(selectedCustomerID, newDateOfBirth)) {
       multiOutput.Print("Date of birth updated.\n");
    }
    else {
@@ -361,11 +633,17 @@ void CustomerManagerUI::HandleUpdateDateOfBirth (int id)
       errorLogger.Print("Update birthday failed: customer not found.\n");
    }
 }
-void CustomerManagerUI::HandleUpdateGender (int id)
+void CustomerManagerUI::HandleUpdateGender ()
 {
    customerTypes::Gender newGender = ReadGender("Please give a new gender: ");
 
-   if (manager.UpdateGender(id, newGender)) {
+   if (!HasSelectedCustomer())
+   {
+      consoleOutput.Print("No customer selected.\n");
+      return;
+   }
+
+   if (manager.UpdateGender(selectedCustomerID, newGender)) {
       multiOutput.Print("Gender updated.\n");
    }
    else {
@@ -373,9 +651,14 @@ void CustomerManagerUI::HandleUpdateGender (int id)
       errorLogger.Print("Update gender failed: customer not found.\n");
    }
 }
-void CustomerManagerUI::HandleDeactivateCustomer (int id)
+void CustomerManagerUI::HandleDeactivateCustomer ()
 {
-   if (!manager.DeactiveCustomer(id)){
+   if (!HasSelectedCustomer())
+   {
+      consoleOutput.Print("No customer selected.\n");
+      return;
+   }
+   if (!manager.DeactiveCustomer(selectedCustomerID)){
       consoleOutput.Print("Customer not found.\n");
       errorLogger.Print("Update status failed: customer not found.");
    }
@@ -383,11 +666,17 @@ void CustomerManagerUI::HandleDeactivateCustomer (int id)
       multiOutput.Print("Customer deactivated.\n");
    } 
 }
-void CustomerManagerUI::HandleUpdateMemberLevel(int id)
+void CustomerManagerUI::HandleUpdateMemberLevel()
 {
    customerTypes::MemberLevel newMemberLevel = ReadMemberLevel("Please give a new member level (1.Standard / 2.Private / 3.Premium / 4. Corporate): ");
 
-   if (manager.UpdateMemberLevel(id, newMemberLevel)) {
+   if (!HasSelectedCustomer())
+   {
+      consoleOutput.Print("No customer selected.\n");
+      return;
+   }
+
+   if (manager.UpdateMemberLevel(selectedCustomerID, newMemberLevel)) {
       multiOutput.Print("Member level updated.\n");
    }
    else {
@@ -395,11 +684,16 @@ void CustomerManagerUI::HandleUpdateMemberLevel(int id)
       errorLogger.Print("Update member level failed: customer not found.\n");
    }
 }
-void CustomerManagerUI::HandleUpdateEmail (int id)
+void CustomerManagerUI::HandleUpdateEmail ()
 {
    std::string newEmail = ReadValidatedEmail();
+   if (!HasSelectedCustomer())
+   {
+      consoleOutput.Print("No customer selected.\n");
+      return;
+   }
 
-   if (manager.UpdateEmail(id, newEmail)){
+   if (manager.UpdateEmail(selectedCustomerID, newEmail)){
       multiOutput.Print("Email updated.\n");
    }
    else {
@@ -407,11 +701,17 @@ void CustomerManagerUI::HandleUpdateEmail (int id)
       logOutput.Print("Invalid email format entered while updating customer information.\n");
    }
 }
-void CustomerManagerUI::HandleUpdateAddress (int id)
+void CustomerManagerUI::HandleUpdateAddress ()
 {
    std::string newAddress = ReadValidatedAddress();
 
-   if (manager.UpdateAddress(id, newAddress)) {
+   if (!HasSelectedCustomer())
+   {
+      consoleOutput.Print("No customer selected.\n");
+      return;
+   }
+
+   if (manager.UpdateAddress(selectedCustomerID, Address::StringToAddress(newAddress))) {
       multiOutput.Print("Address updated.\n");
    }
    else {
@@ -430,73 +730,12 @@ int CustomerManagerUI::ReadUpdateOption ()
       "5. Status\n"
       "6. Member level\n"
       "7. Email\n"
-      "8. Address\n");
+      "8. Address\n"
+      "9. Back\n");
 }
 
-void CustomerManagerUI :: HandleUpdate ()
-{
-   if (!manager.HasCustomers()) {
-      consoleOutput.Print("No customer is available, please add new customer first.\n");
-      return;
-   }
 
-   int id = ReadInt("Please enter customer id: ");
-   if (!manager.CustomerExists(id)){
-      consoleOutput.Print("customer not found.\n");
-      return;
-   }
-
-   int option = ReadUpdateOption ();
-   switch (option)
-   {
-      case 1: 
-      {
-         HandleUpdateFirstName(id);
-         break;
-      }
-      case 2:
-      {
-         HandleUpdateLastName(id);
-         break;
-      }
-      case 3:
-      {
-         HandleUpdateDateOfBirth(id);
-         break;
-      }
-      case 4:
-      {
-         HandleUpdateGender(id);
-         break;
-      }
-      case 5:
-      {
-         HandleDeactivateCustomer(id);
-         break;
-      }
-      case 6:
-      {
-         HandleUpdateMemberLevel(id);
-         break;
-      }
-      case 7:
-      {
-         HandleUpdateEmail(id);
-         break;
-      }
-      case 8:
-      {
-         HandleUpdateAddress(id);
-         break;
-      }
-      default:
-      {
-         consoleOutput.Print("Invalid choice.");        
-         break;
-      }
-   }
-}
-void CustomerManagerUI::HandleRemove ()
+void CustomerManagerUI::HandleRemoveSelectedCustomer()
 {
    if (!manager.HasCustomers()) {
       consoleOutput.Print("\n");

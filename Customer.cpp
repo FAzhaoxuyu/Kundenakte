@@ -2,6 +2,8 @@
 #include "Date.h"
 #include "Customer.h"
 #include "CustomerManager.h"
+#include "ContactMethod.h"
+#include "Contact.h"
 #include<format>
 #include<fstream>
 #include<sstream>
@@ -9,10 +11,11 @@ using namespace std;
 
 
 
-Customer::Customer (const int& valId, const string& valFirstName, const string& valLastName, 
-                   const Date& valDateOfBirth, const customerTypes::Gender& valGender) :
-                   id{ valId }, firstName {valFirstName}, lastName{valLastName}, dateOfBirth{valDateOfBirth}, 
-                   gender{valGender} {};
+Customer::Customer(const int& valId, const string& valFirstName, const string& valLastName,
+   const Date& valDateOfBirth, const customerTypes::Gender& valGender, const Contact valContact) :
+   id{ valId }, firstName{ valFirstName }, lastName{ valLastName }, dateOfBirth{ valDateOfBirth },
+   gender{ valGender }, contact{ valContact } {
+};
 
 const int& Customer::GetId () const
 {
@@ -45,14 +48,25 @@ const customerTypes::MemberLevel Customer::GetMemberLevel () const
    return memberLevel;
 }
 
-const std::string& Customer::GetEmail () const
-{
-   return email;
-}
+//const std::string& Customer::GetEmail () const
+//{
+//   for (ContactInfo info : contact.GetContactInfos(ContactType::Email)){
+//      if (info.type == ContactType::Email){
+//         return info.value;
+//      }
+//      return "";
+//   }
+//}
 
 const std::string& Customer::GetAddress () const
 {
-   return address;
+   for (const ContactInfo& info : contact.GetContactInfos(ContactType::Post)) {
+      if (info.type == ContactType::Post) {
+         return info.value;
+      }
+   }
+   static const std::string empty = "";    //static to avoid Dangling
+   return empty;
 }
 
 void Customer::SetFirstName (const std::string& valFirstName)
@@ -87,12 +101,12 @@ void Customer::SetMemberLevel (customerTypes::MemberLevel valMemberLevel)
 
 void Customer::SetEmail (const std::string& valEmail)
 {
-   email = valEmail;
+   contact.SetContactInfo(ContactType::Email,valEmail);
 }
 
-void Customer::SetAddress (const std::string& valAddress)
+void Customer::SetAddress (const Address& valAddress)
 {
-   address = valAddress;
+   contact.SetAddress(valAddress);
 }
 
 void Customer::Print () const
@@ -104,7 +118,7 @@ void Customer::Print () const
         << customerTypes::GenderToString (GetGender()) << " "
         << customerTypes::StatusToString (GetCustomerStatus()) << " "
         << LevelToString (GetMemberLevel()) << " "
-        << GetEmail () << " " 
+        << contact.EmailsToString() << " " 
         << GetAddress () << " " << endl;
 }
 
@@ -114,7 +128,7 @@ std::string Customer::CustomerToString () const
    return std::format ("{},{},{},{},{},{},{},{},{}\n",
       std::to_string (id), firstName, lastName, dateOfBirth.DateToString (), 
       customerTypes::GenderToString (gender), customerTypes::StatusToString (customerStatus),
-      customerTypes::LevelToString (memberLevel), email, address);
+      customerTypes::LevelToString (memberLevel), contact.EmailsToString(), address.ToString());
 }
 
 Customer Customer::StringToCustomer (const string& line)
@@ -146,16 +160,27 @@ Customer Customer::StringToCustomer (const string& line)
    std::getline (ss, part, ',');
    string parsedEmail = part;
 
-   std::getline (ss, part, ',');
-   string parsedAddress = part;
+   std::getline(ss, part, ',');
+   string parsedStreetAndHouseNr = part;
 
-   Customer customer (id, parsedFirstName, parsedLastName, parsedDateOfBirth, parsedGender);
+   std::getline(ss, part, ',');
+   string parsedPostCode = part;
+
+   std::getline(ss, part, ',');
+   string parsedCity = part;
+
+   std::getline(ss, part, ',');
+   string parsedCountry = part;
+
+   Contact parsedContact;
+   parsedContact.SetContactInfo(ContactType::Email, parsedEmail);
+
+   Customer customer (id, parsedFirstName, parsedLastName, parsedDateOfBirth, parsedGender, parsedContact);
 
    customer.SetCustomerStatus (parsedCustomerStatus);
    customer.SetMemberLevel (parsedMemberLevel);
-   customer.SetEmail (parsedEmail);
-   customer.SetAddress (parsedAddress);
-
    return customer;
 }
+
+
 

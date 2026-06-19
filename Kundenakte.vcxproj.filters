@@ -57,6 +57,12 @@
     <ClCompile Include="Transaction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Contact.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ContactInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Date.h">
@@ -101,7 +107,22 @@
     <ClInclude Include="TransactionType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ContactMethord.h">
+    <ClInclude Include="Contact.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ContactMethod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Navigator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateCustomerStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StepNavigator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

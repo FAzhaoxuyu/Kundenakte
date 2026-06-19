@@ -15,7 +15,7 @@ public:
    CustomerManager(CustomerRepository& repository, const std::vector<Customer>& customers) : repository(repository), customers(customers) {};
    std::vector<Customer>::iterator FindCustomerById (int searchId);
    const std::vector<Customer>& GetCustomers() const;
-   const void Add (Customer& newCustomer);
+   void Add (Customer& newCustomer);
    int GenerateCustomerId ();
    bool HasCustomers () const;
    bool UpdateFirstName (int id, const std::string& newFirstName);
@@ -25,7 +25,7 @@ public:
    bool UpdateCustomerStatus (int id, customerTypes::CustomerStatus newStatus);
    bool UpdateMemberLevel (int id, customerTypes::MemberLevel newLevel);
    bool UpdateEmail (int id, const std::string& newEmail);
-   bool UpdateAddress (int id, const std::string& newAddress);
+   bool UpdateAddress (int id, const Address& newAddress);
    bool UpdateStatus (int id, customerTypes::CustomerStatus newStatus);
 
    bool CustomerExists (int id) const;

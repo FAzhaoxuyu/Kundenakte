@@ -1,11 +1,20 @@
 #pragma once
 #include<string>
 
-enum Action
+//enum Action
+//{
+//   Add,
+//   Update,
+//   Remove,
+//   Show,
+//   Help,
+//   Exit
+//};
+
+enum class Action
 {
    Add,
-   Update,
-   Remove,
+   Select,
    Show,
    Help,
    Exit

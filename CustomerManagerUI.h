@@ -4,6 +4,8 @@
 #include "Date.h"
 #include "CustomerManager.h"
 #include "OutputFactory.h"
+#include "ContactMethod.h"
+
 #include<string>
 
 
@@ -15,6 +17,8 @@ private:
    Output& consoleOutput;
    Output& multiOutput;
    Output& errorLogger;
+
+   int selectedCustomerID = -1;
 
 public:
    CustomerManagerUI (CustomerManager& manager, Output& logOutput, Output& consoleOutput, Output& multiOutput, Output& errorLogger) : manager(manager), logOutput(logOutput), consoleOutput(consoleOutput), multiOutput(multiOutput), errorLogger(errorLogger) {};
@@ -36,6 +40,13 @@ public:
    Action ReadChoice (const std::string& question);
    Action ReadOption (const std::string& question);
 
+   std::vector<std::string> ReadPhoneNrs();
+   std::vector<std::string> ReadMobileNrs();
+   std::vector<std::string> ReadTeleNrs();
+   //std::vector<std::string> ReadEmails();
+   ContactType ReadContactType();
+   ContactType ReadPrefer();
+
    std::string ReadValidatedFirstName ();
    std::string ReadValidatedLastName ();
    Date ReadValidatedDate ();
@@ -43,22 +54,36 @@ public:
    std::string ReadValidatedEmail ();
    std::string ReadValidatedAddress ();
 
+   Contact ReadContact();
+   Contact ReadValidContact();
+
+   ContactType ReadPreferredContactMethod();
+
    void HandleAdd ();
+   void HandleSelect();
+   bool HasSelectedCustomer() const;
 
-   void HandleUpdateFirstName (int id);
-   void HandleUpdateLastName (int id);
-   void HandleUpdateDateOfBirth (int id);
-   void HandleUpdateGender (int id);
-   void HandleDeactivateCustomer (int id);
-   void HandleUpdateMemberLevel (int id);
-   void HandleUpdateEmail (int id);
-   void HandleUpdateAddress (int id);
+   void HandleUpdateFirstName ();
+   void HandleUpdateLastName ();
+   void HandleUpdateDateOfBirth ();
+   void HandleUpdateGender ();
+   void HandleDeactivateCustomer ();
+   void HandleUpdateMemberLevel ();
+   void HandleUpdateEmail ();
+   void HandleUpdateAddress ();
 
-
+   void HandleUpdateSelectedCustomer();
+   void HandleRemoveSelectedCustomer();
+   void HandleShowSelectedCustomer();
 
    int ReadUpdateOption ();
-   void HandleUpdate ();
-   void HandleRemove ();
+
+   void ShowMainMenu ();
+   void ShowCustomerMenu ();
+   void HandleCustomerMenu ();
+   void HandleUpdateCustomer ();
+
+
    void Show ();
    void Help ();
    void Exit ();

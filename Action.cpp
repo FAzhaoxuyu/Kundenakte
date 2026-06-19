@@ -7,11 +7,11 @@ std::string ActionToString (Action action)
    case Action::Add:
       return "Add";
 
-   case Action::Update:
-      return "Update";
+   case Action::Select:
+      return "Select";
 
-   case Action::Remove:
-      return "Remove";
+   //case Action::Remove:
+   //   return "Remove";
 
    case Action::Show:
       return "Show";

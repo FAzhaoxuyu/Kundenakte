@@ -1,6 +1,7 @@
 #include "Validator.h"
 #include "Date.h"
 #include<string>
+#include<vector>
 using namespace std;
 
 bool Validator::IsValidSingleName (const std::string& name)
@@ -121,4 +122,51 @@ bool Validator::IsValidAddress (const string& address)
       }
    }
    return true;
+}
+
+bool Validator::IsValidPhoneNr(const std::string& nr)
+{
+   if (nr.empty()) return false;
+
+   int digitCount = 0;
+   int plusCount = 0;
+
+   for (size_t i = 0; i < nr.size(); i++) {
+      char c = nr[i];
+      if (c >= '0' && c <= '9') digitCount++;
+      else if (c == '+') {
+         ++plusCount;
+         if (plusCount > 1 || i != 0) {
+            return false;
+         }
+      }
+      else if (c == ' ' || c == '-') continue;
+      else return false;
+   }
+
+   return digitCount >= 6 && digitCount <= 15;
+}
+
+bool Validator::IsValidMobileNr(const std::string& nr)
+{
+   return IsValidPhoneNr(nr);
+}
+
+bool Validator::IsValidTeleNr(const std::string& nr)
+{
+   return IsValidPhoneNr(nr);
+}
+
+bool Validator::IsValidContact(ContactType type, const std::string& value)
+{
+   switch (type)
+   {
+      case ContactType::Email: return IsValidEmail(value);
+      case ContactType::Mobile: return IsValidMobileNr(value);
+      case ContactType::Landline: return IsValidTeleNr(value);
+      case ContactType::Post:
+      case ContactType::Other:
+         return !value.empty();
+      default: return false;
+   }
 }

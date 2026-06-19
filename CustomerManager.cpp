@@ -37,7 +37,7 @@ int CustomerManager::GenerateCustomerId ()
    }
 }
 
-const void CustomerManager::Add (Customer& newCustomer)
+void CustomerManager::Add (Customer& newCustomer)
 {
    customers.push_back(newCustomer);
    repository.Save(customers);
@@ -98,7 +98,7 @@ bool CustomerManager::UpdateEmail (int id, const std::string& newEmail)
    repository.Save(customers);
    return true;
 }
-bool CustomerManager::UpdateAddress (int id, const std::string& newAddress)
+bool CustomerManager::UpdateAddress (int id, const Address& newAddress)
 {
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
