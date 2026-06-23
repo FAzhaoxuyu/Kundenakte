@@ -11,11 +11,12 @@ public:
    std::string GetPreferredEmail() const;
    void AddInfo(ContactType type, const std::string& value, bool preferred = false);
    const std::vector<ContactInfo>& GetContactInfos(ContactType type) const;
-   void SetAddress(const Address& valAddress);
+
    void SetContactInfo(ContactType type, const std::string& value);
+   bool SetPreferredContact(ContactType type);
    std::string EmailsToString() const;
 
-   Address address;
+
 private:
    std::vector<ContactInfo> contactInfos;
 };

@@ -38,21 +38,26 @@ string Date::DateToString () const
 
 Date Date::StringToDate (const string& text)
 {
-   std::stringstream ss(text);
-   std::string dayStr;
-   std::string monthStr;
-   std::string yearStr;
+   Date date;
+   date.day = std::stoi(text.substr(0, 2));
+   date.month = std::stoi(text.substr(3, 2));
+   date.year = std::stoi(text.substr(6, 4));
+   return date;
+   //std::stringstream ss(text);
+   //std::string dayStr;
+   //std::string monthStr;
+   //std::string yearStr;
 
-   std::getline(ss, dayStr, '.');
-   int day = std::stoi(dayStr);
+   //std::getline(ss, dayStr, '.');
+   //int day = std::stoi(dayStr);
 
-   std::getline(ss, monthStr, '.');
-   int month = std::stoi(monthStr);
+   //std::getline(ss, monthStr, '.');
+   //int month = std::stoi(monthStr);
 
-   std::getline(ss, yearStr, '.');
-   int year = std::stoi(yearStr);
+   //std::getline(ss, yearStr, '.');
+   //int year = std::stoi(yearStr);
 
-   return Date (day, month, year);
+   
 
 }
 

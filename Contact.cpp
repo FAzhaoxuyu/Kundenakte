@@ -46,9 +46,19 @@ void Contact::SetContactInfo(ContactType type, const std::string& value)
    contactInfos.push_back({ type, value, false, ContactStatus::Valid });
 }
 
-void Contact::SetAddress(const Address& valAddress)
+bool Contact::SetPreferredContact(ContactType type)
 {
-   address = valAddress;
+   bool found = false;
+   for (ContactInfo& info : contactInfos) {
+      if (info.type == type) {
+         info.preferred = true;
+         found = true;
+      }
+      else {
+         info.preferred = false;
+      }
+   }
+   return found;
 }
 
 

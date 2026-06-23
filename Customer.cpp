@@ -4,6 +4,7 @@
 #include "CustomerManager.h"
 #include "ContactMethod.h"
 #include "Contact.h"
+#include "StringUtils.h"
 #include<format>
 #include<fstream>
 #include<sstream>
@@ -48,6 +49,15 @@ const customerTypes::MemberLevel Customer::GetMemberLevel () const
    return memberLevel;
 }
 
+std::string Customer::GetAddress() const
+{
+   const std::vector<ContactInfo>& posts = contact.GetContactInfos(ContactType::Post);
+   string result;
+   for (const ContactInfo& info : posts) {
+      result += info.value + " ";
+   }
+   return result;
+}
 //const std::string& Customer::GetEmail () const
 //{
 //   for (ContactInfo info : contact.GetContactInfos(ContactType::Email)){
@@ -57,17 +67,6 @@ const customerTypes::MemberLevel Customer::GetMemberLevel () const
 //      return "";
 //   }
 //}
-
-const std::string& Customer::GetAddress () const
-{
-   for (const ContactInfo& info : contact.GetContactInfos(ContactType::Post)) {
-      if (info.type == ContactType::Post) {
-         return info.value;
-      }
-   }
-   static const std::string empty = "";    //static to avoid Dangling
-   return empty;
-}
 
 void Customer::SetFirstName (const std::string& valFirstName)
 {
@@ -104,9 +103,14 @@ void Customer::SetEmail (const std::string& valEmail)
    contact.SetContactInfo(ContactType::Email,valEmail);
 }
 
-void Customer::SetAddress (const Address& valAddress)
+bool Customer::SetPreferredContact(ContactType type)
 {
-   contact.SetAddress(valAddress);
+   return contact.SetPreferredContact(type);
+}
+
+void Customer::SetContactInfo(ContactType type, const std::string& value)
+{
+   contact.SetContactInfo(type, value);
 }
 
 void Customer::Print () const
@@ -128,57 +132,34 @@ std::string Customer::CustomerToString () const
    return std::format ("{},{},{},{},{},{},{},{},{}\n",
       std::to_string (id), firstName, lastName, dateOfBirth.DateToString (), 
       customerTypes::GenderToString (gender), customerTypes::StatusToString (customerStatus),
-      customerTypes::LevelToString (memberLevel), contact.EmailsToString(), address.ToString());
+      customerTypes::LevelToString (memberLevel), contact.EmailsToString(), GetAddress());
 }
 
 Customer Customer::StringToCustomer (const string& line)
 {
-   std::stringstream ss (line);
-   string part;
+   std::vector<string> parts = StringUtils::SplitLine(line, ',');
 
-   std::getline (ss, part, ',');
-   int id = std::stoi (part);
+   int id = std::stoi(parts[0]);
+   string firstName = parts[1];
+   string lastName = parts[2];
+   Date dateOfBirth = Date::StringToDate(parts[3]);
+   customerTypes::Gender gender = customerTypes::StringToGender(parts[4]);
+   customerTypes::CustomerStatus status = customerTypes::StringToStatus(parts[5]);
+   customerTypes::MemberLevel memberLevel = customerTypes::StringToLevel(parts[6]);
 
-   std::getline (ss, part, ',');
-   string parsedFirstName = part;
+   Contact contact;
+   contact.AddInfo(ContactType::Email, parts[7]);
 
-   std::getline (ss, part, ',');
-   string parsedLastName = part;
+   Address address = Address::StringToAddress(parts[8]);
+   address.postCode = parts[9];
+   address.city = parts[10];
+   address.country = parts[11];
+   contact.AddInfo(ContactType::Post, address.ToString());
+   
+   Customer customer(id, firstName, lastName, dateOfBirth, gender, contact);
+   customer.SetCustomerStatus(status);
+   customer.SetMemberLevel(memberLevel);
 
-   std::getline(ss, part, ',');
-   Date parsedDateOfBirth = Date::StringToDate (part);
-
-   std::getline (ss, part, ',');
-   customerTypes::Gender parsedGender = customerTypes::StringToGender (part);
-
-   std::getline (ss, part, ',');
-   customerTypes::CustomerStatus parsedCustomerStatus = customerTypes::StringToStatus (part);
-
-   std::getline (ss, part, ',');
-   customerTypes::MemberLevel parsedMemberLevel = customerTypes::StringToLevel (part);
-
-   std::getline (ss, part, ',');
-   string parsedEmail = part;
-
-   std::getline(ss, part, ',');
-   string parsedStreetAndHouseNr = part;
-
-   std::getline(ss, part, ',');
-   string parsedPostCode = part;
-
-   std::getline(ss, part, ',');
-   string parsedCity = part;
-
-   std::getline(ss, part, ',');
-   string parsedCountry = part;
-
-   Contact parsedContact;
-   parsedContact.SetContactInfo(ContactType::Email, parsedEmail);
-
-   Customer customer (id, parsedFirstName, parsedLastName, parsedDateOfBirth, parsedGender, parsedContact);
-
-   customer.SetCustomerStatus (parsedCustomerStatus);
-   customer.SetMemberLevel (parsedMemberLevel);
    return customer;
 }
 

@@ -102,7 +102,7 @@ bool CustomerManager::UpdateAddress (int id, const Address& newAddress)
 {
    std::vector<Customer>::iterator it = FindCustomerById(id);
    if (it == customers.end()) return false;
-   it->SetAddress(newAddress);
+   it->SetContactInfo(ContactType::Post, newAddress.ToString());
    repository.Save(customers);
    return true;
 }
@@ -149,6 +149,20 @@ bool CustomerManager::DeactiveCustomer (int id)
       it->SetCustomerStatus(customerTypes::CustomerStatus::Inactive);
       repository.Save(customers);
       return true;
+   }
+   return false;
+}
+
+bool CustomerManager::SetPreferredContact(int id, ContactType type)
+{
+   for (Customer& customer : customers) {
+      if (customer.GetId() == id) {
+         bool success = customer.SetPreferredContact(type);
+         if (success) {
+            repository.Save(customers);
+         }
+         return success;
+      }
    }
    return false;
 }

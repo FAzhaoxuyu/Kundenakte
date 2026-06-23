@@ -137,7 +137,8 @@ void CustomerManagerUI::ShowCustomerMenu()
    consoleOutput.Print("1: Update\n");
    consoleOutput.Print("2: Remove\n");
    consoleOutput.Print("3: Show customer\n");
-   consoleOutput.Print("4: Back\n");
+   consoleOutput.Print("4: Set preferred contact method\n");
+   consoleOutput.Print("5: Back\n");
    consoleOutput.Print("=========================\n");
 }
 
@@ -203,6 +204,18 @@ void CustomerManagerUI::HandleShowSelectedCustomer()
    selectedCustomerID = -1;
 }
 
+void CustomerManagerUI::HandleSetPreferredContact()
+{
+   ContactType type = ReadPreferredContactMethod();
+   bool success = manager.SetPreferredContact(selectedCustomerID, type);
+   if (success) {
+      multiOutput.Print("Preffered contact method updated.\n");
+   }
+   else {
+      consoleOutput.Print("failed to update preferred contact methord.\n");
+   }
+}
+
 void CustomerManagerUI::HandleCustomerMenu()
 {
    ShowCustomerMenu();
@@ -222,6 +235,10 @@ void CustomerManagerUI::HandleCustomerMenu()
       break;
 
    case 4:
+      HandleSetPreferredContact();
+      break;
+
+   case 5:
       selectedCustomerID = -1;
       break;
 
@@ -517,7 +534,7 @@ Customer CustomerManagerUI::CreateCustomer ()
    customerTypes::Gender gender = ReadGender("Gender (1.Male / 2.Female / 3.Diverse): ");
    customerTypes::CustomerStatus customerStatus = customerTypes::CustomerStatus::Active;
    customerTypes::MemberLevel memberLevel = ReadMemberLevel ("Member level (1.Standard / 2.Private / 3.Premium / 4. Corporate): ");
-   string email = ReadValidatedEmail ();
+
    string addressText = ReadValidatedAddress ();
    Address address = Address::StringToAddress(addressText);
 
@@ -528,8 +545,8 @@ Customer CustomerManagerUI::CreateCustomer ()
 
    newCustomer.SetCustomerStatus(customerStatus);
    newCustomer.SetMemberLevel(memberLevel);
-   newCustomer.SetEmail(email);
-   newCustomer.SetAddress(address);
+ 
+   contact.AddInfo(ContactType::Post, address.ToString());
 
    return newCustomer;
 }

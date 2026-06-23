@@ -23,7 +23,7 @@ private:
    customerTypes::CustomerStatus customerStatus = customerTypes::CustomerStatus::Active;
    customerTypes::MemberLevel memberLevel = customerTypes::MemberLevel::Standard;
    Contact contact;
-   Address address;
+   /*Address address;*/
 
  
   
@@ -37,8 +37,8 @@ public:
    const customerTypes::Gender& GetGender () const;
    const customerTypes::CustomerStatus GetCustomerStatus () const;
    const customerTypes::MemberLevel GetMemberLevel () const;
-   //const std::string& GetEmail () const;
-   const std::string& GetAddress () const;
+   std::string GetAddress() const;
+
 
    void SetFirstName (const std::string& valFirstName);
    void SetLastName (const std::string& valLastName);
@@ -47,7 +47,8 @@ public:
    void SetCustomerStatus (customerTypes::CustomerStatus valCustomerStatus);
    void SetMemberLevel (customerTypes::MemberLevel valMemberLevel);
    void SetEmail (const std::string& valEmail);
-   void SetAddress (const Address& valAddress);
+   bool SetPreferredContact(ContactType type);
+   void SetContactInfo(ContactType type, const std::string& value);
 
    void Print () const;
 

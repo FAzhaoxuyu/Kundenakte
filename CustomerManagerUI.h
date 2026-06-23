@@ -75,6 +75,7 @@ public:
    void HandleUpdateSelectedCustomer();
    void HandleRemoveSelectedCustomer();
    void HandleShowSelectedCustomer();
+   void HandleSetPreferredContact();
 
    int ReadUpdateOption ();
 

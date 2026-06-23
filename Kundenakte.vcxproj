@@ -139,6 +139,7 @@
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OutputFactory.cpp" />
+    <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="Transaction.cpp" />
     <ClCompile Include="Validator.cpp" />
   </ItemGroup>
@@ -160,6 +161,7 @@
     <ClInclude Include="Navigator.h" />
     <ClInclude Include="OutputFactory.h" />
     <ClInclude Include="StepNavigator.h" />
+    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="Transaction.h" />
     <ClInclude Include="TransactionType.h" />
     <ClInclude Include="Validator.h" />
