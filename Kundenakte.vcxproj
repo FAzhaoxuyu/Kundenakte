@@ -129,7 +129,7 @@
     <ClCompile Include="AccountManager.cpp" />
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="Contact.cpp" />
-    <ClCompile Include="ContactInfo.cpp" />
+    <ClCompile Include="ContactMethod.cpp" />
     <ClCompile Include="Customer.cpp" />
     <ClCompile Include="CustomerManager.cpp" />
     <ClCompile Include="CustomerManagerUI.cpp" />

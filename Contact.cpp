@@ -1,7 +1,9 @@
 ﻿#include "Contact.h"
 #include "ContactMethod.h"
 
-const std::vector<std::string>& Contact::GetEmails() const
+#include<iostream>
+
+const std::vector<std::string> Contact::GetEmails() const
 {
    std::vector<std::string> emails;
 
@@ -13,29 +15,29 @@ const std::vector<std::string>& Contact::GetEmails() const
    return emails;
 }
 
-std::string Contact::GetPreferredEmail() const
+//std::string Contact::GetPreferredEmail() const
+//{
+//   for (const auto& info : contactInfos)
+//   {
+//      if (info.type == ContactType::Email && info.preferred && info.status == ContactStatus::Valid){
+//         return info.value;
+//      }
+//   }
+//   return "";
+//}
+
+
+void Contact::AddInfo (ContactType type, const std::string& value)
 {
-   for (const auto& info : contactInfos)
-   {
-      if (info.type == ContactType::Email && info.preferred && info.status == ContactStatus::Valid){
-         return info.value;
-      }
-   }
-   return "";
+   contactInfos.emplace_back (type, value, ContactStatus::Valid);
 }
 
-
-void Contact::AddInfo(ContactType type, const std::string& value, bool preferred)
-{
-   contactInfos.emplace_back(type, value, preferred, ContactStatus::Valid);
-}
-
-const std::vector<ContactInfo>& Contact::GetContactInfos(ContactType type) const
+const std::vector<ContactInfo>& Contact::GetContactInfos (ContactType type) const
 {
    return contactInfos;
 }
 
-void Contact::SetContactInfo(ContactType type, const std::string& value)
+void Contact::SetContactInfo (ContactType type, const std::string& value)
 {
    for (ContactInfo& info : contactInfos) {
       if (info.type == type) {
@@ -43,57 +45,42 @@ void Contact::SetContactInfo(ContactType type, const std::string& value)
          return;
       }
    }
-   contactInfos.push_back({ type, value, false, ContactStatus::Valid });
+   contactInfos.push_back ({ type, value, ContactStatus::Valid });
 }
 
-bool Contact::SetPreferredContact(ContactType type)
+bool Contact::HasContact(PreferredContactType type) const
 {
-   bool found = false;
-   for (ContactInfo& info : contactInfos) {
-      if (info.type == type) {
-         info.preferred = true;
-         found = true;
-      }
-      else {
-         info.preferred = false;
+   for (const ContactInfo& info : contactInfos)
+   {
+      switch (type)
+      {
+      case PreferredContactType::Mobile:
+         if (info.type == ContactType::Mobile)
+            return true;
+         break;
+
+      case PreferredContactType::Landline:
+         if (info.type == ContactType::Landline)
+            return true;
+         break;
+
+      case PreferredContactType::Email:
+         if (info.type == ContactType::Email)
+            return true;
+         break;
+
+      case PreferredContactType::Other:
+         if (info.type == ContactType::Other)
+            return true;
+         break;
+
+      default:
+         break;
       }
    }
-   return found;
+
+   return false;
 }
-
-
-
-//const std::vector<std::string>& Contact::GetMobileNrs() const
-//{
-//   return mobileNrs;
-//}
-//const std::vector<std::string>& Contact::GetTeleNrs() const
-//{
-//   return teleNrs;
-//}
-
-//const ContactTypes Contact::GetPreferredContacts() const
-//{
-//   return prefer;
-//}
-//
-//void Contact::AddMobileNr(const std::string& newMobileNr)
-//{
-//   mobileNrs.push_back(newMobileNr);
-//}
-//
-//void Contact::AddTeleNr(const std::string& newTeleNr)
-//{
-//   teleNrs.push_back(newTeleNr);
-//}
-//void Contact::AddEmail(const std::string& newEmail)
-//{
-//   emails.push_back(newEmail);
-//}
-//void Contact::SetPreffered(ContactTypes type)
-//{
-//   prefer = type;
-//}
 
 std::string Contact::EmailsToString() const
 {

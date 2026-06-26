@@ -164,7 +164,6 @@ bool Validator::IsValidContact(ContactType type, const std::string& value)
       case ContactType::Email: return IsValidEmail(value);
       case ContactType::Mobile: return IsValidMobileNr(value);
       case ContactType::Landline: return IsValidTeleNr(value);
-      case ContactType::Post:
       case ContactType::Other:
          return !value.empty();
       default: return false;

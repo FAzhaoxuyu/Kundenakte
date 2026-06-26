@@ -13,10 +13,9 @@ using namespace std;
 
 
 Customer::Customer(const int& valId, const string& valFirstName, const string& valLastName,
-   const Date& valDateOfBirth, const customerTypes::Gender& valGender, const Contact valContact) :
+   const Date& valDateOfBirth, const customerTypes::Gender& valGender, const Contact& valContact, const Address& valAddress) :
    id{ valId }, firstName{ valFirstName }, lastName{ valLastName }, dateOfBirth{ valDateOfBirth },
-   gender{ valGender }, contact{ valContact } {
-};
+   gender{ valGender }, contact{ valContact }, address{ valAddress } {};
 
 const int& Customer::GetId () const
 {
@@ -51,22 +50,13 @@ const customerTypes::MemberLevel Customer::GetMemberLevel () const
 
 std::string Customer::GetAddress() const
 {
-   const std::vector<ContactInfo>& posts = contact.GetContactInfos(ContactType::Post);
-   string result;
-   for (const ContactInfo& info : posts) {
-      result += info.value + " ";
-   }
-   return result;
+   return address.ToString();
 }
-//const std::string& Customer::GetEmail () const
-//{
-//   for (ContactInfo info : contact.GetContactInfos(ContactType::Email)){
-//      if (info.type == ContactType::Email){
-//         return info.value;
-//      }
-//      return "";
-//   }
-//}
+
+PreferredContactType Customer::GetPreferredContact() const
+{
+   return preferredContact;
+}
 
 void Customer::SetFirstName (const std::string& valFirstName)
 {
@@ -103,9 +93,30 @@ void Customer::SetEmail (const std::string& valEmail)
    contact.SetContactInfo(ContactType::Email,valEmail);
 }
 
-bool Customer::SetPreferredContact(ContactType type)
+void Customer::SetAddress(const Address& newAddress)
 {
-   return contact.SetPreferredContact(type);
+   address = newAddress;
+}
+
+bool Customer::SetPreferredContact(PreferredContactType type)
+{
+   {
+      // Post: not in contact, in address
+      if (type == PreferredContactType::Post)
+      {
+         preferredContact = type;
+         return true;
+      }
+
+      // Mobile / Landline / Email / Other: in contact
+      if (contact.HasContact(type))
+      {
+         preferredContact = type;
+         return true;
+      }
+
+      return false;
+   }
 }
 
 void Customer::SetContactInfo(ContactType type, const std::string& value)
@@ -128,11 +139,11 @@ void Customer::Print () const
 
 std::string Customer::CustomerToString () const
 {
-
-   return std::format ("{},{},{},{},{},{},{},{},{}\n",
+   return std::format ("{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
       std::to_string (id), firstName, lastName, dateOfBirth.DateToString (), 
       customerTypes::GenderToString (gender), customerTypes::StatusToString (customerStatus),
-      customerTypes::LevelToString (memberLevel), contact.EmailsToString(), GetAddress());
+      customerTypes::LevelToString (memberLevel), contact.EmailsToString(), address.street + " " + address.HouseNr,
+      address.postCode, address.city, address.country, PreferredContactTypeToString(preferredContact));
 }
 
 Customer Customer::StringToCustomer (const string& line)
@@ -154,11 +165,14 @@ Customer Customer::StringToCustomer (const string& line)
    address.postCode = parts[9];
    address.city = parts[10];
    address.country = parts[11];
-   contact.AddInfo(ContactType::Post, address.ToString());
    
-   Customer customer(id, firstName, lastName, dateOfBirth, gender, contact);
+   Customer customer(id, firstName, lastName, dateOfBirth, gender, contact, address);
    customer.SetCustomerStatus(status);
    customer.SetMemberLevel(memberLevel);
+
+   if (parts.size() > 12 && !parts[12].empty()){
+      customer.SetPreferredContact(StringToPreferredContactType(parts[12]));
+   }
 
    return customer;
 }

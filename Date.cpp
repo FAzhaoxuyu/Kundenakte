@@ -1,5 +1,7 @@
 #include "Date.h"
 #include "Validator.h"
+#include "StringUtils.h"
+
 #include<iostream>
 #include<string>
 #include<sstream>
@@ -38,31 +40,12 @@ string Date::DateToString () const
 
 Date Date::StringToDate (const string& text)
 {
-   Date date;
-   date.day = std::stoi(text.substr(0, 2));
-   date.month = std::stoi(text.substr(3, 2));
-   date.year = std::stoi(text.substr(6, 4));
-   return date;
-   //std::stringstream ss(text);
-   //std::string dayStr;
-   //std::string monthStr;
-   //std::string yearStr;
-
-   //std::getline(ss, dayStr, '.');
-   //int day = std::stoi(dayStr);
-
-   //std::getline(ss, monthStr, '.');
-   //int month = std::stoi(monthStr);
-
-   //std::getline(ss, yearStr, '.');
-   //int year = std::stoi(yearStr);
-
+   std::vector<string> parts = StringUtils::SplitLine(text, '.');
    
-
+   Date date;
+   date.day = std::stoi(parts[0]);
+   date.month = std::stoi(parts[1]);
+   date.year = std::stoi(parts[2]);
+   return date;
 }
 
-//void Date::PrintDate ()
-//{
-//   std::cout << day << "." << month << "." << year << std::endl;
-//   output.Print()
-//}

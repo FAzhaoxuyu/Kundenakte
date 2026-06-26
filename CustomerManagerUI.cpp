@@ -126,7 +126,8 @@ void CustomerManagerUI::Show()
    }
 
    for (const Customer& customer : manager.GetCustomers()) {
-      consoleOutput.Print(customer.CustomerToString() + "\n");
+      consoleOutput.Print (customer.CustomerToString() + "\n");
+      consoleOutput.Print("Preferred contact: " + PreferredContactTypeToString(customer.GetPreferredContact()) + "\n\n");
    }
 }
 
@@ -158,7 +159,7 @@ void CustomerManagerUI::HandleUpdateSelectedCustomer()
          break;
 
       case 3:
-         HandleUpdateDateOfBirth();
+         HandleUpdateBirthday();
          break;
 
       case 4:
@@ -178,12 +179,7 @@ void CustomerManagerUI::HandleUpdateSelectedCustomer()
          break;
 
       case 8:
-         HandleUpdateAddress();
-         break;
-
-      default:
-         consoleOutput.Print("Invalid choice.\n");
-         break;
+         return;
       }
    } 
 }
@@ -195,7 +191,8 @@ void CustomerManagerUI::HandleShowSelectedCustomer()
    {
       if (customer.GetId() == selectedCustomerID)
       {
-         consoleOutput.Print(customer.CustomerToString() + "\n");
+         consoleOutput.Print (customer.CustomerToString() + "\n");
+         consoleOutput.Print ("Preferred contact: " + PreferredContactTypeToString (customer.GetPreferredContact()) +"\n");
          return;
       }
    }
@@ -206,7 +203,8 @@ void CustomerManagerUI::HandleShowSelectedCustomer()
 
 void CustomerManagerUI::HandleSetPreferredContact()
 {
-   ContactType type = ReadPreferredContactMethod();
+   PreferredContactType type = ReadPreferredContactMethod();
+   std::cout << "selectedCustomerID = " << selectedCustomerID << std::endl;
    bool success = manager.SetPreferredContact(selectedCustomerID, type);
    if (success) {
       multiOutput.Print("Preffered contact method updated.\n");
@@ -239,8 +237,9 @@ void CustomerManagerUI::HandleCustomerMenu()
       break;
 
    case 5:
+      consoleOutput.Print("Back selected.\n");
       selectedCustomerID = -1;
-      break;
+      return;
 
    default:
       consoleOutput.Print("Invalid choice.\n");
@@ -268,17 +267,6 @@ void CustomerManagerUI::Run ()
             HandleSelect();
             break;
          }
-
-         //case Action::Update:
-         //{
-         //   HandleUpdate();
-         //   break;
-         //}
-         //case Action::Remove:
-         //{
-         //   HandleRemove();
-         //   break;
-         //}
          case Action::Show:
          {
             Show();
@@ -321,8 +309,6 @@ Action CustomerManagerUI::ReadOption (const string& question)
          switch (choice)
          {
          case 1: return Action::Add;
-         //case 2: return Action::Update;
-         //case 3: return Action::Remove;
          case 2: return Action::Select;
          case 3: return Action::Show;
          case 4: return Action::Help;
@@ -474,9 +460,9 @@ ContactType CustomerManagerUI::ReadContactType()
 { 
    while (true) {
       try {
-         return StringToContactTypes(ReadText("Contact type (Mobile /Landline /Email /Post /Other): "));
+         return StringToContactTypes(ReadText("Contact type (Mobile /Landline /Email /Other): "));
       }
-      catch (const std::invalid_argument& e) {
+      catch (const std::invalid_argument&) {
          consoleOutput.Print("Invalid contact type. Please try again.\n");
       }
    } 
@@ -501,11 +487,11 @@ Contact CustomerManagerUI::ReadValidContact ()
    return contact;
 }
 
-ContactType CustomerManagerUI::ReadPreferredContactMethod ()
+PreferredContactType CustomerManagerUI::ReadPreferredContactMethod ()
 {
    while (true) {
       try {
-         ContactType choice = StringToContactTypes(ReadText("Preferred contact method (Mobile/Landline/Email/Post/Other): "));
+         PreferredContactType choice = StringToPreferredContactType(ReadText("Preferred contact method (Mobile/Landline/Email/Post/Other): "));
          return choice;
       }
       catch (const std::invalid_argument& e) {
@@ -517,16 +503,6 @@ ContactType CustomerManagerUI::ReadPreferredContactMethod ()
 
 Customer CustomerManagerUI::CreateCustomer ()
 {
-   StepNavigator<CreateCustomerStep> navi({
-   CreateCustomerStep::FirstName,
-   CreateCustomerStep::LastName,
-   CreateCustomerStep::DateOfBirth,
-   CreateCustomerStep::Gender,
-   CreateCustomerStep::MemberLevel,
-   CreateCustomerStep::Contact,
-   CreateCustomerStep::Address
-   });
-
    int id = manager.GenerateCustomerId ();
    string firstName = ReadValidatedFirstName ();
    string lastName = ReadValidatedLastName ();
@@ -540,13 +516,12 @@ Customer CustomerManagerUI::CreateCustomer ()
 
    Contact contact = ReadValidContact();
   
-
-   Customer newCustomer = Customer (id, firstName, lastName, dateOfBirth, gender, contact);
+   Customer newCustomer = Customer (id, firstName, lastName, dateOfBirth, gender, contact, address);
 
    newCustomer.SetCustomerStatus(customerStatus);
    newCustomer.SetMemberLevel(memberLevel);
  
-   contact.AddInfo(ContactType::Post, address.ToString());
+   
 
    return newCustomer;
 }
@@ -556,7 +531,7 @@ void CustomerManagerUI::Help ()
 {
    //std::unique_ptr<Output> output = std::make_unique<ConsoleOutput>();
 
-   consoleOutput.Print("== Help page ==== = \n");
+   consoleOutput.Print("== Help page ===== \n");
    consoleOutput.Print("1. Add: Create a new customer to the system.\n");
    consoleOutput.Print("2. Update: Change or update customer information.\n");
    consoleOutput.Print("3. Remove: Remove a customer.\n");
@@ -632,7 +607,7 @@ void CustomerManagerUI::HandleUpdateLastName ()
       errorLogger.Print("Update last name failed: customer not found.\n");
    }
 }
-void CustomerManagerUI::HandleUpdateDateOfBirth ()
+void CustomerManagerUI::HandleUpdateBirthday ()
 {
    Date newDateOfBirth = ReadValidatedDate ();
 
@@ -744,11 +719,11 @@ int CustomerManagerUI::ReadUpdateOption ()
       "2. Last name\n"
       "3. Birthday\n"
       "4. Gender\n"
-      "5. Status\n"
-      "6. Member level\n"
-      "7. Email\n"
-      "8. Address\n"
-      "9. Back\n");
+      "5. Member level\n"
+      "6. Email\n"
+      "7. Address\n"
+      "8. Back\n"
+      "Please choose an option: ");
 }
 
 

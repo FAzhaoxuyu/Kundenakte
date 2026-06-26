@@ -23,6 +23,7 @@ std::vector<Customer> DeSerialize (const string& text)
    while (std::getline(ss, line)){
       Customer c = Customer::StringToCustomer(line);
       result.push_back(c);
+      cout << "\n";
    }
    return result;
 }
@@ -64,6 +65,7 @@ std::vector<Customer> FileCustomerRepository::Load () const
 }
 void FileCustomerRepository::Save (const std::vector<Customer>& customers)
 {
+ 
    std::ofstream os(filename);
    os << Serialize(customers);
 };

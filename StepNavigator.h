@@ -7,7 +7,7 @@ template <typename T>
 class StepNavigator
 {
 public:
-   StepNavigator(const std::vector<T>& steps) : steps(steps), index(0) {};
+   StepNavigator (const std::vector<T>& steps) : steps(steps), index(0) {};
 
    T Current()
    {

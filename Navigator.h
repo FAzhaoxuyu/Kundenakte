@@ -5,7 +5,7 @@ template <typename T>
 class Navigator
 {
 public:
-   Navigator(std::vector<T> itmes) : items(std::move(items)), index(0) {};
+   Navigator(std::vector<T> items) : items(std::move(items)), index(0) {};
    
    T Current()
    {

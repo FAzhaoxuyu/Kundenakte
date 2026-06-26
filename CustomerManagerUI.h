@@ -57,7 +57,7 @@ public:
    Contact ReadContact();
    Contact ReadValidContact();
 
-   ContactType ReadPreferredContactMethod();
+   PreferredContactType ReadPreferredContactMethod();
 
    void HandleAdd ();
    void HandleSelect();
@@ -65,7 +65,7 @@ public:
 
    void HandleUpdateFirstName ();
    void HandleUpdateLastName ();
-   void HandleUpdateDateOfBirth ();
+   void HandleUpdateBirthday ();
    void HandleUpdateGender ();
    void HandleDeactivateCustomer ();
    void HandleUpdateMemberLevel ();
@@ -82,9 +82,7 @@ public:
    void ShowMainMenu ();
    void ShowCustomerMenu ();
    void HandleCustomerMenu ();
-   void HandleUpdateCustomer ();
-
-
+  
    void Show ();
    void Help ();
    void Exit ();
