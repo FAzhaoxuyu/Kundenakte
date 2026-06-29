@@ -153,32 +153,13 @@ bool CustomerManager::DeactiveCustomer (int id)
    return false;
 }
 
-bool CustomerManager::SetPreferredContact(int id, PreferredContactType type)
+bool CustomerManager::SetPreferredContact(int id, ContactType type)
 {
-   //for (Customer& customer : customers) {
-   //   if (customer.GetId() == id) {
-   //      bool success = customer.SetPreferredContact(type);
-   //      if (success) {
-   //         repository.Save(customers);
-   //      }
-   //      return success;
-   //   }
-   //}
-   //return false;
-
-   std::cout << "Manager received id = " << id << std::endl;
-
    for (Customer& customer : customers) {
-      std::cout << "checking customer id = " << customer.GetId() << std::endl;
-
       if (customer.GetId() == id) {
          std::cout << "customer found\n";
 
          bool success = customer.SetPreferredContact(type);
-
-         std::cout << "customer.SetPreferredContact result = "
-            << success << std::endl;
-
          if (success) {
             repository.Save(customers);
          }
@@ -186,7 +167,6 @@ bool CustomerManager::SetPreferredContact(int id, PreferredContactType type)
          return success;
       }
    }
-
    std::cout << "customer not found\n";
    return false;
 }

@@ -24,7 +24,7 @@ private:
    customerTypes::MemberLevel memberLevel = customerTypes::MemberLevel::Standard;
    Contact contact;
    Address address;
-   PreferredContactType preferredContact = PreferredContactType::None;
+   ContactType preferredContact = ContactType::None;
 
  
   
@@ -39,7 +39,7 @@ public:
    const customerTypes::CustomerStatus GetCustomerStatus () const;
    const customerTypes::MemberLevel GetMemberLevel () const;
    std::string GetAddress() const;
-   PreferredContactType GetPreferredContact() const;
+   ContactType GetPreferredContact() const;
 
    void SetFirstName (const std::string& valFirstName);
    void SetLastName (const std::string& valLastName);
@@ -49,7 +49,7 @@ public:
    void SetMemberLevel (customerTypes::MemberLevel valMemberLevel);
    void SetEmail (const std::string& valEmail);
    void SetAddress(const Address& newAddress);
-   bool SetPreferredContact(PreferredContactType type);
+   bool SetPreferredContact(ContactType type);
    void SetContactInfo(ContactType type, const std::string& value);
 
    void Print () const;

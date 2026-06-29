@@ -32,7 +32,7 @@ public:
 
    bool RemoveById (int id);
    bool DeactiveCustomer (int id);
-   bool SetPreferredContact(int id, PreferredContactType type);
+   bool SetPreferredContact(int id, ContactType type);
 
    void SortCustomers(const CustomerSortStrategy& strategy);
 

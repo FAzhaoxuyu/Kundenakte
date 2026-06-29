@@ -57,7 +57,7 @@ public:
    Contact ReadContact();
    Contact ReadValidContact();
 
-   PreferredContactType ReadPreferredContactMethod();
+   ContactType ReadContactMethod();
 
    void HandleAdd ();
    void HandleSelect();

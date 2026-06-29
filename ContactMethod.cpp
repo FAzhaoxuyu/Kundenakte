@@ -16,15 +16,15 @@ ContactType StringToContactTypes(std::string type)
    return ContactType::Other;
 }
 
-PreferredContactType StringToPreferredContactType(std::string type)
+ContactType StringToContactType(std::string type)
 {
    std::transform(type.begin(), type.end(), type.begin(), ::tolower);
-   if (type == "none") return PreferredContactType::None;
-   if (type == "mobile") return PreferredContactType::Mobile;
-   if (type == "landline") return PreferredContactType::Landline;
-   if (type == "email") return PreferredContactType::Email;
-   if (type == "post") return PreferredContactType::Post;
-   if (type == "other") return PreferredContactType::Other;
+   if (type == "none") return ContactType::None;
+   if (type == "mobile") return ContactType::Mobile;
+   if (type == "landline") return ContactType::Landline;
+   if (type == "email") return ContactType::Email;
+   if (type == "post") return ContactType::Post;
+   if (type == "other") return ContactType::Other;
 
    throw std::invalid_argument(type);
 }
@@ -60,16 +60,16 @@ Address Address::StringToAddress(const std::string& text)
    return addr;
 }
 
-std::string PreferredContactTypeToString(PreferredContactType type)
+std::string ContactTypeToString(ContactType type)
 {
    switch (type)
    {
-   case PreferredContactType::None: return "None";
-   case PreferredContactType::Mobile: return "Mobile";
-   case PreferredContactType::Landline: return "Landline";
-   case PreferredContactType::Email: return "Email";
-   case PreferredContactType::Post: return "Post";
-   case PreferredContactType::Other: return "Other";
+   case ContactType::None: return "None";
+   case ContactType::Mobile: return "Mobile";
+   case ContactType::Landline: return "Landline";
+   case ContactType::Email: return "Email";
+   case ContactType::Post: return "Post";
+   case ContactType::Other: return "Other";
    default: return "Unknown";
    }
 }

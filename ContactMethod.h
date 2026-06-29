@@ -7,17 +7,9 @@ enum class ContactType
    Mobile,
    Landline,
    Email,
-   Other
-};
-
-enum class PreferredContactType
-{
-   None,
-   Mobile,
-   Landline,
-   Email,
+   Other,
    Post,
-   Other
+   None
 };
 
 enum class ContactStatus
@@ -32,6 +24,7 @@ public:
    ContactType type;
    std::string value;
    ContactStatus status = ContactStatus::Valid;
+   bool preferred;
 };
 
 struct Address
@@ -47,6 +40,6 @@ struct Address
 };
 
 ContactType StringToContactTypes(std::string type);
-PreferredContactType StringToPreferredContactType(std::string type);
-std::string PreferredContactTypeToString(PreferredContactType type);
+ContactType StringToContactType(std::string type);
+std::string ContactTypeToString(ContactType type);
 

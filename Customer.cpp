@@ -53,7 +53,7 @@ std::string Customer::GetAddress() const
    return address.ToString();
 }
 
-PreferredContactType Customer::GetPreferredContact() const
+ContactType Customer::GetPreferredContact() const
 {
    return preferredContact;
 }
@@ -98,25 +98,19 @@ void Customer::SetAddress(const Address& newAddress)
    address = newAddress;
 }
 
-bool Customer::SetPreferredContact(PreferredContactType type)
+bool Customer::SetPreferredContact(ContactType type)
 {
-   {
-      // Post: not in contact, in address
-      if (type == PreferredContactType::Post)
-      {
-         preferredContact = type;
-         return true;
-      }
-
-      // Mobile / Landline / Email / Other: in contact
-      if (contact.HasContact(type))
-      {
-         preferredContact = type;
-         return true;
-      }
-
-      return false;
+   // Post is not in contact, it is in address
+   if (type == ContactType::Post){
+      preferredContact = type;
+      contact.ClearPreferredContact();
+      return true;
    }
+   if (contact.SetPreferredContact(type)){
+      preferredContact = type;
+      return true;
+   }
+   return false;
 }
 
 void Customer::SetContactInfo(ContactType type, const std::string& value)
@@ -143,7 +137,7 @@ std::string Customer::CustomerToString () const
       std::to_string (id), firstName, lastName, dateOfBirth.DateToString (), 
       customerTypes::GenderToString (gender), customerTypes::StatusToString (customerStatus),
       customerTypes::LevelToString (memberLevel), contact.EmailsToString(), address.street + " " + address.HouseNr,
-      address.postCode, address.city, address.country, PreferredContactTypeToString(preferredContact));
+      address.postCode, address.city, address.country, ContactTypeToString(preferredContact));
 }
 
 Customer Customer::StringToCustomer (const string& line)
@@ -171,7 +165,7 @@ Customer Customer::StringToCustomer (const string& line)
    customer.SetMemberLevel(memberLevel);
 
    if (parts.size() > 12 && !parts[12].empty()){
-      customer.SetPreferredContact(StringToPreferredContactType(parts[12]));
+      customer.SetPreferredContact(StringToContactType(parts[12]));
    }
 
    return customer;

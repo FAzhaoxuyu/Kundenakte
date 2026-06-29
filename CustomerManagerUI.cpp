@@ -127,7 +127,7 @@ void CustomerManagerUI::Show()
 
    for (const Customer& customer : manager.GetCustomers()) {
       consoleOutput.Print (customer.CustomerToString() + "\n");
-      consoleOutput.Print("Preferred contact: " + PreferredContactTypeToString(customer.GetPreferredContact()) + "\n\n");
+      consoleOutput.Print("Preferred contact: " + ContactTypeToString(customer.GetPreferredContact()) + "\n\n");
    }
 }
 
@@ -192,7 +192,7 @@ void CustomerManagerUI::HandleShowSelectedCustomer()
       if (customer.GetId() == selectedCustomerID)
       {
          consoleOutput.Print (customer.CustomerToString() + "\n");
-         consoleOutput.Print ("Preferred contact: " + PreferredContactTypeToString (customer.GetPreferredContact()) +"\n");
+         consoleOutput.Print ("Preferred contact: " + ContactTypeToString (customer.GetPreferredContact()) +"\n");
          return;
       }
    }
@@ -203,7 +203,7 @@ void CustomerManagerUI::HandleShowSelectedCustomer()
 
 void CustomerManagerUI::HandleSetPreferredContact()
 {
-   PreferredContactType type = ReadPreferredContactMethod();
+   ContactType type = ReadContactMethod();
    std::cout << "selectedCustomerID = " << selectedCustomerID << std::endl;
    bool success = manager.SetPreferredContact(selectedCustomerID, type);
    if (success) {
@@ -487,11 +487,11 @@ Contact CustomerManagerUI::ReadValidContact ()
    return contact;
 }
 
-PreferredContactType CustomerManagerUI::ReadPreferredContactMethod ()
+ContactType CustomerManagerUI::ReadContactMethod ()
 {
    while (true) {
       try {
-         PreferredContactType choice = StringToPreferredContactType(ReadText("Preferred contact method (Mobile/Landline/Email/Post/Other): "));
+         ContactType choice = StringToContactType(ReadText("Preferred contact method (Mobile/Landline/Email/Post/Other): "));
          return choice;
       }
       catch (const std::invalid_argument& e) {

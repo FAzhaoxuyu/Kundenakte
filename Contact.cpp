@@ -48,45 +48,60 @@ void Contact::SetContactInfo (ContactType type, const std::string& value)
    contactInfos.push_back ({ type, value, ContactStatus::Valid });
 }
 
-bool Contact::HasContact(PreferredContactType type) const
+bool Contact::SetPreferredContact(ContactType type)
 {
-   for (const ContactInfo& info : contactInfos)
-   {
-      switch (type)
-      {
-      case PreferredContactType::Mobile:
-         if (info.type == ContactType::Mobile)
-            return true;
-         break;
-
-      case PreferredContactType::Landline:
-         if (info.type == ContactType::Landline)
-            return true;
-         break;
-
-      case PreferredContactType::Email:
-         if (info.type == ContactType::Email)
-            return true;
-         break;
-
-      case PreferredContactType::Other:
-         if (info.type == ContactType::Other)
-            return true;
-         break;
-
-      default:
-         break;
+   bool found = false;
+   for (auto& info : contactInfos){
+      if (info.type == type && info.status == ContactStatus::Valid) {
+         info.preferred = true;
+         found = true;
+      }
+      else {
+         info.preferred = false;
       }
    }
-
-   return false;
+   return found;
 }
 
-std::string Contact::EmailsToString() const
+//bool Contact::HasContact(ContactType type) const
+//{
+//   for (const ContactInfo& info : contactInfos)
+//   {
+//      switch (type)
+//      {
+//      case ContactType::Mobile:
+//         if (info.type == ContactType::Mobile)
+//            return true;
+//         break;
+//
+//      case ContactType::Landline:
+//         if (info.type == ContactType::Landline)
+//            return true;
+//         break;
+//
+//      case ContactType::Email:
+//         if (info.type == ContactType::Email)
+//            return true;
+//         break;
+//
+//      case ContactType::Other:
+//         if (info.type == ContactType::Other)
+//            return true;
+//         break;
+//
+//      default:
+//         break;
+//      }
+//   }
+//
+//   return false;
+//}
+
+std::string Contact::EmailsToString () const
 {
    std::string result;
 
-   for (const std::string& email : GetEmails())
+   for (const std::string& email : GetEmails ())
    {
       if (!result.empty())
       {
@@ -97,4 +112,11 @@ std::string Contact::EmailsToString() const
    }
 
    return result;
+}
+
+void Contact::ClearPreferredContact ()
+{
+   for (auto& info : contactInfos){
+      info.preferred = false;
+   }
 }
