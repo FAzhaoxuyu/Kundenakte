@@ -16,7 +16,7 @@ public:
 class LogOutput : public Output
 {
 public:
-   LogOutput (const std::string& valFileName) : fileName(valFileName) {};
+   LogOutput (const std::string& valFileName) : fileName (valFileName) {};
    void Print (const std::string& messsage) const override;
 
 private:
@@ -26,7 +26,7 @@ private:
 class MultiOutput : public Output
 {
 public:
-   MultiOutput (Output& console, Output& logger) : consoleOutput(console), logOutput(logger) {};
+   MultiOutput (Output& console, Output& logger) : consoleOutput (console), logOutput (logger) {};
    void Print (const std::string& message) const override;
 private:
    Output& consoleOutput;
@@ -52,6 +52,6 @@ public:
 class ErrorDecorator : public OutputDecorator
 {
 public:
-   ErrorDecorator (Output& output) : OutputDecorator(output) {};
+   ErrorDecorator (Output& output) : OutputDecorator (output) {};
    void Print (const std::string& message) const override;
 };

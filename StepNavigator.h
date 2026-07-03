@@ -1,20 +1,18 @@
 #pragma once
-
-#pragma once
 #include<vector>
 
 template <typename T>
 class StepNavigator
 {
 public:
-   StepNavigator (const std::vector<T>& steps) : steps(steps), index(0) {};
+   StepNavigator (const std::vector<T>& steps) : steps (steps), index (0) {};
 
-   T Current()
+   T Current ()
    {
       return steps[index];
    }
 
-   bool Back()
+   bool Back ()
    {
       if (index == 0) {
          return false;
@@ -24,7 +22,7 @@ public:
       return true;
    }
 
-   bool Next()
+   bool Next ()
    {
       if (index + 1 >= steps.size())
       {

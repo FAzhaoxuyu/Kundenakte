@@ -1,5 +1,7 @@
 #include "CustomerRepository.h"
 #include "CustomerManager.h"
+#include "ContactData.h"
+#include "Address.h"
 #include <filesystem>
 #include<fstream>
 #include<sstream>
@@ -8,64 +10,194 @@ using namespace std;
 string Serialize (const vector<Customer>& customers)
 {
    string result;
-   for (const Customer& customer : customers)
-   {
-      result += customer.CustomerToString();
+   for (const Customer& customer : customers) {
+      result += customer.CustomerToString ();
    }
    return result;
 }
 std::vector<Customer> DeSerialize (const string& text)
 {
-   std::vector<Customer> result;
+   vector<Customer> result;
    string line;
-   stringstream ss(text);
+   stringstream ss (text);
 
-   while (std::getline(ss, line)){
-      Customer c = Customer::StringToCustomer(line);
+   while (std::getline (ss, line)) {
+      Customer c = Customer::StringToCustomer (line);
       result.push_back(c);
       cout << "\n";
    }
    return result;
 }
 
-std::vector<Customer> FileCustomerRepository::Load () const 
+std::vector<Customer> FileCustomerRepository :: Load () const
 {
-   std::cout << "Load called\n";
-   std::vector<Customer> customers;
+   vector<Customer> customers = LoadCustomers ();
+   LoadContactInfos (customers);
+   LoadAddresses (customers);
+   return customers;
+}
 
-   std::ifstream is(filename);
-   if (!is){
-      std::cerr << "Can't open the file:" << filename << std::endl;
-     
+void FileCustomerRepository :: Save (const vector<Customer>& customers)
+{
+   SaveCustomers (customers);
+   SaveContactInfos (customers);
+   SaveAddresses (customers);
+}
+
+std::vector<Customer> FileCustomerRepository :: LoadCustomers () const     // continue from here 
+{
+   vector<Customer> customers;
+
+   ifstream is (GetCustomerFilename ());
+   if (!is) {
+      cerr << "Can't open the file:" << filename << std::endl; 
       return {};
    }
-   std::cout << "File opened: " << filename << "\n";
-   std::cout << "Current path: "
-      << std::filesystem::current_path()
-      << "\n";
 
-   try
-   {
-      std::stringstream buffer;
+   try {
+      stringstream buffer;
       buffer << is.rdbuf();
-      std::string content = buffer.str();
-      std::cout << "File content:\n" << content << "\n";
-      customers = DeSerialize(content);
+      string content = buffer.str();
+      cout << "File content:\n" << content << "\n";
+      customers = DeSerialize (content);
 
-      std::cout << "Loaded customers: " << customers.size() << "\n\n";
+      cout << "Loaded customers: " << customers.size() << "\n\n";
       return customers;
    }
-   catch (const std::exception& ex)
-   {
-      std::cerr << "Invalid file content: " << ex.what() << std::endl;
-      logOutput.Print(string("Invalid content: ") + ex.what());
+   catch (const std::exception& ex) {
+      cerr << "Invalid file content: " << ex.what() << std::endl;
+      logOutput.Print(string ("Invalid content: ") + ex.what());
       return {};
    }
 
 }
-void FileCustomerRepository::Save (const std::vector<Customer>& customers)
+void FileCustomerRepository :: SaveCustomers (const vector<Customer>& customers) const
 {
  
-   std::ofstream os(filename);
-   os << Serialize(customers);
+   ofstream os (GetCustomerFilename());
+   os << Serialize (customers);
 };
+
+string FileCustomerRepository::GetCustomerFilename () const
+{
+   return "customers.csv";
+}
+string FileCustomerRepository::GetContactFilename () const
+{
+   return "contacts.csv";
+}
+string FileCustomerRepository::GetAddressFilename () const
+{
+   return "addresses.csv";
+}
+
+void FileCustomerRepository::LoadContactInfos (vector<Customer>& customers) const
+{
+   ifstream file (GetContactFilename ());
+   if (!file.is_open()) return;
+
+   string line;
+   while (getline (file, line)) {
+      stringstream ss (line);
+
+      string idText;
+      string typeText;
+      string value;
+
+      getline (ss, idText, ',');
+      getline (ss, typeText, ',');
+      getline (ss, value, ',');
+
+      int customerId = stoi (idText);
+      ContactData::ContactType type = ContactData::StringToContactTypes (typeText);
+      for (Customer& customer : customers) {
+         if (customer.GetId() == customerId) {
+            customer.GetContact().AddInfo(type, value);
+            break;
+         }
+      }
+   }
+}
+
+void FileCustomerRepository::LoadAddresses (vector<Customer>& customers) const
+{
+   ifstream file (GetAddressFilename ());
+
+   if (!file) {
+      cerr << "Can't open the file: " << GetAddressFilename () << endl;
+      return;
+   }
+
+   string line;
+   while (getline (file, line)) {
+      stringstream ss(line);
+      string customerIdText;
+      string typeText;
+      string street;
+      string houseNr;
+      string postCode;
+      string city;
+      string country;
+
+      getline (ss, customerIdText, ',');
+      getline (ss, typeText, ',');
+      getline (ss, street, ',');
+      getline(ss, houseNr, ',');
+      getline (ss, postCode, ',');
+      getline (ss, city, ',');
+      getline (ss, country, ',');
+
+      int customerId = std::stoi (customerIdText);
+
+      Address address;
+      address.GetStreet() = street;
+      address.GetHouseNr() = houseNr;
+      address.GetPostCode() = postCode;
+      address.GetCity() = city;
+      address.GetCountry() = country;
+
+      for (Customer& customer : customers) {
+         if (customer.GetId() == customerId) {
+            customer.AddAddress(address);
+            break;
+         }
+      }
+   }
+}
+
+void FileCustomerRepository::SaveCustomers (const std::vector<Customer>& customers) const
+{
+   ofstream file (GetCustomerFilename());
+
+   if (!file.is_open()) {
+      cerr << "Can't open the file: " << GetCustomerFilename() << endl;          //Customer::CustomerToString() need to change
+      return;
+   }
+
+   file << Serialize(customers);
+}
+void FileCustomerRepository::SaveContactInfos (const std::vector<Customer>& customers) const
+{
+   ofstream file (GetContactFilename());
+   if (!file.is_open()) {
+      cerr << "Can't open the file: " << GetContactFilename() << endl;
+      return;
+   }
+
+   for (const Customer& customer : customers) {
+      for (const ContactData::ContactEntry& info : customer.GetContact().GetAllContactEntries()) {
+         file << customer.GetId() << "," << ContactData::ContactTypeToString(info.type) << "," << info.value << ","
+              << ContactData::ContactStatusToString(info.status) << "," << info.preferred << "\n";
+      }
+   }
+}
+void FileCustomerRepository::SaveAddresses(const std::vector<Customer>& customers) const
+{
+   ofstream file(GetAddressFilename());
+   if (!file.is_open()) {
+      cerr << "Can't open the file: " << GetAddressFilename() << endl;
+      return;
+   }
+
+
+}

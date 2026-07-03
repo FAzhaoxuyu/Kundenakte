@@ -2,23 +2,25 @@
 #include<string>
 #include<vector>
 
-#include "ContactMethod.h"
+#include "ContactData.h"
 
 class Contact
 {
 public:
    const std::vector<std::string> GetEmails () const;
    std::string GetPreferredEmail () const;
-   void AddInfo (ContactType type, const std::string& value);
-   const std::vector<ContactInfo>& GetContactInfos (ContactType type) const;
+   void AddInfo (ContactData::ContactType type, const std::string& value);
+   const std::vector<ContactData::ContactEntry>& GetContactInfos (ContactData::ContactType type) const;
 
-   void SetContactInfo (ContactType type, const std::string& value);
-   bool SetPreferredContact (ContactType type);
+   void SetContactInfo (ContactData::ContactType type, const std::string& value);
+   bool SetPreferredContact (ContactData::ContactType type);
    /*bool HasContact (ContactType type) const;*/
    std::string EmailsToString () const;
-   void ClearPreferredContact();
+   void ClearPreferredContact ();
+   const std::vector<ContactData::ContactEntry>& GetAllContactEntries() const;
+   std::string ContactInfosToString() const;
 
 private:
-   std::vector<ContactInfo> contactInfos;
+   std::vector<ContactData::ContactEntry> contactEntries;
 };
 

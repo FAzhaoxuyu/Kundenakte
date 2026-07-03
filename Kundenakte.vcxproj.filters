@@ -60,10 +60,13 @@
     <ClCompile Include="Contact.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ContactMethod.cpp">
+    <ClCompile Include="ContactData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StringUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Address.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,7 +116,7 @@
     <ClInclude Include="Contact.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ContactMethod.h">
+    <ClInclude Include="ContactData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputAction.h">
@@ -129,6 +132,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StringUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Address.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

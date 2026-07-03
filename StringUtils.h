@@ -5,5 +5,5 @@
 class StringUtils
 {
 public:
-   static std::vector<std::string> SplitLine(const std::string& text, char delimiter);
+   static std::vector<std::string> SplitLine (const std::string& text, char delimiter);
 };

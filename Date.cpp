@@ -23,16 +23,13 @@ int Date::GetYear () const
    return year;
 }
 
-Date::Date (int valDay, int valMonth, int valYear):day(valDay), month(valMonth), year(valYear)
+Date::Date (int valDay, int valMonth, int valYear) : day (valDay), month (valMonth), year (valYear)
 {
-   if (!Validator::IsValidDate(day, month, year)) {
+   if (!Validator::IsValidDate (day, month, year)) {
       throw std::invalid_argument("Invalid date.");
    }
 }
-//bool Date::operator == (const Date& other)const
-//{
-//   return this->day == other.day && this->month == other.month && this->year == other.year;
-//}
+
 string Date::DateToString () const
 {
    return to_string(day) + "." + to_string(month) + "." + to_string(year);
@@ -40,12 +37,12 @@ string Date::DateToString () const
 
 Date Date::StringToDate (const string& text)
 {
-   std::vector<string> parts = StringUtils::SplitLine(text, '.');
+   std::vector<string> parts = StringUtils::SplitLine (text, '.');
    
    Date date;
-   date.day = std::stoi(parts[0]);
-   date.month = std::stoi(parts[1]);
-   date.year = std::stoi(parts[2]);
+   date.day = std::stoi (parts[0]);
+   date.month = std::stoi (parts[1]);
+   date.year = std::stoi (parts[2]);
    return date;
 }
 

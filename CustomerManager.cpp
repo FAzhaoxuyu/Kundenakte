@@ -53,7 +53,7 @@ bool CustomerManager::UpdateFirstName (int id, const std::string& newFirstName)
 }
 bool CustomerManager::UpdateLastName (int id, const std::string& newLastName)
 {
-   std::vector<Customer>::iterator it = FindCustomerById(id);
+   std::vector<Customer>::iterator it = FindCustomerById (id);
    if (it == customers.end()) return false;
    it->SetLastName(newLastName);
    repository.Save(customers);
@@ -61,7 +61,7 @@ bool CustomerManager::UpdateLastName (int id, const std::string& newLastName)
 }
 bool CustomerManager::UpdateDateOfBirth (int id, const Date& newDateOfBirth)
 {
-   std::vector<Customer>::iterator it = FindCustomerById(id);
+   std::vector<Customer>::iterator it = FindCustomerById (id);
    if (it == customers.end()) return false;
    it->SetDateOfBirth(newDateOfBirth);
    repository.Save(customers);
@@ -69,22 +69,22 @@ bool CustomerManager::UpdateDateOfBirth (int id, const Date& newDateOfBirth)
 }
 bool CustomerManager::UpdateGender (int id, customerTypes::Gender newGender)
 {
-   std::vector<Customer>::iterator it = FindCustomerById(id);
+   std::vector<Customer>::iterator it = FindCustomerById (id);
    if (it == customers.end()) return false;
    it->SetGender(newGender);
    repository.Save(customers);
    return true;
 }
-bool CustomerManager::UpdateCustomerStatus (int id, customerTypes::CustomerStatus newStatus) {
-   std::vector<Customer>::iterator it = FindCustomerById(id);
-   if (it == customers.end()) return false;
-   it->SetCustomerStatus(newStatus);
-   repository.Save(customers);
-   return true;
-}
+//bool CustomerManager::UpdateCustomerStatus (int id, customerTypes::CustomerStatus newStatus) {
+//   std::vector<Customer>::iterator it = FindCustomerById (id);
+//   if (it == customers.end()) return false;
+//   it->SetCustomerStatus(newStatus);
+//   repository.Save(customers);
+//   return true;
+//}
 bool CustomerManager::UpdateMemberLevel (int id, customerTypes::MemberLevel newLevel)
 {
-   std::vector<Customer>::iterator it = FindCustomerById(id);
+   std::vector<Customer>::iterator it = FindCustomerById (id);
    if (it == customers.end()) return false;
    it->SetMemberLevel(newLevel);
    repository.Save(customers);
@@ -92,7 +92,7 @@ bool CustomerManager::UpdateMemberLevel (int id, customerTypes::MemberLevel newL
 }
 bool CustomerManager::UpdateEmail (int id, const std::string& newEmail)
 {
-   std::vector<Customer>::iterator it = FindCustomerById(id);
+   std::vector<Customer>::iterator it = FindCustomerById (id);
    if (it == customers.end()) return false;
    it->SetEmail(newEmail);
    repository.Save(customers);
@@ -100,7 +100,7 @@ bool CustomerManager::UpdateEmail (int id, const std::string& newEmail)
 }
 bool CustomerManager::UpdateAddress (int id, const Address& newAddress)
 {
-   std::vector<Customer>::iterator it = FindCustomerById(id);
+   std::vector<Customer>::iterator it = FindCustomerById (id);
    if (it == customers.end()) return false;
    it->SetAddress(newAddress);
    repository.Save(customers);
@@ -109,7 +109,7 @@ bool CustomerManager::UpdateAddress (int id, const Address& newAddress)
 
 bool CustomerManager::UpdateStatus (int id, customerTypes::CustomerStatus newStatus)
 {
-   auto it = FindCustomerById(id);
+   auto it = FindCustomerById (id);
    if (it == customers.end()) return false;
 
    it->SetCustomerStatus(newStatus);
@@ -140,7 +140,7 @@ bool CustomerManager::RemoveById (int id)
 
 bool CustomerManager::DeactiveCustomer (int id)
 {
-   auto it = find_if(customers.begin(), 
+   auto it = find_if (customers.begin(), 
       customers.end(), 
       [id](const Customer& customer) 
       {return customer.GetId() == id;});
@@ -153,7 +153,7 @@ bool CustomerManager::DeactiveCustomer (int id)
    return false;
 }
 
-bool CustomerManager::SetPreferredContact(int id, ContactType type)
+bool CustomerManager::SetPreferredContact (int id, ContactData::ContactType type)
 {
    for (Customer& customer : customers) {
       if (customer.GetId() == id) {
@@ -174,7 +174,7 @@ bool CustomerManager::SetPreferredContact(int id, ContactType type)
 
 // Learning example for Strategy Pattern.
 // Sorting may later be moved to database queries using ORDER BY.
-void CustomerManager :: SortCustomers(const CustomerSortStrategy& strategy)
+void CustomerManager::SortCustomers (const CustomerSortStrategy& strategy)
 {
    strategy.Sort(customers);
 }

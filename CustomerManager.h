@@ -12,9 +12,9 @@ private:
    CustomerRepository& repository;
 
 public: 
-   CustomerManager(CustomerRepository& repository, const std::vector<Customer>& customers) : repository(repository), customers(customers) {};
+   CustomerManager (CustomerRepository& repository, const std::vector<Customer>& customers) : repository (repository), customers (customers) {};
    std::vector<Customer>::iterator FindCustomerById (int searchId);
-   const std::vector<Customer>& GetCustomers() const;
+   const std::vector<Customer>& GetCustomers () const;
    void Add (Customer& newCustomer);
    int GenerateCustomerId ();
    bool HasCustomers () const;
@@ -32,12 +32,12 @@ public:
 
    bool RemoveById (int id);
    bool DeactiveCustomer (int id);
-   bool SetPreferredContact(int id, ContactType type);
+   bool SetPreferredContact (int id, ContactData::ContactType type);
 
-   void SortCustomers(const CustomerSortStrategy& strategy);
+   void SortCustomers (const CustomerSortStrategy& strategy);
 
   
 
-   //void SaveToFile(const std::string& filename) const;
-   //void LoadFromFile(const std::string& filename);
+   //void SaveToFile (const std::string& filename) const;
+   //void LoadFromFile (const std::string& filename);
 };

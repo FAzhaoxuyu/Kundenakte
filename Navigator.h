@@ -5,14 +5,14 @@ template <typename T>
 class Navigator
 {
 public:
-   Navigator(std::vector<T> items) : items(std::move(items)), index(0) {};
+   Navigator (std::vector<T> items) : items (std::move(items)), index (0) {};
    
-   T Current()
+   T Current ()
    {
       return items[index];
    }
 
-   bool Back()
+   bool Back ()
    {
       if (index == 0) {
          return false;
@@ -22,7 +22,7 @@ public:
       return true;
    }
 
-   bool Next()
+   bool Next ()
    {
       if (index + 1 >= items.size())
       {

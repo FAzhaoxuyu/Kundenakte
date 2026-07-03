@@ -37,38 +37,38 @@ string customerTypes::LevelToString (customerTypes::MemberLevel memberLevel)
 
 customerTypes::Gender customerTypes::StringToGender (const std::string& text)
 {
-   if (text == "Male"){
+   if (text == "Male") {
       return customerTypes::Gender::Male;
    }
-   else if (text == "Female"){
+   else if (text == "Female") {
       return customerTypes::Gender::Female;
-    }
-   else if (text == "Diverse"){
+   }
+   else if (text == "Diverse") {
       return customerTypes::Gender::Diverse;
-    } 
+   } 
    throw std::invalid_argument("Unknown gender: " + text);
 }
 customerTypes::CustomerStatus customerTypes::StringToStatus (const std::string& text)
 {
-   if (text == "Active"){
+   if (text == "Active") {
       return customerTypes::CustomerStatus::Active;
    }
-   else{
+   else {
       return customerTypes::CustomerStatus::Inactive;
    }
 }
 customerTypes::MemberLevel customerTypes::StringToLevel (const std::string& text)
 {
-   if (text == "Standard"){
+   if (text == "Standard") {
       return customerTypes::MemberLevel::Standard;
    }
-   else if (text == "Private"){
+   else if (text == "Private") {
       return customerTypes::MemberLevel::Private;
    }
-   else if (text == "Premium"){
+   else if (text == "Premium") {
       return customerTypes::MemberLevel::Premium;
    }
-   else{
+   else {
       return customerTypes::MemberLevel::Corporate;
    }
 }

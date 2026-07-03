@@ -14,13 +14,10 @@ class Account
 {
 public:
    Account ();
-   Account (int accountId,
-      int customerId,
-      AccountType accountType,
-      double balance) : accountId(accountId),
-      customerId(customerId),
-      accountType(accountType),
-      balance(balance) {}
+   Account (int accountId, int customerId, AccountType accountType, double balance) : accountId (accountId),
+      customerId (customerId),
+      accountType (accountType),
+      balance (balance) {}
 
    int accountId;
    int customerId;

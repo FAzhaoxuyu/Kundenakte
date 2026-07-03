@@ -1,14 +1,14 @@
 ﻿#include "Contact.h"
-#include "ContactMethod.h"
+#include "ContactData.h"
 
 #include<iostream>
 
-const std::vector<std::string> Contact::GetEmails() const
+const std::vector<std::string> Contact::GetEmails () const
 {
    std::vector<std::string> emails;
 
-   for (auto& info : contactInfos) {
-      if (info.type == ContactType::Email) {
+   for (auto& info : contactEntries) {
+      if (info.type == ContactData::ContactType::Email) {
          emails.push_back(info.value);
       }
    }
@@ -17,9 +17,8 @@ const std::vector<std::string> Contact::GetEmails() const
 
 //std::string Contact::GetPreferredEmail() const
 //{
-//   for (const auto& info : contactInfos)
-//   {
-//      if (info.type == ContactType::Email && info.preferred && info.status == ContactStatus::Valid){
+//   for (const auto& info : contactInfos) {
+//      if (info.type == ContactType::Email && info.preferred && info.status == ContactStatus::Valid) {
 //         return info.value;
 //      }
 //   }
@@ -27,32 +26,32 @@ const std::vector<std::string> Contact::GetEmails() const
 //}
 
 
-void Contact::AddInfo (ContactType type, const std::string& value)
+void Contact::AddInfo (ContactData::ContactType type, const std::string& value)
 {
-   contactInfos.emplace_back (type, value, ContactStatus::Valid);
+   contactEntries.emplace_back(type, value, ContactData::ContactStatus::Valid);
 }
 
-const std::vector<ContactInfo>& Contact::GetContactInfos (ContactType type) const
+const std::vector<ContactData::ContactEntry>& Contact::GetContactInfos (ContactData::ContactType type) const
 {
-   return contactInfos;
+   return contactEntries;
 }
 
-void Contact::SetContactInfo (ContactType type, const std::string& value)
+void Contact::SetContactInfo (ContactData::ContactType type, const std::string& value)
 {
-   for (ContactInfo& info : contactInfos) {
+   for (ContactData::ContactEntry& info : contactEntries) {
       if (info.type == type) {
          info.value = value;
          return;
       }
    }
-   contactInfos.push_back ({ type, value, ContactStatus::Valid });
+   contactEntries.push_back({ type, value, ContactData::ContactStatus::Valid });
 }
 
-bool Contact::SetPreferredContact(ContactType type)
+bool Contact::SetPreferredContact (ContactData::ContactType type)
 {
    bool found = false;
-   for (auto& info : contactInfos){
-      if (info.type == type && info.status == ContactStatus::Valid) {
+   for (auto& info : contactEntries) {
+      if (info.type == type && info.status == ContactData::ContactStatus::Valid) {
          info.preferred = true;
          found = true;
       }
@@ -62,40 +61,6 @@ bool Contact::SetPreferredContact(ContactType type)
    }
    return found;
 }
-
-//bool Contact::HasContact(ContactType type) const
-//{
-//   for (const ContactInfo& info : contactInfos)
-//   {
-//      switch (type)
-//      {
-//      case ContactType::Mobile:
-//         if (info.type == ContactType::Mobile)
-//            return true;
-//         break;
-//
-//      case ContactType::Landline:
-//         if (info.type == ContactType::Landline)
-//            return true;
-//         break;
-//
-//      case ContactType::Email:
-//         if (info.type == ContactType::Email)
-//            return true;
-//         break;
-//
-//      case ContactType::Other:
-//         if (info.type == ContactType::Other)
-//            return true;
-//         break;
-//
-//      default:
-//         break;
-//      }
-//   }
-//
-//   return false;
-//}
 
 std::string Contact::EmailsToString () const
 {
@@ -116,7 +81,27 @@ std::string Contact::EmailsToString () const
 
 void Contact::ClearPreferredContact ()
 {
-   for (auto& info : contactInfos){
+   for (auto& info : contactEntries) {
       info.preferred = false;
    }
+}
+
+const std::vector<ContactData::ContactEntry>& Contact::GetAllContactEntries () const
+{
+   return contactEntries;
+}
+
+std::string Contact::ContactInfosToString() const
+{
+   std::string result;
+
+   for (const ContactData::ContactEntry& info : contactEntries)
+   {
+      result += ContactData::ContactTypeToString (info.type);
+      result += ": ";
+      result += info.value;
+      result += " | ";
+   }
+
+   return result;
 }

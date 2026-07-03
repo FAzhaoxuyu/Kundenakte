@@ -7,17 +7,17 @@
 class CustomerSortStrategy
 {
 public:
-   virtual void Sort(std::vector<Customer>& customers) const = 0;
+   virtual void Sort (std::vector<Customer>& customers) const = 0;
 };
 
 class SortByLastName : public CustomerSortStrategy
 {
 public:
-   void Sort(std::vector<Customer>& customers)  const override;
+   void Sort (std::vector<Customer>& customers)  const override;
 };
 
 class SortById : public CustomerSortStrategy
 {
 public:
-   void Sort(std::vector<Customer>& customers) const override;
+   void Sort (std::vector<Customer>& customers) const override;
 };

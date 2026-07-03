@@ -128,8 +128,9 @@
     <ClCompile Include="Account.cpp" />
     <ClCompile Include="AccountManager.cpp" />
     <ClCompile Include="Action.cpp" />
+    <ClCompile Include="Address.cpp" />
     <ClCompile Include="Contact.cpp" />
-    <ClCompile Include="ContactMethod.cpp" />
+    <ClCompile Include="ContactData.cpp" />
     <ClCompile Include="Customer.cpp" />
     <ClCompile Include="CustomerManager.cpp" />
     <ClCompile Include="CustomerManagerUI.cpp" />
@@ -147,8 +148,9 @@
     <ClInclude Include="Account.h" />
     <ClInclude Include="AccountManager.h" />
     <ClInclude Include="Action.h" />
+    <ClInclude Include="Address.h" />
     <ClInclude Include="Contact.h" />
-    <ClInclude Include="ContactMethod.h" />
+    <ClInclude Include="ContactData.h" />
     <ClInclude Include="CreateCustomerStep.h" />
     <ClInclude Include="Customer.h" />
     <ClInclude Include="CustomerManager.h" />

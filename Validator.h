@@ -1,6 +1,6 @@
 #pragma once
 #include "Date.h"
-#include "ContactMethod.h"
+#include "ContactData.h"
 
 class Validator
 {
@@ -14,9 +14,9 @@ public:
    static bool IsValidEmail (const std::string& email);
    static bool IsValidAddress (const std::string& address);
  
-   static bool IsValidPhoneNr(const std::string& nr);
-   static bool IsValidMobileNr(const std::string& nr);
-   static bool IsValidTeleNr(const std::string& nr);
+   static bool IsValidPhoneNr (const std::string& nr);
+   static bool IsValidMobileNr (const std::string& nr);
+   static bool IsValidTeleNr (const std::string& nr);
 
-   static bool IsValidContact(ContactType type, const std::string& value);
+   static bool IsValidContact (ContactData::ContactType type, const std::string& value);
 };

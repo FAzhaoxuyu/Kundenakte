@@ -1,7 +1,7 @@
 #include "CustomerSortStrategy.h"
 #include<algorithm>
 
-void SortByLastName :: Sort(std::vector<Customer>& customers) const
+void SortByLastName :: Sort (std::vector<Customer>& customers) const
 {
    std::sort(customers.begin(), customers.end(),
       [](const Customer& a, const Customer& b)
@@ -9,9 +9,9 @@ void SortByLastName :: Sort(std::vector<Customer>& customers) const
       });
 }
 
-void SortById :: Sort(std::vector<Customer>& customers) const
+void SortById :: Sort (std::vector<Customer>& customers) const
 {
-   std::sort(customers.begin(), customers.end(),
+   std::sort (customers.begin(), customers.end(),
       [](const Customer& a, const Customer& b) 
       {return a.GetId() < b.GetId();});
 }

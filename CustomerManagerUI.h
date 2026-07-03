@@ -4,7 +4,7 @@
 #include "Date.h"
 #include "CustomerManager.h"
 #include "OutputFactory.h"
-#include "ContactMethod.h"
+#include "ContactData.h"
 
 #include<string>
 
@@ -40,12 +40,12 @@ public:
    Action ReadChoice (const std::string& question);
    Action ReadOption (const std::string& question);
 
-   std::vector<std::string> ReadPhoneNrs();
-   std::vector<std::string> ReadMobileNrs();
-   std::vector<std::string> ReadTeleNrs();
+   std::vector<std::string> ReadPhoneNrs ();
+   std::vector<std::string> ReadMobileNrs ();
+   std::vector<std::string> ReadTeleNrs ();
    //std::vector<std::string> ReadEmails();
-   ContactType ReadContactType();
-   ContactType ReadPrefer();
+   ContactData::ContactType ReadContactType ();
+   ContactData::ContactType ReadPrefer ();
 
    std::string ReadValidatedFirstName ();
    std::string ReadValidatedLastName ();
@@ -54,14 +54,14 @@ public:
    std::string ReadValidatedEmail ();
    std::string ReadValidatedAddress ();
 
-   Contact ReadContact();
-   Contact ReadValidContact();
+   Contact ReadContact ();
+   Contact ReadValidContact ();
 
-   ContactType ReadContactMethod();
+   ContactData::ContactType ReadContactMethod ();
 
    void HandleAdd ();
-   void HandleSelect();
-   bool HasSelectedCustomer() const;
+   void HandleSelect ();
+   bool HasSelectedCustomer () const;
 
    void HandleUpdateFirstName ();
    void HandleUpdateLastName ();
@@ -72,10 +72,10 @@ public:
    void HandleUpdateEmail ();
    void HandleUpdateAddress ();
 
-   void HandleUpdateSelectedCustomer();
-   void HandleRemoveSelectedCustomer();
-   void HandleShowSelectedCustomer();
-   void HandleSetPreferredContact();
+   void HandleUpdateSelectedCustomer ();
+   void HandleRemoveSelectedCustomer ();
+   void HandleShowSelectedCustomer ();
+   void HandleSetPreferredContact ();
 
    int ReadUpdateOption ();
 
