@@ -1,6 +1,6 @@
 ﻿#include "Contact.h"
 #include "ContactData.h"
-
+using namespace std;
 #include<iostream>
 
 const std::vector<std::string> Contact::GetEmails () const
@@ -28,7 +28,16 @@ const std::vector<std::string> Contact::GetEmails () const
 
 void Contact::AddInfo (ContactData::ContactType type, const std::string& value)
 {
-   contactEntries.emplace_back(type, value, ContactData::ContactStatus::Valid);
+   if (HasContact(type, value)) {
+      return;
+   }
+   ContactData::ContactEntry entry;
+   entry.type = type;
+   entry.value = value;
+   entry.status = ContactData::ContactStatus::Valid;
+   entry.preferred = false;
+
+   contactEntries.push_back(entry);
 }
 
 const std::vector<ContactData::ContactEntry>& Contact::GetContactInfos (ContactData::ContactType type) const
@@ -49,17 +58,35 @@ void Contact::SetContactInfo (ContactData::ContactType type, const std::string& 
 
 bool Contact::SetPreferredContact (ContactData::ContactType type)
 {
-   bool found = false;
+   if (!IsValid(type)) {
+      return false;
+   }
+
    for (auto& info : contactEntries) {
-      if (info.type == type && info.status == ContactData::ContactStatus::Valid) {
-         info.preferred = true;
-         found = true;
-      }
-      else {
-         info.preferred = false;
+      info.preferred = (info.type == type);
+   }
+
+   return true;
+}
+
+bool Contact::HasContact (ContactData::ContactType type, const string& value) const
+{
+   for (const auto& info : contactEntries) {
+      if (info.type == type && info.value == value) {
+         return true;
       }
    }
-   return found;
+   return false;
+}
+
+bool Contact::IsValid (ContactData::ContactType type) const
+{
+   for (const auto& info : contactEntries) {
+      if (info.type == type && info.status == ContactData::ContactStatus::Valid) {
+         return true;
+      }
+   }
+   return false;
 }
 
 std::string Contact::EmailsToString () const
@@ -100,7 +127,7 @@ std::string Contact::ContactInfosToString() const
       result += ContactData::ContactTypeToString (info.type);
       result += ": ";
       result += info.value;
-      result += " | ";
+      result += "\n";
    }
 
    return result;

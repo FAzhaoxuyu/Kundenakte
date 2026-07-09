@@ -14,7 +14,8 @@ public:
 
    void SetContactInfo (ContactData::ContactType type, const std::string& value);
    bool SetPreferredContact (ContactData::ContactType type);
-   /*bool HasContact (ContactType type) const;*/
+   bool HasContact (ContactData::ContactType type, const std::string& value) const;
+   bool IsValid (ContactData::ContactType type) const;
    std::string EmailsToString () const;
    void ClearPreferredContact ();
    const std::vector<ContactData::ContactEntry>& GetAllContactEntries() const;

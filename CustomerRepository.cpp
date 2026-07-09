@@ -19,12 +19,11 @@ std::vector<Customer> DeSerialize (const string& text)
 {
    vector<Customer> result;
    string line;
-   stringstream ss (text);
+   stringstream ss (text);      
 
    while (std::getline (ss, line)) {
       Customer c = Customer::StringToCustomer (line);
       result.push_back(c);
-      cout << "\n";
    }
    return result;
 }
@@ -58,7 +57,7 @@ std::vector<Customer> FileCustomerRepository :: LoadCustomers () const     // co
       stringstream buffer;
       buffer << is.rdbuf();
       string content = buffer.str();
-      cout << "File content:\n" << content << "\n";
+      cout << "File content:\n\n" << content << "\n";
       customers = DeSerialize (content);
 
       cout << "Loaded customers: " << customers.size() << "\n\n";
@@ -69,14 +68,7 @@ std::vector<Customer> FileCustomerRepository :: LoadCustomers () const     // co
       logOutput.Print(string ("Invalid content: ") + ex.what());
       return {};
    }
-
 }
-void FileCustomerRepository :: SaveCustomers (const vector<Customer>& customers) const
-{
- 
-   ofstream os (GetCustomerFilename());
-   os << Serialize (customers);
-};
 
 string FileCustomerRepository::GetCustomerFilename () const
 {
@@ -97,6 +89,8 @@ void FileCustomerRepository::LoadContactInfos (vector<Customer>& customers) cons
    if (!file.is_open()) return;
 
    string line;
+   std::getline(file, line);
+
    while (getline (file, line)) {
       stringstream ss (line);
 
@@ -112,7 +106,7 @@ void FileCustomerRepository::LoadContactInfos (vector<Customer>& customers) cons
       ContactData::ContactType type = ContactData::StringToContactTypes (typeText);
       for (Customer& customer : customers) {
          if (customer.GetId() == customerId) {
-            customer.GetContact().AddInfo(type, value);
+            customer.AddContactInfo(type, value);
             break;
          }
       }
@@ -129,6 +123,7 @@ void FileCustomerRepository::LoadAddresses (vector<Customer>& customers) const
    }
 
    string line;
+   getline(file, line);   //skip header
    while (getline (file, line)) {
       stringstream ss(line);
       string customerIdText;
@@ -147,14 +142,18 @@ void FileCustomerRepository::LoadAddresses (vector<Customer>& customers) const
       getline (ss, city, ',');
       getline (ss, country, ',');
 
-      int customerId = std::stoi (customerIdText);
+      cout << "customerIdText = [" << customerIdText << "]" << endl;        // didnt print out
 
+      int customerId = std::stoi (customerIdText);
       Address address;
-      address.GetStreet() = street;
-      address.GetHouseNr() = houseNr;
-      address.GetPostCode() = postCode;
-      address.GetCity() = city;
-      address.GetCountry() = country;
+
+    
+      address.SetType(StringToAddressType(typeText));
+      address.SetStreet(street);
+      address.SetHouseNr(houseNr);
+      address.SetPostCode(postCode);
+      address.SetCity(city);
+      address.SetCountry(country);
 
       for (Customer& customer : customers) {
          if (customer.GetId() == customerId) {
@@ -173,6 +172,7 @@ void FileCustomerRepository::SaveCustomers (const std::vector<Customer>& custome
       cerr << "Can't open the file: " << GetCustomerFilename() << endl;          //Customer::CustomerToString() need to change
       return;
    }
+
 
    file << Serialize(customers);
 }

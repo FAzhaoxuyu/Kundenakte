@@ -64,18 +64,39 @@ void Address::SetCountry (const std::string& country)
    this->country = country;
 }
 
+std::string AddressTypeToString (AddressType type)
+{
+   switch (type) {
+   case AddressType::Home: return "Home";
+   case AddressType::Work: return "Work";
+   case AddressType::Billing: return "Billing";
+   default: return "Unknown";
+   }
+}
+
+AddressType StringToAddressType (const std::string& text)
+{
+   if (text == "Home" || text == "home" || text == "1") {
+      return AddressType::Home;
+   }
+   if (text == "Work" || text == "work" || text == "2") {
+      return AddressType::Work;
+   }
+   if (text == "Billing" || text == "billing" || text == "3") {
+      return AddressType::Billing;
+   }
+
+   throw std::invalid_argument("Invalid address type.");
+
+   throw std::invalid_argument ("Unknown AddressType: " + text);
+}
+
 std::string Address::ToString () const
 {
-   std::stringstream ss;
-
-   ss << static_cast<int>(type) << ";"
-      << street << ";"
-      << houseNr << ";"
-      << postCode << ";"
-      << city << ";"
-      << country;
-
-   return ss.str();
+   return AddressTypeToString(type) + ": "
+      + street + " " + houseNr + ","
+      + postCode + " " + city + ","
+      + country;
 }
 
 Address Address::StringToAddress (const std::string& text)

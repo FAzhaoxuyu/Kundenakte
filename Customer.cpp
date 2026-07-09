@@ -18,7 +18,16 @@ Customer::Customer (
    const string& valFirstName,
    const string& valLastName,
    const Date& valDateOfBirth,
-   const customerTypes::Gender& valGender) {};
+   const customerTypes::Gender& valGender,
+   const customerTypes::CustomerStatus& valStatus,
+   const customerTypes::MemberLevel& valLevel) :
+   id (valId),
+   firstName (valFirstName),
+   lastName (valLastName),
+   dateOfBirth (valDateOfBirth),
+   gender (valGender),
+   customerStatus (valStatus),
+   memberLevel (valLevel) {};
 
 const int& Customer::GetId () const
 {
@@ -106,6 +115,11 @@ void Customer::SetAddress (const Address& newAddress)
    addresses.push_back(newAddress);
 }
 
+void Customer::SetContact(const Contact& newContact)
+{
+   contact = newContact;
+}
+
 bool Customer::SetPreferredContact (ContactData::ContactType type)
 {
    // Post is not in contact, it is in address
@@ -126,6 +140,12 @@ void Customer::AddAddress(const Address& address)
    addresses.push_back(address);
 }
 
+void Customer::AddContactInfo(ContactData::ContactType type,
+   const std::string& value)
+{
+   contact.AddInfo(type, value);
+}
+
 void Customer::Print () const
 {
    cout << GetId() << " "
@@ -134,10 +154,9 @@ void Customer::Print () const
       << GetDateOfBirth().DateToString() << " "
       << customerTypes::GenderToString(GetGender()) << " "
       << customerTypes::StatusToString(GetCustomerStatus()) << " "
-      << customerTypes::LevelToString(GetMemberLevel()) << " "
-      << contact.ContactInfosToString() << endl;
+      << customerTypes::LevelToString(GetMemberLevel()) << endl;
 
-   cout << "Contacts: " << contact.EmailsToString() << endl;
+   cout << "Contacts: " << contact.ContactInfosToString() << endl;
 
    cout << "Addresses: ";
    for (const Address& address : addresses) {
@@ -153,9 +172,36 @@ std::string Customer::CustomerToString () const
       firstName,
       lastName,
       dateOfBirth.DateToString(), 
-      customerTypes::GenderToString(gender),
-      customerTypes::StatusToString(customerStatus),
+      customerTypes::GenderToString (gender),
+      customerTypes::StatusToString (customerStatus),
       customerTypes::LevelToString (memberLevel));
+}
+
+std::string Customer::CustomerDetailsToString () const
+{
+   string result;
+   result += "Customer: \n";
+   result += to_string (id) + " "
+      + firstName + " "
+      + lastName + " "
+      + dateOfBirth.DateToString() + " "
+      + customerTypes::GenderToString (gender) + " "
+      + customerTypes::StatusToString(customerStatus) + " "
+      + customerTypes::LevelToString(memberLevel) + "\n\n"; 
+
+   result += "Contacts:\n";
+   result += contact.ContactInfosToString() + "\n\n";
+
+   result += "Addresses:\n";
+   for (const Address& address : addresses) {
+      result += address.ToString() + "\n";
+   }
+
+   result += "\nPreferred contact: ";
+   result += ContactData::ContactTypeToString (preferredContact);
+   result += "\n";
+
+   return result;
 }
 
 Customer Customer::StringToCustomer (const string& line)
@@ -170,21 +216,21 @@ Customer Customer::StringToCustomer (const string& line)
    customerTypes::CustomerStatus status = customerTypes::StringToStatus (parts[5]);
    customerTypes::MemberLevel memberLevel = customerTypes::StringToLevel (parts[6]);
 
-   Contact contact;
-   contact.AddInfo(ContactData::ContactType::Email, parts[7]);
+   //Contact contact;
+   //contact.AddInfo(ContactData::ContactType::Email, parts[7]);
 
-   Address address = Address::StringToAddress (parts[8]);
-   address.SetPostCode(parts[9]);
-   address.SetCity(parts[10]);
-   address.SetCountry(parts[11]);
+   //Address address = Address::StringToAddress (parts[8]);
+   //address.SetPostCode(parts[9]);
+   //address.SetCity(parts[10]);
+   //address.SetCountry(parts[11]);
    
-   Customer customer (id, firstName, lastName, dateOfBirth, gender);
-   customer.SetCustomerStatus(status);
-   customer.SetMemberLevel(memberLevel);
+   Customer customer (id, firstName, lastName, dateOfBirth, gender, status, memberLevel);
+   //customer.SetCustomerStatus(status);
+   //customer.SetMemberLevel(memberLevel);
 
-   if (parts.size() > 12 && !parts[12].empty()){
+ /*  if (parts.size() > 12 && !parts[12].empty()){
       customer.SetPreferredContact(ContactData::StringToContactTypes(parts[12]));
-   }
+   }*/
 
    return customer;
 }

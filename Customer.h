@@ -32,7 +32,13 @@ private:
   
 public:
    Customer () = default;
-   Customer (const int& valId, const std::string& valFirstName, const std::string& valLastName, const Date& valDateOfBirth, const customerTypes::Gender& valGender);
+   Customer (const int& valId,
+      const std::string& valFirstName,
+      const std::string& valLastName,
+      const Date& valDateOfBirth,
+      const customerTypes::Gender& valGender,
+      const customerTypes::CustomerStatus& valStatus,
+      const customerTypes::MemberLevel& valLevel);
    const int& GetId () const;
    const std::string& GetFirstName () const;
    const std::string& GetLastName () const;
@@ -40,8 +46,8 @@ public:
    const customerTypes::Gender& GetGender () const;
    const customerTypes::CustomerStatus GetCustomerStatus () const;
    const customerTypes::MemberLevel GetMemberLevel () const;
-   const std::vector<Address>& GetAddresses() const;
-   const Contact& GetContact() const;
+   const std::vector<Address>& GetAddresses () const;
+   const Contact& GetContact () const;
    ContactData::ContactType GetPreferredContact () const;
 
    void SetFirstName (const std::string& valFirstName);
@@ -51,13 +57,16 @@ public:
    void SetCustomerStatus (customerTypes::CustomerStatus valCustomerStatus);
    void SetMemberLevel (customerTypes::MemberLevel valMemberLevel);
    void SetEmail (const std::string& valEmail);
-   void SetAddress(const Address& newAddress);
+   void SetAddress (const Address& newAddress);
+   void SetContact(const Contact& newContact);
    bool SetPreferredContact (ContactData::ContactType type);
    void SetContactInfo (ContactData::ContactType type, const std::string& value);
-   void AddAddress(const Address& address);
+   void AddAddress (const Address& address);
+   void AddContactInfo(ContactData::ContactType type, const std::string& value);
    void Print () const;
 
    std::string CustomerToString () const;
+   std::string CustomerDetailsToString() const;
    static Customer StringToCustomer (const std::string& line);
    
 

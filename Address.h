@@ -11,6 +11,9 @@ enum class AddressType
    Billing
 };
 
+std::string AddressTypeToString (AddressType type);
+AddressType StringToAddressType (const std::string& text);
+
 class Address
 {
 public:

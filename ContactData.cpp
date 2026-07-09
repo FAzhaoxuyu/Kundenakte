@@ -7,7 +7,7 @@
 ContactData::ContactType ContactData::StringToContactTypes (std::string type)
 {
    std::transform(type.begin(), type.end(), type.begin(), ::tolower);
-   if (type == "none") return ContactData::ContactType::None;
+   if (type == "not set") return ContactData::ContactType::None;
    if (type == "mobile") return ContactData::ContactType::Mobile;
    if (type == "landline") return ContactData::ContactType::Landline;
    if (type == "email") return ContactData::ContactType::Email;
@@ -22,7 +22,7 @@ std::string ContactData::ContactTypeToString (ContactData::ContactType type)
 {
    switch (type)
    {
-   case ContactData::ContactType::None: return "None";
+   case ContactData::ContactType::None: return "Not set";
    case ContactData::ContactType::Mobile: return "Mobile";
    case ContactData::ContactType::Landline: return "Landline";
    case ContactData::ContactType::Email: return "Email";

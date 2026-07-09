@@ -21,7 +21,9 @@ private:
    int selectedCustomerID = -1;
 
 public:
-   CustomerManagerUI (CustomerManager& manager, Output& logOutput, Output& consoleOutput, Output& multiOutput, Output& errorLogger) : manager(manager), logOutput(logOutput), consoleOutput(consoleOutput), multiOutput(multiOutput), errorLogger(errorLogger) {};
+   CustomerManagerUI (CustomerManager& manager, 
+      Output& logOutput, Output& consoleOutput, Output& multiOutput, Output& errorLogger) : 
+      manager(manager), logOutput(logOutput), consoleOutput(consoleOutput), multiOutput(multiOutput), errorLogger(errorLogger) {};
 
    void Run ();
    void ShowMenu ();
@@ -52,12 +54,13 @@ public:
    Date ReadValidatedDate ();
   
    std::string ReadValidatedEmail ();
-   std::string ReadValidatedAddress ();
+   std::string ReadValidatedAddressType ();
+   Address ReadValidatedAddress();
 
    Contact ReadContact ();
    Contact ReadValidContact ();
 
-   ContactData::ContactType ReadContactMethod ();
+   int ReadContactChoice (size_t maxChoice);
 
    void HandleAdd ();
    void HandleSelect ();
@@ -81,6 +84,7 @@ public:
 
    void ShowMainMenu ();
    void ShowCustomerMenu ();
+   void ShowContactEntries(const std::vector<ContactData::ContactEntry>& entries);
    void HandleCustomerMenu ();
   
    void Show ();

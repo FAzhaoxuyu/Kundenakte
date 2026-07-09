@@ -8,6 +8,7 @@
 #include "Validator.h"
 #include "CreateCustomerStep.h"
 #include "StepNavigator.h"
+#include "Address.h"
 #include <iostream>
 
 using namespace std;
@@ -143,6 +144,14 @@ void CustomerManagerUI::ShowCustomerMenu()
    consoleOutput.Print("=========================\n");
 }
 
+void CustomerManagerUI::ShowContactEntries(const std::vector<ContactData::ContactEntry>& entries)
+{
+   for (int i = 0; i < entries.size(); i++) {
+      consoleOutput.Print(
+         std::to_string(i + 1) + ". " + ContactData::ContactTypeToString(entries[i].type) + ": " + entries[i].value + "\n");
+   }
+}
+
 void CustomerManagerUI::HandleUpdateSelectedCustomer ()
 {
    while (true) {
@@ -167,18 +176,18 @@ void CustomerManagerUI::HandleUpdateSelectedCustomer ()
          break;
 
       case 5:
-         HandleDeactivateCustomer ();
-         break;
-
-      case 6:
          HandleUpdateMemberLevel ();
          break;
 
-      case 7:
+      case 6:
          HandleUpdateEmail ();
          break;
-
+      case 7:
+         HandleUpdateAddress();    ///
       case 8:
+         HandleDeactivateCustomer();
+         break;
+      case 9:
          return;
       }
    } 
@@ -189,8 +198,7 @@ void CustomerManagerUI::HandleShowSelectedCustomer ()
 {
    for (const Customer& customer : manager.GetCustomers()) {
       if (customer.GetId() == selectedCustomerID) {
-         consoleOutput.Print(customer.CustomerToString() + "\n");
-         consoleOutput.Print("Preferred contact: " + ContactTypeToString (customer.GetPreferredContact()) +"\n");
+         consoleOutput.Print(customer.CustomerDetailsToString());
          return;
       }
    }
@@ -199,16 +207,28 @@ void CustomerManagerUI::HandleShowSelectedCustomer ()
    selectedCustomerID = -1;
 }
 
-void CustomerManagerUI::HandleSetPreferredContact ()
+void CustomerManagerUI::HandleSetPreferredContact()
 {
-   ContactData::ContactType type = ReadContactMethod ();
-   std::cout << "selectedCustomerID = " << selectedCustomerID << std::endl;
-   bool success = manager.SetPreferredContact(selectedCustomerID, type);
+   vector<ContactData::ContactEntry> entries = manager.GetContactEntries(selectedCustomerID);
+   if (entries.empty()) {
+      consoleOutput.Print("This customer has no contact information.\n");
+      return;
+   }
+   consoleOutput.Print("\nCurrent contacts are as follows:\n\n");
+   ShowContactEntries(entries);
+
+   int choice = ReadInt("Please choose a contact by number: ");
+   if (choice < 1 || choice > entries.size()) {
+      consoleOutput.Print("Invalid choice.\n");
+      return;
+   }
+   bool success = manager.SetPreferredContact(selectedCustomerID, entries[choice - 1].type);
+
    if (success) {
-      multiOutput.Print("Preffered contact method updated.\n");
+      multiOutput.Print("Preferred contact updated.\n");
    }
    else {
-      consoleOutput.Print("failed to update preferred contact methord.\n");
+      consoleOutput.Print("Failed to update preferred contact.\n");
    }
 }
 
@@ -395,16 +415,40 @@ string CustomerManagerUI::ReadValidatedEmail ()
       return email;
    }
 }
-string CustomerManagerUI::ReadValidatedAddress ()
+
+string CustomerManagerUI::ReadValidatedAddressType ()
 {
    while (true) {
-      string address = ReadText ("Please enter address: ");
-      if (!Validator::IsValidAddress (address)) {
-         consoleOutput.Print("Invalid address.\n");
+      string type = ReadText("Address type (Home / Work / Billing): ");
+
+      if (!Validator::IsValidAddressType(type)) {
+         consoleOutput.Print("Invalid address type.\n");
          continue;
       }
-      return address;
+
+      return type;
    }
+}
+
+Address CustomerManagerUI::ReadValidatedAddress ()
+{
+   Address address;
+
+   string type = ReadValidatedAddressType();
+   string street = ReadText("Street: ");
+   string houseNr = ReadText("House number: ");
+   string postCode = ReadText("Post code: ");
+   string city = ReadText("City: ");
+   string country = ReadText("Country: ");
+
+   address.SetType(StringToAddressType(type));
+   address.SetStreet(street);
+   address.SetHouseNr(houseNr);
+   address.SetPostCode(postCode);
+   address.SetCity(city);
+   address.SetCountry(country);
+
+   return address;
 }
 
 std::vector<std::string> CustomerManagerUI::ReadPhoneNrs ()
@@ -482,16 +526,16 @@ Contact CustomerManagerUI::ReadValidContact ()
    return contact;
 }
 
-ContactData::ContactType CustomerManagerUI::ReadContactMethod ()
+int CustomerManagerUI::ReadContactChoice (size_t maxChoice)
 {
    while (true) {
-      try {
-         ContactData::ContactType choice = ContactData::StringToContactTypes( ReadText ("Preferred contact method (Mobile/Landline/Email/Post/Other): "));
+      int choice = ReadInt("Please choose an option: ");
+
+      if (choice >= 1 && choice <= static_cast<int>(maxChoice)) {
          return choice;
       }
-      catch (const std::invalid_argument& e) {
-         consoleOutput.Print(std::string ("Invalid contact type: ") + e.what());
-      }
+
+      consoleOutput.Print("Invalid choice.\n");
    }
   
 }
@@ -506,17 +550,17 @@ Customer CustomerManagerUI::CreateCustomer ()
    customerTypes::CustomerStatus customerStatus = customerTypes::CustomerStatus::Active;
    customerTypes::MemberLevel memberLevel = ReadMemberLevel ("Member level (1.Standard / 2.Private / 3.Premium / 4. Corporate): ");
 
-   string addressText = ReadValidatedAddress ();
-   Address address = Address::StringToAddress (addressText);
+   Customer newCustomer = Customer (id, firstName, lastName, dateOfBirth, gender, customerStatus,memberLevel);
 
-   Contact contact = ReadValidContact ();
-  
-   Customer newCustomer = Customer (id, firstName, lastName, dateOfBirth, gender, contact, address);
+   //newCustomer.SetCustomerStatus(customerStatus);
+   //newCustomer.SetMemberLevel(memberLevel);
 
-   newCustomer.SetCustomerStatus(customerStatus);
-   newCustomer.SetMemberLevel(memberLevel);
- 
-   
+   //Contact contact = ReadValidContact();
+   //newCustomer.SetContact(contact);
+
+   //string addressText = ReadValidatedAddress();
+   //Address address = Address::StringToAddress(addressText);
+   //newCustomer.AddAddress(address);
 
    return newCustomer;
 }
@@ -675,7 +719,7 @@ void CustomerManagerUI::HandleUpdateEmail ()
    }
 
    if (manager.UpdateEmail (selectedCustomerID, newEmail)) {
-      multiOutput.Print("Email updated.\n");
+      multiOutput.Print("Email updated.\n\n");
    }
    else {
       consoleOutput.Print("Invalid email format.\n");
@@ -684,14 +728,14 @@ void CustomerManagerUI::HandleUpdateEmail ()
 }
 void CustomerManagerUI::HandleUpdateAddress ()
 {
-   std::string newAddress = ReadValidatedAddress ();
-
    if (!HasSelectedCustomer()) {
       consoleOutput.Print("No customer selected.\n");
       return;
    }
 
-   if (manager.UpdateAddress (selectedCustomerID, Address::StringToAddress(newAddress))) {
+   Address newAddress = ReadValidatedAddress();
+
+   if (manager.UpdateAddress (selectedCustomerID, newAddress)) {
       multiOutput.Print("Address updated.\n");
    }
    else {
@@ -711,7 +755,8 @@ int CustomerManagerUI::ReadUpdateOption ()
       "5. Member level\n"
       "6. Email\n"
       "7. Address\n"
-      "8. Back\n"
+      "8. Deactive\n"
+      "9. Back\n\n"
       "Please choose an option: ");
 }
 

@@ -13,8 +13,10 @@ private:
 
 public: 
    CustomerManager (CustomerRepository& repository, const std::vector<Customer>& customers) : repository (repository), customers (customers) {};
-   std::vector<Customer>::iterator FindCustomerById (int searchId);
+   Customer& FindCustomerById (int searchId);
    const std::vector<Customer>& GetCustomers () const;
+   std::vector<ContactData::ContactEntry> GetContactEntries (int customerId);
+
    void Add (Customer& newCustomer);
    int GenerateCustomerId ();
    bool HasCustomers () const;

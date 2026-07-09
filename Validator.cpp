@@ -101,6 +101,13 @@ bool Validator::IsValidDate (int day, int month, int year)
    return true;
 }
 
+bool Validator::IsValidAddressType(const std::string& type)
+{
+   return type == "Home" || type == "home" || type == "1" ||
+      type == "Work" || type == "work" || type == "2" ||
+      type == "Billing" || type == "billing" || type == "3";
+}
+
 bool Validator::IsValidAddress (const string& address)
 {
    if (address.empty()) {

@@ -14,7 +14,7 @@ int main ()
    auto timeLogger = std::make_unique<TimeStampDecorator> (*logger);
    auto errorTimeLogger = std::make_unique<ErrorDecorator> (*timeLogger);
 
-   std::unique_ptr<CustomerRepository> repository = std::make_unique<FileCustomerRepository> ("customer.txt", *logger);
+   std::unique_ptr<CustomerRepository> repository = std::make_unique<FileCustomerRepository> ("customer.csv", *logger);
    std::vector<Customer> customers = repository->Load ();
 
    CustomerManager manager (*repository, customers);

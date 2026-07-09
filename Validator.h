@@ -12,6 +12,9 @@ public:
    static bool IsValidDate (int day, int month, int year);
 
    static bool IsValidEmail (const std::string& email);
+
+   static bool IsValidAddressType (const std::string& type);
+  
    static bool IsValidAddress (const std::string& address);
  
    static bool IsValidPhoneNr (const std::string& nr);
