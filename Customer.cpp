@@ -140,8 +140,7 @@ void Customer::AddAddress(const Address& address)
    addresses.push_back(address);
 }
 
-void Customer::AddContactInfo(ContactData::ContactType type,
-   const std::string& value)
+void Customer::AddContactInfo(ContactData::ContactType type, const std::string& value)
 {
    contact.AddInfo(type, value);
 }

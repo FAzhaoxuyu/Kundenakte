@@ -87,7 +87,7 @@ int CustomerManagerUI::ReadInt (const string& question)
       consoleOutput.Print(question);
       string input;
       getline (cin, input);
- 
+      
       try {
          int number = stoi (input);
          return number;
@@ -183,7 +183,8 @@ void CustomerManagerUI::HandleUpdateSelectedCustomer ()
          HandleUpdateEmail ();
          break;
       case 7:
-         HandleUpdateAddress();    ///
+         HandleUpdateAddress();    
+         break;
       case 8:
          HandleDeactivateCustomer();
          break;
@@ -217,7 +218,16 @@ void CustomerManagerUI::HandleSetPreferredContact()
    consoleOutput.Print("\nCurrent contacts are as follows:\n\n");
    ShowContactEntries(entries);
 
-   int choice = ReadInt("Please choose a contact by number: ");
+   int choice;
+   try {
+      choice = ReadInt("Please choose a contact by number: ");
+   }
+   
+   catch (const invalid_argument&) {
+      consoleOutput.Print("Invalid input. Please enter a number.\n");
+      return;
+   }
+
    if (choice < 1 || choice > entries.size()) {
       consoleOutput.Print("Invalid choice.\n");
       return;
@@ -685,7 +695,7 @@ void CustomerManagerUI::HandleDeactivateCustomer ()
       consoleOutput.Print("No customer selected.\n");
       return;
    }
-   if (!manager.DeactiveCustomer (selectedCustomerID)) {
+   if (!manager.DeactivateCustomer (selectedCustomerID)) {
       consoleOutput.Print("Customer not found.\n");
       errorLogger.Print("Update status failed: customer not found.");
    }

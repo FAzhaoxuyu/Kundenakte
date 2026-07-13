@@ -33,7 +33,7 @@ public:
    bool CustomerExists (int id) const;
 
    bool RemoveById (int id);
-   bool DeactiveCustomer (int id);
+   bool DeactivateCustomer (int id);
    bool SetPreferredContact (int id, ContactData::ContactType type);
 
    void SortCustomers (const CustomerSortStrategy& strategy);

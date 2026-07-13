@@ -97,17 +97,27 @@ void FileCustomerRepository::LoadContactInfos (vector<Customer>& customers) cons
       string idText;
       string typeText;
       string value;
+      string statusText;
+      string preferredText;
 
       getline (ss, idText, ',');
       getline (ss, typeText, ',');
       getline (ss, value, ',');
 
+      getline(ss, statusText, ',');
+      getline(ss, preferredText, ',');
+
       int customerId = stoi (idText);
       ContactData::ContactType type = ContactData::StringToContactTypes (typeText);
+
+      bool preferred = (preferredText == "1");
+
       for (Customer& customer : customers) {
          if (customer.GetId() == customerId) {
             customer.AddContactInfo(type, value);
-            break;
+            if (preferred) {
+               customer.SetPreferredContact(type);
+            }
          }
       }
    }
@@ -141,8 +151,6 @@ void FileCustomerRepository::LoadAddresses (vector<Customer>& customers) const
       getline (ss, postCode, ',');
       getline (ss, city, ',');
       getline (ss, country, ',');
-
-      cout << "customerIdText = [" << customerIdText << "]" << endl;        // didnt print out
 
       int customerId = std::stoi (customerIdText);
       Address address;
@@ -191,13 +199,22 @@ void FileCustomerRepository::SaveContactInfos (const std::vector<Customer>& cust
       }
    }
 }
-void FileCustomerRepository::SaveAddresses(const std::vector<Customer>& customers) const
+void FileCustomerRepository::SaveAddresses (const std::vector<Customer>& customers) const
 {
    ofstream file(GetAddressFilename());
    if (!file.is_open()) {
       cerr << "Can't open the file: " << GetAddressFilename() << endl;
       return;
    }
-
-
+   for (const Customer& customer : customers) {
+      for (const Address& address : customer.GetAddresses()) {
+         file << customer.GetId() << ","
+            << AddressTypeToString(address.GetType()) << ","
+            << address.GetStreet() << ","
+            << address.GetHouseNr() << ","
+            << address.GetPostCode() << ","
+            << address.GetCity() << ","
+            << address.GetCountry() << "\n";
+      }
+   }
 }

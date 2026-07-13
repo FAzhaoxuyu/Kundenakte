@@ -146,7 +146,7 @@ bool CustomerManager::RemoveById (int id)
    }
 }
 
-bool CustomerManager::DeactiveCustomer (int id)
+bool CustomerManager::DeactivateCustomer (int id)
 {
    auto it = find_if (customers.begin(), 
       customers.end(), 
@@ -165,7 +165,7 @@ bool CustomerManager::SetPreferredContact (int id, ContactData::ContactType type
 {
    for (Customer& customer : customers) {
       if (customer.GetId() == id) {
-         std::cout << "customer found\n";
+         std::cout << "customer found\n\n";
 
          bool success = customer.SetPreferredContact(type);
          if (success) {
