@@ -7,6 +7,8 @@
 #include<vector>
 #include<iostream>
 
+#include <SqliteWrapper.hpp>
+
 
 int main ()
 {
@@ -26,4 +28,23 @@ int main ()
    timeLogger->Print ("Program started");
    ui.Run ();
    timeLogger->Print ("Program ended");
+
+   try {
+      Sqlite::SqliteConnection connection("test.db");
+
+      sqliteExecute(
+         connection,
+         "CREATE TABLE IF NOT EXISTS Test ("
+         "Id INTEGER PRIMARY KEY, "
+         "Name TEXT)"
+      );
+
+      std::cout << "Database test successful.\n";
+   }
+   catch (const Sqlite::exception& e) {
+      std::cout << e.errorMessage_
+         << " ("
+         << e.errorCode_
+         << ")\n";
+   }
 }

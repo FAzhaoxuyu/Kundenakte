@@ -9,6 +9,7 @@ static std::vector<Customer> DeSerialize (const std::string& line);
 class CustomerRepository
 {
 public:
+   virtual ~CustomerRepository() = default;
    virtual std::vector<Customer> Load () const = 0;
    virtual void Save (const std::vector<Customer>& customers) = 0;
 private:
