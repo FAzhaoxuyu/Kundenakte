@@ -201,6 +201,11 @@ void SqliteCustomerRepository::LoadContactInfos (std::vector<Customer>& customer
 
 void SqliteCustomerRepository::LoadAddresses (std::vector<Customer>& customers) const
 {
+   Sqlite::SqliteConnection connection(databaseFilename.c_str());
+   string sql = "SELECT CustomerId, Type, Value, Status, isPreferred FROM CotactInfos";
+   Sqlite::SqliteStatement statement(connection, sql.c_str());
 
-}
+   while (statement.execute()) {
+   
+
 
