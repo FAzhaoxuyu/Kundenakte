@@ -117,7 +117,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Uebungsprojekt\Kundenakte\external\SQLiteCpp\header_only_src;$(SolutionDir)vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\sqlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -154,6 +154,7 @@
     <ClCompile Include="CustomerSortStrategy.cpp" />
     <ClCompile Include="CustomerTypes.cpp" />
     <ClCompile Include="Date.cpp" />
+    <ClCompile Include="external\sqlite\sqlite3.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OutputFactory.cpp" />
     <ClCompile Include="SQLiteCustomerRepository.cpp" />
