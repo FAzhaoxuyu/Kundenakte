@@ -1,7 +1,13 @@
 #include "SQLiteCustomerRepository.h"
+#include "external/SQLiteCpp/header_only_src/SqliteWrapper.hpp"
+#include "Contact.h"
+#include "ContactData.h"
+
 using namespace std;
 
-std::vector<Customer> SQLiteCustomerRepository::Load() const
+SqliteCustomerRepository::SqliteCustomerRepository (const std::string& databaseFilename) : databaseFilename (databaseFilename) {CreateTables();};
+
+vector<Customer> SqliteCustomerRepository::Load () const
 {
    vector<Customer> customers = LoadCustomers();
    LoadContactInfos(customers);
@@ -9,185 +15,192 @@ std::vector<Customer> SQLiteCustomerRepository::Load() const
    return customers;
 }
 
-void SQLiteCustomerRepository::Save(const vector<Customer>& customers)
+void SqliteCustomerRepository::Save (const vector<Customer>& customers)
 {
    SaveCustomers(customers);
    SaveContactInfos(customers);
    SaveAddresses(customers);
 }
 
-std::vector<Customer> SQLiteCustomerRepository::LoadCustomers() const     // continue from here 
+void SqliteCustomerRepository::CreateTables () const
 {
-   vector<Customer> customers;
+   Sqlite::SqliteConnection connection (databaseFilename.c_str());
 
-   ifstream is(GetCustomerFilename());
-   if (!is) {
-      cerr << "Can't open the file:" << filename << std::endl;
-      return {};
+   Sqlite::SqliteStatement createCustomersTable (                                           //customer table
+      connection,
+      "CREATE TABLE IF NOT EXISTIS customers ("
+      "CustomerId INTEGER PRIMARY KEY,"
+      "FirstName TEXT NOT NULL,"
+      "LastName TEXT NOT NULL,"
+      "DateOfBirth TEXT NOT NULL,"
+      "Gender TEXT NOT NULL,"
+      "Status TEXT NOT NULL,"
+      "Level TEXT NOT NULL,"
+      ");"
+   );
+   createCustomersTable.execute();
+
+   Sqlite::SqliteStatement createContactInfosTable(                                      //address table
+      connection,
+      "CREATE TABLE IF NOT EXISTS contactInfos ("
+      "contactInfoId INTEGER PRIMARY KEY,"
+      "CustomerId INTEGER NOT NULL,"
+      "Type TEXT NOT NULL,"
+      "Value TEXT NOT NULL,"
+      "Status TEXT NOT NULL,"
+      "IsPreferred TEXT NOT NULL,"
+      "FOREIGN KEY(CustomerId) REFERENCES Customers(CustomerId)"
+      ");" 
+   );
+   createContactInfosTable.execute();
+
+   Sqlite::SqliteStatement createAddressesTable(
+      connection,
+      "CREATE TABLE IF NOT EXISTS Addresses ("
+      "AddressId INTEGER PRIMARY KEY,"
+      "CustomerId INTEGER NOT NULL,"
+      "Type TEXT NOT NULL,"
+      "Street TEXT NOT NULL,"
+      "HouseNr TEXT NOT NULL,"
+      "PostCode TEXT NOT NULL,"
+      "City TEXT NOT NULL,"
+      "Country TEXT NOT NULL,"
+      "FOREIGN KEY(CustomerId) REFERENCES Customers(CustomerId)"
+      ");"
+   );
+   createAddressesTable.execute();
+}
+
+void SqliteCustomerRepository::SaveCustomers (const std::vector<Customer>& customers) const
+{
+   Sqlite::SqliteConnection connection(databaseFilename.c_str());
+
+   for (const Customer& customer : customers) {
+      int customerId = customer.GetId();
+      string firstName = customer.GetFirstName();
+      string lastName = customer.GetLastName();
+      string dateOfBirth = customer.GetDateOfBirth().DateToString();
+      string gender = customerTypes::GenderToString(customer.GetGender());
+      string status = customerTypes::StatusToString(customer.GetCustomerStatus());
+      string level = customerTypes::LevelToString(customer.GetMemberLevel());
+
+      string sql = "INSERT INTO Customers (CustomerId, Firstname, LastName, DateOfBirth, Gender, CustomerStatus, MemberLevel) VALUES (?, ?, ?, ?, ?, ?, ?);";
+      Sqlite::SqliteStatement statement(connection, sql.c_str());
+      statement.bind(1, customerId);
+      statement.bind(2, firstName);
+      statement.bind(3, lastName);
+      statement.bind(4, dateOfBirth);
+      statement.bind(5, gender);
+      statement.bind(6, status);
+      statement.bind(7, level);
+      
+      statement.execute();
    }
-
-   try {
-      stringstream buffer;
-      buffer << is.rdbuf();
-      string content = buffer.str();
-      cout << "File content:\n\n" << content << "\n";
-      customers = DeSerialize(content);
-
-      cout << "Loaded customers: " << customers.size() << "\n\n";
-      return customers;
-   }
-   catch (const std::exception& ex) {
-      cerr << "Invalid file content: " << ex.what() << std::endl;
-      logOutput.Print(string("Invalid content: ") + ex.what());
-      return {};
-   }
 }
 
-string SQLiteCustomerRepository::GetCustomerFilename() const
+void SqliteCustomerRepository::SaveContactInfos(const std::vector<Customer>& customers) const
 {
-   return "customers.csv";
-}
-string SQLiteCustomerRepository::GetContactFilename() const
-{
-   return "contacts.csv";
-}
-string SQLiteCustomerRepository::GetAddressFilename() const
-{
-   return "addresses.csv";
-}
+   Sqlite::SqliteConnection connection(databaseFilename.c_str());
+   
+   for (const Customer& customer : customers) {
+      for (const ContactData::ContactEntry& entry : customer.GetContact().GetContactEntries()) {
+         ContactData::ContactType type = entry.type;
+         const string& value = entry.value;
+         ContactData::ContactStatus status = entry.status;
+         bool preferred = entry.preferred;
+         string preferredText = entry.preferred ? "true": "false";
 
-void SQLiteCustomerRepository::LoadContactInfos(vector<Customer>& customers) const
-{
-   ifstream file(GetContactFilename());
-   if (!file.is_open()) return;
+         string sql = "INSERT INTO ContactInfos (CustomerId, Type, Value, Status, isPreferred) VALUES (?, ?, ?, ?, ?)";
 
-   string line;
-   std::getline(file, line);
+         Sqlite::SqliteStatement statement(connection, sql.c_str());
+         statement.bind(1, customer.GetId());
+         statement.bind(2, static_cast<int>(type));
+         statement.bind(3, value.c_str());
+         statement.bind(4, static_cast<int>(status));
+         statement.bind(5, preferredText);
 
-   while (getline(file, line)) {
-      stringstream ss(line);
-
-      string idText;
-      string typeText;
-      string value;
-      string statusText;
-      string preferredText;
-
-      getline(ss, idText, ',');
-      getline(ss, typeText, ',');
-      getline(ss, value, ',');
-
-      getline(ss, statusText, ',');
-      getline(ss, preferredText, ',');
-
-      int customerId = stoi(idText);
-      ContactData::ContactType type = ContactData::StringToContactTypes(typeText);
-
-      bool preferred = (preferredText == "1");
-
-      for (Customer& customer : customers) {
-         if (customer.GetId() == customerId) {
-            customer.AddContactInfo(type, value);
-            if (preferred) {
-               customer.SetPreferredContact(type);
-            }
-         }
+         statement.execute();
       }
    }
 }
 
-void SQLiteCustomerRepository::LoadAddresses(vector<Customer>& customers) const
+void SqliteCustomerRepository::SaveAddresses (const std::vector<Customer>& customers) const
 {
-   ifstream file(GetAddressFilename());
+   Sqlite::SqliteConnection connection(databaseFilename.c_str());
 
-   if (!file) {
-      cerr << "Can't open the file: " << GetAddressFilename() << endl;
-      return;
+   for (const Customer& customer : customers) {
+      for (const Address& address : customer.GetAddresses()) {
+
+         string sql = "Insert into Address (CustomerId, Type, Street, HouseNr, PostCode, City, Country) VALUES (?, ?, ?, ?, ?, ?,?)";
+         Sqlite::SqliteStatement statement(connection, sql.c_str());
+
+         statement.bind(1, customer.GetId());
+         statement.bind(2, static_cast<int>(address.GetType()));
+         statement.bind(3, address.GetStreet());
+         statement.bind(4, address.GetHouseNr());
+         statement.bind(5, address.GetPostCode());
+         statement.bind(6, address.GetCity());
+         statement.bind(7, address.GetCountry());
+
+         statement.execute();
+      }
    }
+}
 
-   string line;
-   getline(file, line);   //skip header
-   while (getline(file, line)) {
-      stringstream ss(line);
-      string customerIdText;
-      string typeText;
-      string street;
-      string houseNr;
-      string postCode;
-      string city;
-      string country;
+void SqliteCustomerRepository::LoadCustomers(std::vector<Customer>& customers) const
+{
+   Sqlite::SqliteConnection connection (databaseFilename.c_str());
+   string sql = "SELECT CustomerId, Type, Value, Status, isPreferred FROM Customers";
+   Sqlite::SqliteStatement statement(connection, sql.c_str());
 
-      getline(ss, customerIdText, ',');
-      getline(ss, typeText, ',');
-      getline(ss, street, ',');
-      getline(ss, houseNr, ',');
-      getline(ss, postCode, ',');
-      getline(ss, city, ',');
-      getline(ss, country, ',');
+   while (statement.execute()) {
+      Customer customer;
+      int id = statement.getInt(0);
+      string firstName = statement.getString(1);
+      string lastName = statement.getString(2);
+      string dateOfBirth = statement.getString(3);
+      string gender = statement.getString(4);
+      string status = statement.getString(5);
+      string level = statement.getString(6);
 
-      int customerId = std::stoi(customerIdText);
-      Address address;
+      customer.SetId(id);
+      customer.SetFirstName(firstName);
+      customer.SetLastName(lastName);
+      customer.SetDateOfBirth(Date::StringToDate(dateOfBirth));
+      customer.SetGender(customerTypes::StringToGender(gender));
+      customer.SetCustomerStatus(customerTypes::StringToStatus(status));
+      customer.SetMemberLevel(customerTypes::StringToLevel(level));
 
+      customers.push_back(customer);
+   }
+}
 
-      address.SetType(StringToAddressType(typeText));
-      address.SetStreet(street);
-      address.SetHouseNr(houseNr);
-      address.SetPostCode(postCode);
-      address.SetCity(city);
-      address.SetCountry(country);
+void SqliteCustomerRepository::LoadContactInfos (std::vector<Customer>& customers) const
+{
+   Sqlite::SqliteConnection connection(databaseFilename.c_str());
+   string sql = "SELECT CustomerId, Type, Value, Status, isPreferred FROM CotactInfos";
+   Sqlite::SqliteStatement statement(connection, sql.c_str());
+
+   while (statement.execute()) {
+      int customerId = statement.getInt(0);
+
+      ContactData::ContactEntry contactEntry;
+      contactEntry.type = ContactData::StringToContactTypes(statement.getString(1));
+      contactEntry.value = statement.getString(2);
+      contactEntry.status = ContactData::StringToContactStatus(statement.getString(3));
+      contactEntry.preferred = std::string(statement.getString(4)) == "true";
 
       for (Customer& customer : customers) {
          if (customer.GetId() == customerId) {
-            customer.AddAddress(address);
+            customer.AddContactInfo(contactEntry);
             break;
          }
       }
    }
 }
 
-void SQLiteCustomerRepository::SaveCustomers(const std::vector<Customer>& customers) const
+void SqliteCustomerRepository::LoadAddresses (std::vector<Customer>& customers) const
 {
-   ofstream file(GetCustomerFilename());
 
-   if (!file.is_open()) {
-      cerr << "Can't open the file: " << GetCustomerFilename() << endl;          //Customer::CustomerToString() need to change
-      return;
-   }
-
-
-   file << Serialize(customers);
 }
-void SQLiteCustomerRepository::SaveContactInfos(const std::vector<Customer>& customers) const
-{
-   ofstream file(GetContactFilename());
-   if (!file.is_open()) {
-      cerr << "Can't open the file: " << GetContactFilename() << endl;
-      return;
-   }
 
-   for (const Customer& customer : customers) {
-      for (const ContactData::ContactEntry& info : customer.GetContact().GetAllContactEntries()) {
-         file << customer.GetId() << "," << ContactData::ContactTypeToString(info.type) << "," << info.value << ","
-            << ContactData::ContactStatusToString(info.status) << "," << info.preferred << "\n";
-      }
-   }
-}
-void SQLiteCustomerRepository::SaveAddresses(const std::vector<Customer>& customers) const
-{
-   ofstream file(GetAddressFilename());
-   if (!file.is_open()) {
-      cerr << "Can't open the file: " << GetAddressFilename() << endl;
-      return;
-   }
-   for (const Customer& customer : customers) {
-      for (const Address& address : customer.GetAddresses()) {
-         file << customer.GetId() << ","
-            << AddressTypeToString(address.GetType()) << ","
-            << address.GetStreet() << ","
-            << address.GetHouseNr() << ","
-            << address.GetPostCode() << ","
-            << address.GetCity() << ","
-            << address.GetCountry() << "\n";
-      }
-   }
-}

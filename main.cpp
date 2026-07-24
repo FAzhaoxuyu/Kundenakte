@@ -4,10 +4,12 @@
 #include "CustomerManagerUI.h"
 #include "CustomerRepository.h"
 #include "OutputFactory.h"
+#include "SQLiteCustomerRepository.h"
+
 #include<vector>
 #include<iostream>
 
-#include <SqliteWrapper.hpp>
+
 
 
 int main ()
@@ -16,10 +18,10 @@ int main ()
    auto timeLogger = std::make_unique<TimeStampDecorator> (*logger);
    auto errorTimeLogger = std::make_unique<ErrorDecorator> (*timeLogger);
 
-   std::unique_ptr<CustomerRepository> repository = std::make_unique<FileCustomerRepository> ("customer.csv", *logger);
-   std::vector<Customer> customers = repository->Load ();
+   std::unique_ptr<CustomerRepository> fileRepository = std::make_unique<FileCustomerRepository> ("customer.csv", *logger);
+   std::vector<Customer> customers = fileRepository->Load ();
 
-   CustomerManager manager (*repository, customers);
+   CustomerManager manager (*fileRepository, customers);
    std::unique_ptr<Output> console = std::make_unique<ConsoleOutput> ();
    std::unique_ptr<Output> multiOutput = std::make_unique<MultiOutput> (*console, *timeLogger);
    
@@ -29,22 +31,8 @@ int main ()
    ui.Run ();
    timeLogger->Print ("Program ended");
 
-   try {
-      Sqlite::SqliteConnection connection("test.db");
 
-      sqliteExecute(
-         connection,
-         "CREATE TABLE IF NOT EXISTS Test ("
-         "Id INTEGER PRIMARY KEY, "
-         "Name TEXT)"
-      );
 
-      std::cout << "Database test successful.\n";
-   }
-   catch (const Sqlite::exception& e) {
-      std::cout << e.errorMessage_
-         << " ("
-         << e.errorCode_
-         << ")\n";
-   }
+   SqliteCustomerRepository sqliteRepository("customers.db");
+   std::cout << "Database test successful.\n";
 }

@@ -145,6 +145,12 @@ void Customer::AddContactInfo(ContactData::ContactType type, const std::string& 
    contact.AddInfo(type, value);
 }
 
+void Customer::AddContactInfo(const ContactData::ContactEntry& entry)
+{
+   contact.AddContactInfo(entry);
+}
+
+
 void Customer::Print () const
 {
    cout << GetId() << " "

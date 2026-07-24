@@ -1,14 +1,12 @@
 #pragma once
 #include <string>
 
-#pragma once
-#include <string>
-
 enum class AddressType
 {
    Home,
    Work,
-   Billing
+   Billing,
+   None
 };
 
 std::string AddressTypeToString (AddressType type);
@@ -37,7 +35,7 @@ public:
    static Address StringToAddress (const std::string& text);
 
 private:
-   AddressType type = AddressType::Home;
+   AddressType type = AddressType::None;
    std::string street;
    std::string houseNr;
    std::string postCode;

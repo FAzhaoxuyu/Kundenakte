@@ -21,9 +21,9 @@ private:
    std::string lastName;
    Date dateOfBirth;
    customerTypes::Gender gender;
-
    customerTypes::CustomerStatus customerStatus = customerTypes::CustomerStatus::Active;
    customerTypes::MemberLevel memberLevel = customerTypes::MemberLevel::Standard;
+
    Contact contact;
    std::vector<Address> addresses;
    ContactData::ContactType preferredContact = ContactData::ContactType::None;
@@ -39,6 +39,7 @@ public:
       const customerTypes::Gender& valGender,
       const customerTypes::CustomerStatus& valStatus,
       const customerTypes::MemberLevel& valLevel);
+
    const int& GetId () const;
    const std::string& GetFirstName () const;
    const std::string& GetLastName () const;
@@ -62,7 +63,10 @@ public:
    bool SetPreferredContact (ContactData::ContactType type);
    void SetContactInfo (ContactData::ContactType type, const std::string& value);
    void AddAddress (const Address& address);
+
    void AddContactInfo(ContactData::ContactType type, const std::string& value);
+   void AddContactInfo(const ContactData::ContactEntry& entry);
+
    void Print () const;
 
    std::string CustomerToString () const;

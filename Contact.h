@@ -10,7 +10,10 @@ public:
    const std::vector<std::string> GetEmails () const;
    std::string GetPreferredEmail () const;
    void AddInfo (ContactData::ContactType type, const std::string& value);
+   void AddContactInfo(const ContactData::ContactEntry& entry);
    const std::vector<ContactData::ContactEntry>& GetContactInfos (ContactData::ContactType type) const;
+   const std::vector<ContactData::ContactEntry>& GetContactEntries() const;
+
 
    void SetContactInfo (ContactData::ContactType type, const std::string& value);
    bool SetPreferredContact (ContactData::ContactType type);

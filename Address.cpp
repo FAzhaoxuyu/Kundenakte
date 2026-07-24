@@ -70,7 +70,7 @@ std::string AddressTypeToString (AddressType type)
    case AddressType::Home: return "Home";
    case AddressType::Work: return "Work";
    case AddressType::Billing: return "Billing";
-   default: return "Unknown";
+   case AddressType::None: return "None";
    }
 }
 
@@ -85,6 +85,8 @@ AddressType StringToAddressType (const std::string& text)
    if (text == "Billing" || text == "billing" || text == "3") {
       return AddressType::Billing;
    }
+
+   return AddressType::None;
 
    throw std::invalid_argument("Invalid address type.");
 

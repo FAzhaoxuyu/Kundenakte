@@ -40,7 +40,17 @@ void Contact::AddInfo (ContactData::ContactType type, const std::string& value)
    contactEntries.push_back(entry);
 }
 
+void Contact::AddContactInfo(const ContactData::ContactEntry& entry)
+{
+   contactEntries.push_back(entry);
+}
+
 const std::vector<ContactData::ContactEntry>& Contact::GetContactInfos (ContactData::ContactType type) const
+{
+   return contactEntries;
+}
+
+const std::vector<ContactData::ContactEntry>& Contact::GetContactEntries() const
 {
    return contactEntries;
 }
